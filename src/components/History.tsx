@@ -3,9 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Pencil, Trash2, UserCog } from "lucide-react";
+import { Loader2, Pencil, Trash2, UserCog } from "lucide-react";
 import { Badge, Button } from "./ui";
-import { DeleteVisitsDialog, EditVisitDialog, STATUS_OPTIONS } from "./VisitActions";
+import { EditVisitDialog } from "./VisitActions";
 import { patientName, type Diagnosis, type Vitals } from "@/lib/types";
 import { visitHref } from "@/lib/visits";
 
@@ -25,17 +25,17 @@ export function LocalTime({ iso, mode = "datetime" }: { iso: string; mode?: "dat
   );
 }
 
-const STATUS_TONE: Record<string, "slate" | "brand" | "green" | "amber"> = {
-  in_progress: "slate",
-  recommended: "amber",
-  med_chosen: "amber",
-  prescribed: "brand",
-  completed: "green",
+const VISIT_STATUS: Record<string, { label: string; tone: "slate" | "brand" | "green" | "amber" }> = {
+  in_progress: { label: "In progress", tone: "slate" },
+  recommended: { label: "Awaiting choice", tone: "amber" },
+  med_chosen: { label: "Awaiting Photon", tone: "amber" },
+  prescribed: { label: "Prescribed", tone: "brand" },
+  completed: { label: "Completed", tone: "green" },
 };
 
 export function VisitStatus({ status }: { status: string }) {
-  const label = STATUS_OPTIONS.find((o) => o.value === status)?.label ?? status;
-  return <Badge tone={STATUS_TONE[status] ?? "slate"}>{label}</Badge>;
+  const s = VISIT_STATUS[status] ?? { label: status, tone: "slate" as const };
+  return <Badge tone={s.tone}>{s.label}</Badge>;
 }
 
 export type VisitRowLite = {
@@ -50,48 +50,109 @@ export type VisitRowLite = {
   prescriptions: { status: string; dose_mg: number | null; is_override: boolean; custom_medication: string | null; medications: { generic_name: string } | null }[];
 };
 
+const STATUS_OPTIONS = Object.entries(VISIT_STATUS).map(([value, s]) => ({ value, label: s.label }));
 
-/** Visit list with edit / delete per row and bulk delete. */
+
+/** Abandoned intakes: nothing was captured, so nothing is lost by removing them. */
+function isEmptyVisit(v: VisitRowLite) {
+  return !v.diagnoses && !v.prescriptions.length && !v.vitals?.bp_systolic && !v.patients?.first_name && !v.patients?.last_name;
+}
+
 export function VisitTable({ rows, diagnoses, showPatient = true }: { rows: VisitRowLite[]; diagnoses: Diagnosis[]; showPatient?: boolean }) {
   const router = useRouter();
-  const [selected, setSelected] = useState<Set<string>>(new Set());
   const [editing, setEditing] = useState<VisitRowLite | null>(null);
-  const [deleting, setDeleting] = useState<VisitRowLite[] | null>(null);
-  // Only rows still on screen count (others were deleted or filtered out)
-  const chosen = rows.filter((r) => selected.has(r.id));
-  const allOn = rows.length > 0 && chosen.length === rows.length;
-
-  const toggle = (id: string) =>
-    setSelected((s) => {
-      const n = new Set(s);
-      if (n.has(id)) n.delete(id);
-      else n.add(id);
-      return n;
-    });
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [confirming, setConfirming] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
 
   if (!rows.length) return <p className="p-10 text-center text-sm text-slate-500">No visits found.</p>;
+
+  const ids = rows.map((r) => r.id);
+  const picked = ids.filter((id) => selected.has(id));
+  const empties = rows.filter(isEmptyVisit).map((r) => r.id);
+  const allPicked = picked.length === ids.length;
+  const pickedPrescribed = rows.filter((r) => selected.has(r.id) && r.prescriptions.length).length;
+
+  const choose = (next: Iterable<string>) => {
+    setSelected(new Set(next));
+    setConfirming(false);
+    setErr(null);
+  };
+  const toggle = (id: string) => {
+    const next = new Set(selected);
+    if (next.has(id)) next.delete(id);
+    else next.add(id);
+    choose(next);
+  };
+
+  async function remove() {
+    setBusy(true);
+    setErr(null);
+    const r = await fetch("/api/encounters", { method: "DELETE", headers: { "content-type": "application/json" }, body: JSON.stringify({ ids: picked }) });
+    setBusy(false);
+    if (!r.ok) return setErr((await r.json().catch(() => ({}))).error ?? "Could not remove visits");
+    choose([]);
+    router.refresh();
+  }
+
   return (
-    <div className="overflow-x-auto">
-      {chosen.length > 0 && (
-        <div className="flex items-center gap-3 border-b border-slate-100 bg-slate-50 px-5 py-2 text-sm" role="toolbar" aria-label="Selected visits">
-          <span className="font-medium">{chosen.length} selected</span>
-          <Button variant="danger" className="px-2.5 py-1 text-xs" onClick={() => setDeleting(chosen)}>
-            <Trash2 size={13} /> Delete
-          </Button>
-          <button className="text-xs text-slate-500 hover:underline" onClick={() => setSelected(new Set())}>
-            Clear
-          </button>
-        </div>
-      )}
-      <table className="w-full min-w-[720px] text-sm">
+    <div>
+      <div className="flex min-h-12 flex-wrap items-center gap-2 border-b border-slate-100 px-4 py-2 text-sm">
+        {picked.length === 0 ? (
+          <>
+            <span className="text-slate-500">Tick visits to remove them, or use the bin on a row.</span>
+            {empties.length > 0 && (
+              <Button variant="ghost" className="ml-auto py-1.5" onClick={() => choose(empties)}>
+                Select {empties.length} empty visit{empties.length === 1 ? "" : "s"}
+              </Button>
+            )}
+          </>
+        ) : confirming ? (
+          <>
+            <span className="font-medium text-red-700">
+              Remove {picked.length} visit{picked.length === 1 ? "" : "s"}? This can&apos;t be undone.
+            </span>
+            {pickedPrescribed > 0 && (
+              <span className="text-xs text-amber-700">
+                {pickedPrescribed} had a prescription — removing the visit doesn&apos;t cancel anything already sent to the pharmacy.
+              </span>
+            )}
+            <div className="ml-auto flex gap-2">
+              <Button variant="secondary" className="py-1.5" onClick={() => setConfirming(false)} disabled={busy}>
+                Keep
+              </Button>
+              <Button variant="danger" className="py-1.5" onClick={() => void remove()} disabled={busy}>
+                {busy ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />} Remove
+              </Button>
+            </div>
+          </>
+        ) : (
+          <>
+            <span className="font-medium">{picked.length} selected</span>
+            <Button variant="ghost" className="py-1.5" onClick={() => choose([])}>
+              Clear
+            </Button>
+            <Button variant="danger" className="ml-auto py-1.5" onClick={() => setConfirming(true)}>
+              <Trash2 size={14} /> Remove {picked.length}
+            </Button>
+          </>
+        )}
+        {err && <span className="w-full text-red-600">{err}</span>}
+      </div>
+      <div className="overflow-x-auto">
+      <table className="w-full min-w-[640px] text-sm">
         <thead>
           <tr className="border-b border-slate-100 text-left text-xs uppercase tracking-wide text-slate-500">
             <th className="w-10 py-2.5 pl-5">
               <input
                 type="checkbox"
                 aria-label="Select all visits"
-                checked={allOn}
-                onChange={() => setSelected(allOn ? new Set() : new Set(rows.map((r) => r.id)))}
+                checked={allPicked}
+                ref={(el) => {
+                  if (el) el.indeterminate = picked.length > 0 && !allPicked;
+                }}
+                onChange={() => choose(allPicked ? [] : ids)}
                 className="h-4 w-4 accent-brand-600"
               />
             </th>
@@ -101,9 +162,7 @@ export function VisitTable({ rows, diagnoses, showPatient = true }: { rows: Visi
             <th className="px-3 py-2.5 font-medium">BP</th>
             <th className="px-3 py-2.5 font-medium">Prescribed</th>
             <th className="px-3 py-2.5 font-medium">Status</th>
-            <th className="px-5 py-2.5">
-              <span className="sr-only">Actions</span>
-            </th>
+            <th className="w-20 pr-4" aria-label="Edit or remove" />
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
@@ -111,9 +170,15 @@ export function VisitTable({ rows, diagnoses, showPatient = true }: { rows: Visi
             const rx = v.prescriptions[0];
             const drug = rx ? rx.medications?.generic_name ?? rx.custom_medication : null;
             return (
-              <tr key={v.id} className={selected.has(v.id) ? "bg-brand-50/50" : "group hover:bg-slate-50"}>
+              <tr key={v.id} className={selected.has(v.id) ? "group bg-brand-50" : "group hover:bg-slate-50"}>
                 <td className="py-3 pl-5">
-                  <input type="checkbox" aria-label="Select visit" checked={selected.has(v.id)} onChange={() => toggle(v.id)} className="h-4 w-4 accent-brand-600" />
+                  <input
+                    type="checkbox"
+                    aria-label="Select visit"
+                    checked={selected.has(v.id)}
+                    onChange={() => toggle(v.id)}
+                    className="h-4 w-4 accent-brand-600"
+                  />
                 </td>
                 <td className="whitespace-nowrap px-3 py-3">
                   <Link href={visitHref(v)} className="font-medium text-ink group-hover:underline">
@@ -154,11 +219,26 @@ export function VisitTable({ rows, diagnoses, showPatient = true }: { rows: Visi
                 <td className="px-3 py-3">
                   <VisitStatus status={v.status} />
                 </td>
-                <td className="whitespace-nowrap px-5 py-3 text-right">
-                  <button className="rounded-lg p-1.5 text-slate-500 hover:bg-slate-100 hover:text-ink" onClick={() => setEditing(v)} aria-label="Edit visit" title="Edit">
+                <td className="whitespace-nowrap pr-4 text-right">
+                  <button
+                    type="button"
+                    title="Edit visit"
+                    aria-label="Edit visit"
+                    onClick={() => setEditing(v)}
+                    className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-ink sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100"
+                  >
                     <Pencil size={15} />
                   </button>
-                  <button className="rounded-lg p-1.5 text-slate-500 hover:bg-red-50 hover:text-red-600" onClick={() => setDeleting([v])} aria-label="Delete visit" title="Delete">
+                  <button
+                    type="button"
+                    title="Remove visit"
+                    aria-label="Remove visit"
+                    onClick={() => {
+                      choose([v.id]);
+                      setConfirming(true);
+                    }}
+                    className="rounded-md p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100"
+                  >
                     <Trash2 size={15} />
                   </button>
                 </td>
@@ -167,24 +247,15 @@ export function VisitTable({ rows, diagnoses, showPatient = true }: { rows: Visi
           })}
         </tbody>
       </table>
+      </div>
       {editing && (
         <EditVisitDialog
           visit={editing}
           diagnoses={diagnoses}
+          statuses={STATUS_OPTIONS}
           onClose={() => setEditing(null)}
           onSaved={() => {
             setEditing(null);
-            router.refresh();
-          }}
-        />
-      )}
-      {deleting && (
-        <DeleteVisitsDialog
-          visits={deleting}
-          onClose={() => setDeleting(null)}
-          onDeleted={() => {
-            setDeleting(null);
-            setSelected(new Set());
             router.refresh();
           }}
         />

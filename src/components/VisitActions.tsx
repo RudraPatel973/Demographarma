@@ -1,20 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { AlertTriangle, Loader2, X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 import { Button, Input, Label, Select, Textarea } from "./ui";
-import { patientName, type Diagnosis, type EncounterStatus, type Vitals } from "@/lib/types";
-
-export const STATUS_OPTIONS: { value: EncounterStatus; label: string }[] = [
-  { value: "in_progress", label: "In progress" },
-  { value: "recommended", label: "Awaiting choice" },
-  { value: "med_chosen", label: "Awaiting Photon" },
-  { value: "prescribed", label: "Prescribed" },
-  { value: "completed", label: "Completed" },
-];
-
-// Prescription statuses that mean nothing has left Demographarma yet
-const NOT_SENT = ["draft", "canceled", "error"];
+import { patientName, type Diagnosis, type Vitals } from "@/lib/types";
 
 export type EditableVisit = {
   id: string;
@@ -24,7 +13,6 @@ export type EditableVisit = {
   diagnosis_notes: string | null;
   vitals: Vitals;
   patients: { first_name: string | null; last_name: string | null } | null;
-  prescriptions: { status: string }[];
 };
 
 const num = (v: string) => (v.trim() === "" ? null : Number(v));
@@ -34,11 +22,13 @@ const when = (iso: string) => new Date(iso).toLocaleString([], { month: "short",
 export function EditVisitDialog({
   visit,
   diagnoses,
+  statuses,
   onClose,
   onSaved,
 }: {
   visit: EditableVisit;
   diagnoses: Diagnosis[];
+  statuses: { value: string; label: string }[];
   onClose: () => void;
   onSaved: () => void;
 }) {
@@ -95,7 +85,7 @@ export function EditVisitDialog({
           <label className="block">
             <Label>Status</Label>
             <Select value={status} onChange={(e) => setStatus(e.target.value)}>
-              {STATUS_OPTIONS.map((s) => (
+              {statuses.map((s) => (
                 <option key={s.value} value={s.value}>
                   {s.label}
                 </option>
@@ -138,69 +128,6 @@ export function EditVisitDialog({
           </Button>
           <Button onClick={save} disabled={busy}>
             {busy && <Loader2 size={14} className="animate-spin" />} Save
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-/** Confirmation for deleting one or more visits. Deletes one at a time and reports failures. */
-export function DeleteVisitsDialog({ visits, onClose, onDeleted }: { visits: EditableVisit[]; onClose: () => void; onDeleted: () => void }) {
-  const [busy, setBusy] = useState(false);
-  const [done, setDone] = useState(0);
-  const [err, setErr] = useState<string | null>(null);
-  const sent = visits.filter((v) => v.prescriptions.some((p) => !NOT_SENT.includes(p.status)));
-  const one = visits.length === 1 ? visits[0] : null;
-
-  async function remove() {
-    setBusy(true);
-    setErr(null);
-    const failed: string[] = [];
-    for (const v of visits) {
-      const r = await fetch(`/api/encounters/${v.id}`, { method: "DELETE" });
-      if (!r.ok) failed.push(((await r.json().catch(() => ({}))) as { error?: string }).error ?? `HTTP ${r.status}`);
-      setDone((d) => d + 1);
-    }
-    if (failed.length) {
-      setErr(`${failed.length} of ${visits.length} could not be deleted: ${failed[0]}`);
-      setBusy(false);
-      onDeleted(); // refresh to show what did go
-      return;
-    }
-    onDeleted();
-  }
-
-  return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-slate-900/40 p-4" onClick={busy ? undefined : onClose}>
-      <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl" onClick={(e) => e.stopPropagation()} role="alertdialog" aria-labelledby="delete-title">
-        <h2 id="delete-title" className="text-lg font-semibold">
-          {one ? "Delete this visit?" : `Delete ${visits.length} visits?`}
-        </h2>
-        {one && (
-          <p className="mt-1 text-sm text-slate-500">
-            {one.patients ? patientName(one.patients) : "Unnamed patient"} · {when(one.created_at)}
-          </p>
-        )}
-        <p className="mt-4 text-sm text-slate-700">
-          This permanently removes the recording, transcript, documents, check-in clip, recommendations and prescriptions for{" "}
-          {one ? "this visit" : "these visits"}. It can&apos;t be undone.
-        </p>
-        {sent.length > 0 && (
-          <p className="mt-3 flex gap-2 rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-900">
-            <AlertTriangle size={16} className="mt-0.5 shrink-0" />
-            {one ? "This visit has" : `${sent.length} of these visits have`} a prescription that was already sent. Deleting removes it here only; it
-            doesn&apos;t cancel the order with Photon or the pharmacy.
-          </p>
-        )}
-        {err && <p className="mt-3 text-sm text-red-600">{err}</p>}
-        <div className="mt-6 flex items-center justify-end gap-3">
-          <Button variant="secondary" onClick={onClose} disabled={busy}>
-            Cancel
-          </Button>
-          <Button variant="danger" onClick={remove} disabled={busy}>
-            {busy && <Loader2 size={14} className="animate-spin" />}
-            {busy && visits.length > 1 ? `Deleting ${done}/${visits.length}…` : one ? "Delete visit" : `Delete ${visits.length} visits`}
           </Button>
         </div>
       </div>

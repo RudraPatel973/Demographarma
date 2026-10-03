@@ -1,5 +1,5 @@
 import "server-only";
-import { db, MEDIA_BUCKET, must } from "./supabase";
+import { db, must } from "./supabase";
 import { listObservations } from "./inference";
 import type { Diagnosis, Encounter, Medication, MedicationTrial, Patient, PatientMessage, Prescription, Recommendation } from "./types";
 
@@ -85,35 +85,6 @@ export async function listVisits(opts: { status?: string; q?: string; patientId?
     rows = rows.filter((r) => `${r.patients?.first_name ?? ""} ${r.patients?.last_name ?? ""}`.toLowerCase().includes(q));
   }
   return rows;
-}
-
-/**
- * Deletes a visit and everything recorded for it: recommendations, prescriptions (and their patient
- * messages) and model observations cascade in the database; stored media (recording, documents,
- * check-in clip) is removed from storage. The placeholder patient a "new patient" visit creates
- * (no name, no other visits) is removed too. Prescriptions already sent to Photon are not cancelled.
- */
-export async function deleteVisit(id: string) {
-  const enc = must(await db().from("encounters").select("id,patient_id").eq("id", id).single()) as Pick<Encounter, "id" | "patient_id">;
-  must(await db().from("encounters").delete().eq("id", id).select("id"));
-
-  const paths: string[] = [];
-  for (const kind of ["video", "document", "vitals"]) {
-    const { data } = await db().storage.from(MEDIA_BUCKET).list(`${id}/${kind}`, { limit: 1000 });
-    for (const f of data ?? []) paths.push(`${id}/${kind}/${f.name}`);
-  }
-  if (paths.length) {
-    const { error } = await db().storage.from(MEDIA_BUCKET).remove(paths);
-    if (error) console.error(`[visits] media for ${id} not removed:`, error.message);
-  }
-
-  const p = must(await db().from("patients").select("id,first_name,last_name,encounters(id)").eq("id", enc.patient_id).single()) as Pick<
-    Patient,
-    "id" | "first_name" | "last_name"
-  > & { encounters: { id: string }[] };
-  const placeholder = !p.first_name && !p.last_name && p.encounters.length === 0;
-  if (placeholder) must(await db().from("patients").delete().eq("id", p.id).select("id"));
-  return { deletedPatient: placeholder, mediaRemoved: paths.length };
 }
 
 export async function listPatients(q?: string) {
