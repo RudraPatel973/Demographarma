@@ -206,6 +206,86 @@ export async function photonOrgProfile() {
   };
 }
 
+type PhotonAddress = { street1: string | null; street2: string | null; city: string | null; state: string | null; postalCode: string | null } | null;
+const fmtAddr = (a: PhotonAddress) =>
+  a ? [[a.street1, a.street2].filter(Boolean).join(", "), a.city, [a.state, a.postalCode].filter(Boolean).join(" ")].filter(Boolean).join(", ") || null : null;
+const fmtPhone = (x: string | null | undefined) => (x ? x.replace(/^\+1(\d{3})(\d{3})(\d{4})$/, "($1) $2-$3") : null);
+
+export type PhotonRxInfo = {
+  prescription_id: string;
+  written_at: string | null;
+  medication: { name: string | null; quantity: number | null; unit: string | null; days_supply: number | null; refills: number | null; instructions: string | null; dispense_as_written: boolean | null };
+  prescriber: { name: string | null; npi: string | null; phone: string | null; fax: string | null; email: string | null; address: string | null };
+  patient: { name: string | null; date_of_birth: string | null; sex: string | null; phone: string | null; address: string | null };
+  pharmacy: { name: string; npi: string | null; ncpdp: string | null; phone: string | null; fax: string | null; address: string | null } | null;
+};
+
+/**
+ * What Photon has on file for a sent prescription: the exact drug/quantity/sig the prescriber signed, the prescriber's
+ * NPI and contact details, and the pharmacy the patient picked. Falls back to the patient's latest Photon prescription.
+ */
+export async function photonPrescriptionInfo(ids: { prescriptionId?: string | null; orderId?: string | null; patientId?: string | null; treatmentName?: string | null }): Promise<PhotonRxInfo | null> {
+  if (photonMode() !== "live") return null;
+  const ADDR = "address { street1 street2 city state postalCode }";
+  const RX = `id writtenAt dispenseQuantity dispenseUnit daysSupply refillsAllowed instructions dispenseAsWritten
+    treatment { name }
+    prescriber { name { full } NPI phone fax email ${ADDR} }
+    patient { name { full } dateOfBirth sex phone ${ADDR} }`;
+  type Rx = {
+    id: string; writtenAt: string | null; dispenseQuantity: number | null; dispenseUnit: string | null; daysSupply: number | null;
+    refillsAllowed: number | null; instructions: string | null; dispenseAsWritten: boolean | null; treatment: { name: string } | null;
+    prescriber: { name: { full: string } | null; NPI: string | null; phone: string | null; fax: string | null; email: string | null; address: PhotonAddress } | null;
+    patient: { name: { full: string } | null; dateOfBirth: string | null; sex: string | null; phone: string | null; address: PhotonAddress } | null;
+  };
+  type Pharm = { name: string; NPI: string | null; NCPDP: string | null; phone: string | null; fax: string | null; address: PhotonAddress } | null;
+  const PHARM = `pharmacy { name NPI NCPDP phone fax ${ADDR} }`;
+
+  let rx: Rx | null = null;
+  let pharmacy: Pharm = null;
+  if (ids.prescriptionId) {
+    rx = (await gql<{ prescription: Rx | null }>(`query p($id: ID!) { prescription(id: $id) { ${RX} } }`, { id: ids.prescriptionId })).prescription;
+  } else if (ids.patientId) {
+    const list = (await gql<{ prescriptions: Rx[] }>(`query p($f: PrescriptionFilter) { prescriptions(filter: $f, first: 10) { ${RX} } }`, { f: { patientId: ids.patientId } })).prescriptions ?? [];
+    const want = ids.treatmentName?.toLowerCase().split(/[\s/]+/)[0];
+    rx = list.find((p) => want && p.treatment?.name.toLowerCase().includes(want)) ?? list[0] ?? null;
+  }
+  if (ids.orderId) {
+    pharmacy = (await gql<{ order: { pharmacy: Pharm } | null }>(`query o($id: ID!) { order(id: $id) { ${PHARM} } }`, { id: ids.orderId }).catch(() => ({ order: null }))).order?.pharmacy ?? null;
+  }
+  if (!rx) return null;
+  return {
+    prescription_id: rx.id,
+    written_at: rx.writtenAt,
+    medication: {
+      name: rx.treatment?.name ?? null,
+      quantity: rx.dispenseQuantity,
+      unit: rx.dispenseUnit,
+      days_supply: rx.daysSupply,
+      refills: rx.refillsAllowed,
+      instructions: rx.instructions,
+      dispense_as_written: rx.dispenseAsWritten,
+    },
+    prescriber: {
+      name: rx.prescriber?.name?.full ?? null,
+      npi: rx.prescriber?.NPI ?? null,
+      phone: fmtPhone(rx.prescriber?.phone),
+      fax: fmtPhone(rx.prescriber?.fax),
+      email: rx.prescriber?.email ?? null,
+      address: fmtAddr(rx.prescriber?.address ?? null),
+    },
+    patient: {
+      name: rx.patient?.name?.full ?? null,
+      date_of_birth: rx.patient?.dateOfBirth ?? null,
+      sex: rx.patient?.sex ?? null,
+      phone: fmtPhone(rx.patient?.phone),
+      address: fmtAddr(rx.patient?.address ?? null),
+    },
+    pharmacy: pharmacy
+      ? { name: pharmacy.name, npi: pharmacy.NPI, ncpdp: pharmacy.NCPDP, phone: fmtPhone(pharmacy.phone), fax: fmtPhone(pharmacy.fax), address: fmtAddr(pharmacy.address) }
+      : null,
+  };
+}
+
 export function verifyWebhook(raw: string, signature: string | null) {
   const secret = process.env.PHOTON_WEBHOOK_SECRET ?? "";
   if (!signature) return false;

@@ -1,3 +1,5 @@
+import { after } from "next/server";
+import { autoPriorAuth } from "@/lib/prior-auth";
 import { db, must } from "@/lib/supabase";
 import { json, route } from "@/lib/api";
 import type { Patient, Prescription } from "@/lib/types";
@@ -61,5 +63,10 @@ export const PATCH = route(async (req: Request, { params }: Ctx) => {
   // A two-pill order moves together
   if (rx.order_group) must(await db().from("prescriptions").update(update).eq("order_group", rx.order_group).select("id"));
   else must(await db().from("prescriptions").update(update).eq("id", id).select("id"));
+  // Fill the insurance paperwork from what Photon now has (runs after the response)
+  if (body.event === "order_created") after(() => autoPriorAuth(rx.encounter_id).catch((e) => console.error("auto prior-auth", e)));
   return json({ ok: true });
 });
+
+// packet building runs after the response
+export const maxDuration = 120;

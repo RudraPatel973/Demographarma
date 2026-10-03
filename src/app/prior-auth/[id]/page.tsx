@@ -16,7 +16,12 @@ type Form = {
   prescriber?: { name: string | null; npi: string | null; practice: string | null; phone: string | null; fax: string | null; address: string | null; email: string | null };
   adherence?: string | null;
   lifestyle?: string | null;
-  medication: { name: string; strength_mg: number | null; directions: string | null; quantity: number; days_supply: number; formulary_status: string };
+  medication: {
+    name: string; strength_mg: number | null; directions: string | null; quantity: number; unit?: string | null; days_supply: number;
+    refills?: number | null; dispense_as_written?: boolean | null; date_written?: string | null; formulary_status: string;
+  };
+  pharmacy?: { name: string; npi: string | null; ncpdp: string | null; phone: string | null; fax: string | null; address: string | null } | null;
+  photon_prescription_id?: string | null;
   diagnosis: { icd10: string; name: string };
   blood_pressure_readings: { date: string; bp: string; heart_rate: number | null }[];
   labs: Record<string, number | null>;
@@ -112,9 +117,23 @@ export default async function PriorAuthPage({ params }: PageProps<"/prior-auth/[
           <h2 className="mb-2 font-semibold">Medication requested</h2>
           <Row label="Drug" value={<span className="capitalize">{f.medication.name}</span>} />
           <Row label="Directions" value={f.medication.directions} />
-          <Row label="Quantity / days" value={`${f.medication.quantity} / ${f.medication.days_supply} days`} />
+          <Row label="Quantity / days" value={`${f.medication.quantity}${f.medication.unit ? ` ${f.medication.unit.toLowerCase()}${f.medication.quantity === 1 ? "" : "s"}` : ""} / ${f.medication.days_supply} days`} />
+          {f.medication.refills != null && <Row label="Refills" value={String(f.medication.refills)} />}
+          {f.medication.dispense_as_written != null && <Row label="Dispense as written" value={f.medication.dispense_as_written ? "Yes" : "No — generic substitution allowed"} />}
+          {f.medication.date_written && <Row label="Date written" value={f.medication.date_written} />}
+          {f.photon_prescription_id && <Row label="e-Prescription" value={<span className="font-mono text-xs">Photon {f.photon_prescription_id}</span>} />}
           <Row label="Formulary status" value={f.medication.formulary_status} />
         </section>
+
+        {f.pharmacy && (
+          <section>
+            <h2 className="mb-2 font-semibold">Dispensing pharmacy</h2>
+            <Row label="Pharmacy" value={f.pharmacy.name} />
+            <Row label="Address" value={f.pharmacy.address} />
+            <Row label="Phone / fax" value={[f.pharmacy.phone, f.pharmacy.fax && `fax ${f.pharmacy.fax}`].filter(Boolean).join(" · ")} />
+            <Row label="NPI / NCPDP" value={[f.pharmacy.npi, f.pharmacy.ncpdp].filter(Boolean).join(" / ")} />
+          </section>
+        )}
 
         <section>
           <h2 className="mb-2 font-semibold">Clinical information</h2>

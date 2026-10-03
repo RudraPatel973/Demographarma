@@ -1,3 +1,5 @@
+import { after } from "next/server";
+import { autoPriorAuth } from "@/lib/prior-auth";
 import { db, must } from "@/lib/supabase";
 import { json, route } from "@/lib/api";
 import { statusFromEvent, verifyWebhook } from "@/lib/photon";
@@ -39,7 +41,15 @@ export const POST = route(async (req: Request) => {
     if (text[status]) {
       must(await db().from("patient_messages").insert({ patient_id: rx.patient_id, prescription_id: rx.id, body: text[status], source: "photon" }).select("id"));
     }
+    // the packet now has a pharmacy to name
+    if (status === "pharmacy_selected") {
+      const encounterId = rx.encounter_id;
+      after(() => autoPriorAuth(encounterId, { rebuildOnly: true }).catch((e) => console.error("prior-auth refresh", e)));
+    }
     if (status === "picked_up") must(await db().from("encounters").update({ status: "completed" }).eq("id", rx.encounter_id).select("id"));
   }
   return json({ ok: true });
 });
+
+// packet building runs after the response
+export const maxDuration = 120;

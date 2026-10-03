@@ -7,7 +7,22 @@ import { loadCoverageContext, coverageFor, comboCoverage } from "./coverage-serv
 import type { PriceRow } from "./plan";
 import type { Diagnosis, Encounter, Medication, MedicationTrial, Patient } from "./types";
 import { formatAddress } from "./types";
-import { clinicMissing, getClinicProfile } from "./clinic";
+import { getClinicProfile } from "./clinic";
+import { photonPrescriptionInfo, type PhotonRxInfo } from "./photon";
+import type { Prescription } from "./types";
+
+/** Real NPIs pass a Luhn check with the 80840 prefix; sandbox placeholders like 0000000000 don't. */
+export function validNpi(npi: string | null | undefined) {
+  if (!npi || !/^\d{10}$/.test(npi) || /^0+$/.test(npi)) return false;
+  const digits = ("80840" + npi).split("").map(Number);
+  let sum = 0;
+  for (let i = digits.length - 1, dbl = false; i >= 0; i--, dbl = !dbl) {
+    let d = digits[i];
+    if (dbl) d = d * 2 > 9 ? d * 2 - 9 : d * 2;
+    sum += d;
+  }
+  return sum % 10 === 0;
+}
 
 /**
  * Builds a prior-authorization / step-therapy-exception packet from the chart:
@@ -20,6 +35,8 @@ export async function buildPriorAuth(args: {
   combo?: { id: string; product_rxcui: string; label: string } | null;
   sig?: string | null;
   quantity?: number | null;
+  /** the prescription this packet is for; defaults to the visit's prescription for the same drug */
+  prescriptionId?: string | null;
   /** rebuild an existing packet in place */
   existingId?: string;
 }) {
@@ -57,6 +74,24 @@ export async function buildPriorAuth(args: {
       ? coverageFor(ctx, prices, scored.filter((c) => !c.contraindicated).map((c) => c.medication), med, args.doseMg ?? null)
       : null;
   const clinic = await getClinicProfile();
+
+  // What was actually sent through Photon: exact product, sig, quantity, prescriber NPI, pharmacy
+  const rxQuery = db().from("prescriptions").select("*").eq("encounter_id", enc.id).order("created_at", { ascending: false });
+  const rxRows = ((await (args.prescriptionId ? rxQuery.eq("id", args.prescriptionId) : rxQuery)).data ?? []) as Prescription[];
+  const rx =
+    rxRows.find((r) => (args.combo ? r.combination_id === args.combo.id : args.medicationId && r.medication_id === args.medicationId)) ??
+    (args.prescriptionId ? rxRows[0] : undefined);
+  let photon: PhotonRxInfo | null = null;
+  if (rx && (rx.photon_prescription_id || rx.photon_order_id || patient.photon_patient_id)) {
+    photon = await photonPrescriptionInfo({
+      prescriptionId: rx.photon_prescription_id,
+      orderId: rx.photon_order_id,
+      patientId: patient.photon_patient_id,
+      treatmentName: args.combo?.label ?? med?.generic_name ?? null,
+    }).catch(() => null);
+  }
+  const pr = photon?.prescriber;
+  const npi = validNpi(clinic.npi) ? clinic.npi : validNpi(pr?.npi) ? pr!.npi : null;
   const { data: planRow } = patient.insurance?.plan_id
     ? await db().from("insurance_plans").select("plan_type,payer").eq("id", patient.insurance.plan_id).maybeSingle()
     : { data: null };
@@ -71,10 +106,10 @@ export async function buildPriorAuth(args: {
     request: { medication_id: args.medicationId ?? null, dose_mg: args.doseMg ?? null, combo: args.combo ?? null, sig: args.sig ?? null, quantity: args.quantity ?? null },
     patient: {
       name: [patient.first_name, patient.last_name].filter(Boolean).join(" "),
-      date_of_birth: patient.date_of_birth,
-      sex: patient.sex,
-      phone: patient.phone,
-      address: formatAddress(patient.address),
+      date_of_birth: patient.date_of_birth ?? photon?.patient.date_of_birth ?? null,
+      sex: patient.sex ?? photon?.patient.sex?.toLowerCase() ?? null,
+      phone: patient.phone ?? photon?.patient.phone ?? null,
+      address: formatAddress(patient.address) || photon?.patient.address || null,
     },
     insurance: {
       plan: ctx.planName,
@@ -85,22 +120,31 @@ export async function buildPriorAuth(args: {
       group_number: patient.insurance?.group_number ?? (isMedicare ? "N/A (Medicare Part D)" : null),
     },
     prescriber: {
-      name: clinic.prescriber_name ? `${clinic.prescriber_name}${clinic.credentials ? `, ${clinic.credentials}` : ""}` : null,
-      npi: clinic.npi || null,
+      name: (() => {
+        const n = clinic.prescriber_name || pr?.name;
+        return n ? `${n}${clinic.credentials ? `, ${clinic.credentials}` : ""}` : null;
+      })(),
+      npi,
       practice: clinic.practice_name || null,
-      phone: clinic.phone || null,
-      fax: clinic.fax || null,
-      address: clinic.address || null,
-      email: clinic.email || null,
+      phone: clinic.phone || pr?.phone || null,
+      fax: clinic.fax || pr?.fax || null,
+      address: clinic.address || pr?.address || null,
+      email: clinic.email || pr?.email || null,
     },
+    pharmacy: photon?.pharmacy ?? null,
+    photon_prescription_id: photon?.prescription_id ?? null,
     adherence: enc.live_state?.adherence ?? null,
     lifestyle: enc.live_state?.lifestyle ?? null,
     medication: {
-      name: drugLabel,
-      strength_mg: args.doseMg ?? null,
-      directions: args.sig ?? null,
-      quantity: args.quantity ?? 30,
-      days_supply: 30,
+      name: photon?.medication.name ?? drugLabel,
+      strength_mg: args.doseMg ?? rx?.dose_mg ?? null,
+      directions: photon?.medication.instructions ?? args.sig ?? rx?.sig ?? null,
+      quantity: photon?.medication.quantity ?? args.quantity ?? rx?.dispense_quantity ?? 30,
+      unit: photon?.medication.unit ?? null,
+      days_supply: photon?.medication.days_supply ?? rx?.days_supply ?? 30,
+      refills: photon?.medication.refills ?? (rx?.fills_allowed ? rx.fills_allowed - 1 : null),
+      dispense_as_written: photon?.medication.dispense_as_written ?? null,
+      date_written: photon?.written_at?.slice(0, 10) ?? rx?.created_at?.slice(0, 10) ?? null,
       formulary_status: coverage?.label ?? "unknown",
     },
     diagnosis: { icd10: dx.icd10, name: dx.name },
@@ -186,7 +230,13 @@ export async function buildPriorAuth(args: {
   {
     // What's genuinely still unknown (computed from the data, not guessed)
     const m = ((form as Record<string, unknown>).missing_items as string[] | undefined) ?? [];
-    m.push(...clinicMissing(clinic));
+    const p = form.prescriber;
+    if (!p.name) m.push("Prescriber name (Settings)");
+    if (!p.npi) m.push("Prescriber NPI (Settings — Photon's sandbox NPI isn't a real one)");
+    if (!p.phone) m.push("Practice phone (Settings)");
+    if (!p.fax) m.push("Practice fax (Settings)");
+    if (!p.address) m.push("Practice address (Settings)");
+    if (!form.insurance.plan) m.push("Insurance plan (add it in the Insurance panel)");
     if (!form.insurance.member_id) m.push("Member ID (ask the patient or read the card)");
     for (const t of form.medications_tried) if (!t.start) m.push(`When ${t.drug} was started`);
     if (!form.adherence) m.push("Adherence statement (ask: do you ever miss doses?)");
@@ -212,4 +262,50 @@ export async function buildPriorAuth(args: {
   }
   const row = must(await db().from("prior_auths").insert(record).select("id").single()) as { id: string };
   return row.id;
+}
+
+/**
+ * After a prescription goes out through Photon: refresh any packet already started for it (so it picks up the signed
+ * sig, quantity, NPI and pharmacy), and start one for any drug the plan restricts. Unless `rebuildOnly`.
+ */
+export async function autoPriorAuth(encounterId: string, opts: { rebuildOnly?: boolean } = {}) {
+  const rxs = ((await db().from("prescriptions").select("*").eq("encounter_id", encounterId)).data ?? []) as Prescription[];
+  if (!rxs.length) return [];
+  const existing = ((await db().from("prior_auths").select("id,medication_id,combination_id,form").eq("encounter_id", encounterId)).data ?? []) as {
+    id: string;
+    medication_id: string | null;
+    combination_id: string | null;
+    form: { request?: { combo?: { id: string; product_rxcui: string; label: string } | null } };
+  }[];
+  const enc = must(await db().from("encounters").select("*").eq("id", encounterId).single()) as Encounter;
+  const patient = must(await db().from("patients").select("*").eq("id", enc.patient_id).single()) as Patient;
+  const ctx = await loadCoverageContext(patient, enc);
+  const meds = must(await db().from("medications").select("*")) as Medication[];
+  const prices = must(await db().from("drug_prices").select("rxcui,name,medication_id,combination_id,dose_mg,nadac_per_unit")) as PriceRow[];
+  const combos = ((await db().from("combination_products").select("id,product_rxcui,label")).data ?? []) as { id: string; product_rxcui: string; label: string }[];
+
+  const done: string[] = [];
+  for (const rx of rxs) {
+    const pa = existing.find((e) => (rx.combination_id ? e.combination_id === rx.combination_id : rx.medication_id && e.medication_id === rx.medication_id));
+    const combo = rx.combination_id ? combos.find((c) => c.id === rx.combination_id) ?? pa?.form.request?.combo ?? null : null;
+    const med = rx.medication_id ? meds.find((m) => m.id === rx.medication_id) : undefined;
+    if (!pa) {
+      if (opts.rebuildOnly || !ctx.formularyKnown || (!med && !combo)) continue;
+      const cov = combo ? comboCoverage(ctx, combo.product_rxcui) : coverageFor(ctx, prices, meds, med!, rx.dose_mg);
+      if (cov.status !== "restricted" && cov.status !== "not_covered") continue;
+    }
+    done.push(
+      await buildPriorAuth({
+        encounterId,
+        medicationId: rx.medication_id,
+        doseMg: rx.dose_mg,
+        combo,
+        sig: rx.sig,
+        quantity: rx.dispense_quantity,
+        prescriptionId: rx.id,
+        existingId: pa?.id,
+      }),
+    );
+  }
+  return done;
 }
