@@ -98,6 +98,8 @@ const MED_TAG_PATTERNS: [RegExp, string[]][] = [
   [/thiazide|chlorthalidone|indapamide|metolazone/i, ["thiazide"]],
   [/furosemide|torsemide|bumetanide|lasix/i, ["loop"]],
   [/spironolactone|eplerenone|aldactone|finerenone/i, ["mra"]],
+  [/tamsulosin|alfuzosin|silodosin|doxazosin|terazosin|prazosin|flomax|uroxatral|rapaflo|cardura|hytrin|minipress/i, ["alpha_blocker"]],
+  [/clonidine|guanfacine|methyldopa|catapres/i, ["central_alpha"]],
   [/lithium/i, ["lithium"]],
   [/ibuprofen|naproxen|diclofenac|meloxicam|celecoxib|indomethacin|ketorolac|advil|motrin|aleve|nsaid/i, ["nsaid"]],
   [/digoxin|lanoxin/i, ["digoxin"]],

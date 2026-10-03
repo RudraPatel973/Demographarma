@@ -21,7 +21,9 @@ export const POST = route(async (req: Request, { params }: Ctx) => {
   const { id } = await params;
   const body = await req.json().catch(() => ({}));
   // Catch up on anything said since the last live extraction
-  if (body.sync && llmProvider()) {
+  const pre = must(await db().from("encounters").select("transcript,live_state").eq("id", id).single()) as Pick<Encounter, "transcript" | "live_state">;
+  const stale = (pre.live_state?.extracted_segments ?? -1) < (pre.transcript?.length ?? 0);
+  if (body.sync && stale && llmProvider()) {
     try {
       await syncFromTranscript(id);
     } catch (e) {

@@ -4,6 +4,17 @@ Clinician decision support for **hypertension** prescribing. The doctor records 
 
 > Demo software. It does not replace clinical judgement. Every prescription is reviewed and sent by a licensed prescriber.
 
+## Live demo
+**https://demographarma.vercel.app**
+
+| | |
+|---|---|
+| Username | `doctor` |
+| Password | `dexter` |
+
+The patient's phone page (`/patient/...`, linked from the SMS) and Photon's webhook are not password-protected.
+Change the login with `DEMO_USER` / `DEMO_PASSWORD` in Vercel → Settings → Environment Variables, then redeploy.
+
 ## Flow (from the whiteboard)
 
 | Diagram | Where it lives |

@@ -53,9 +53,15 @@ Extract the patient's chart from everything said so far:
 - conditions: map to the allowed keys only (e.g. "sugar diabetes" -> diabetes, "kidney disease" -> ckd, "AFib" -> afib,
   "my ankles swell" -> edema, "cough on lisinopril" -> acei_cough). If the patient DENIES a condition, leave it out.
 - current_medications and allergies: include everything mentioned, including intolerances (e.g. "lisinopril - dry cough").
-- diagnosis.stated: true ONLY when the doctor clearly gives the diagnosis (e.g. "you have high blood pressure",
-  "this is stage 2 hypertension", "my diagnosis is…"). Questions like "do you have high blood pressure?" or the patient
-  saying it do NOT count. Pick diagnosis_id from context:
+- diagnosis.stated: true when the DOCTOR tells the patient they have hypertension / high blood pressure, in any wording,
+  including casual or hedged ones. COUNTS (true):
+    "you have stage 2 hypertension", "I'm diagnosing you with hypertension", "I think you have hypertension",
+    "that's high blood pressure", "looks like high blood pressure to me", "your blood pressure is high, we need to treat it",
+    "we're going to start you on something for your blood pressure", "this is hypertension".
+  DOES NOT COUNT (false): questions ("do you have high blood pressure?"), the patient's or family history ("my mom has
+  hypertension", "I was told I had high blood pressure"), just reading a number ("it's 150 over 95"), or deferring
+  ("let's recheck before we decide", "it might be white-coat").
+  Pick diagnosis_id from context:
     pregnant patient -> pre_existing_hypertension_pregnancy; CKD -> hypertensive_ckd; heart failure -> hypertensive_heart_disease_hf;
     "on three/four medicines and still high" -> resistant_hypertension; aldosterone -> secondary_hypertension_aldosteronism;
     LVH/heart thickening without HF -> hypertensive_heart_disease; otherwise essential_hypertension.`;
@@ -165,6 +171,7 @@ Rules:
 - Follow the 2025 AHA/ACC guideline: first-line classes are thiazide/thiazide-like diuretics, ACE inhibitors, ARBs and
   dihydropyridine CCBs, chosen race-neutrally unless there's a compelling indication. Ethnicity only matters where it changes
   a documented safety risk (e.g. ACE-inhibitor angioedema) or a specifically indicated therapy.
+  Never write that a drug is "more effective" or "preferred" because of the patient's race or ethnicity.
 - If the transcript reveals a contraindication, allergy, pregnancy or lab value missing from the chart, treat it as true and
   list it in safety_flags.
 - Doses must be inside the usual range; start low at age ≥65 or reduced eGFR; prefer a strength in available_strengths.

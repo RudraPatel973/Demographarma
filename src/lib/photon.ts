@@ -93,27 +93,72 @@ export function strengthFor(m: Medication, doseMg: number | null) {
   return m.available_strengths.find((s) => re.test(s) && /tablet/i.test(s)) ?? m.available_strengths.find((s) => re.test(s)) ?? null;
 }
 
-export async function findTreatment(m: Medication, doseMg: number | null): Promise<{ id: string; name: string } | null> {
-  const q = `query medications($filter: MedicationFilter, $first: Int) { medications(filter: $filter, first: $first) { id name } }`;
-  const strength = strengthFor(m, doseMg);
-  for (const name of [strength, `${m.generic_name.replace(/ extended-release/, "")} ${doseMg ?? ""} MG`.trim(), m.generic_name]) {
-    if (!name) continue;
-    const d = await gql<{ medications: { id: string; name: string }[] }>(q, { filter: { drug: { name } }, first: 10 });
-    if (d.medications?.length) {
-      const exact = d.medications.find((x) => x.name.toLowerCase() === name.toLowerCase());
-      return exact ?? d.medications[0];
-    }
-  }
-  return null;
+type Treatment = { id: string; name: string };
+
+async function rxcuiForName(name: string): Promise<string | null> {
+  const exact = await fetch(`https://rxnav.nlm.nih.gov/REST/rxcui.json?name=${encodeURIComponent(name)}&search=2`).then((r) => r.json()).catch(() => null);
+  const id = exact?.idGroup?.rxnormId?.[0];
+  if (id) return id;
+  const approx = await fetch(`https://rxnav.nlm.nih.gov/REST/approximateTerm.json?term=${encodeURIComponent(name)}&maxEntries=1`).then((r) => r.json()).catch(() => null);
+  return approx?.approximateGroup?.candidate?.[0]?.rxcui ?? null;
 }
 
-/** For doctor overrides with a drug that isn't in our table. */
-export async function findTreatmentByName(name: string): Promise<{ id: string; name: string } | null> {
-  const d = await gql<{ medications: { id: string; name: string }[] }>(
+async function searchCatalog(drug: { code?: string; name?: string }): Promise<Treatment[]> {
+  const d = await gql<{ medications: Treatment[] }>(
     `query medications($filter: MedicationFilter, $first: Int) { medications(filter: $filter, first: $first) { id name } }`,
-    { filter: { drug: { name } }, first: 5 },
+    { filter: { drug }, first: 15 },
   );
-  return d.medications?.[0] ?? null;
+  return d.medications ?? [];
+}
+
+const doseRe = (mg: number) => new RegExp(`(^|[^\\d.])${String(mg).replace(".", "\\.")}\\s*mg\\b`, "i");
+
+/** Single-ingredient product with exactly this ingredient and dose (no combination pills, no brand combos). */
+function pickSingle(list: Treatment[], ingredient: string, doseMg: number | null) {
+  const ing = ingredient.split(/[\s/]/)[0].toLowerCase();
+  const ok = list.filter((t) => {
+    const n = t.name.toLowerCase();
+    if (!n.includes(ing) || n.includes(",") && /\d\s*mg\s*,/.test(n)) return false; // "A 5 mg, B 10 mg" = combination
+    if (/\(.*\d\s*mg.*\)/.test(n)) return false; // "Brand (A 5 mg, B 40 mg)"
+    return doseMg ? doseRe(doseMg).test(n) : true;
+  });
+  return ok.find((t) => !/\[|\(/.test(t.name)) ?? ok[0] ?? null;
+}
+
+/** Combination or free-text product: every ingredient word and every dose in the request must appear. */
+function pickAll(list: Treatment[], request: string) {
+  const words = request.toLowerCase().match(/[a-z]{4,}/g)?.filter((w) => !["oral", "tablet", "capsule", "extended", "release"].includes(w)) ?? [];
+  const doses = request.match(/\d+(\.\d+)?/g)?.map(Number) ?? [];
+  const ok = list.filter((t) => words.every((w) => t.name.toLowerCase().includes(w)) && doses.every((d) => doseRe(d).test(t.name)));
+  return ok.find((t) => !t.name.includes("(")) ?? ok[0] ?? null;
+}
+
+const titleCase = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/**
+ * Resolve our medication + dose to a Photon treatment id.
+ * Searches by RxNorm code and by Photon-style name, then keeps only an exact ingredient + dose match.
+ * Returns null when nothing is safe; the doctor then searches inside Photon's widget.
+ */
+export async function findTreatment(m: Medication, doseMg: number | null): Promise<Treatment | null> {
+  const base = m.generic_name.replace(/ (extended|delayed)-release/, "");
+  const strength = strengthFor(m, doseMg);
+  const code = strength ? await rxcuiForName(strength) : null;
+  const er = /extended-release/.test(m.generic_name);
+  const [byCode, byName] = await Promise.all([
+    code ? searchCatalog({ code }) : Promise.resolve([]),
+    doseMg ? searchCatalog({ name: `${titleCase(base)} ${doseMg} mg Oral tablet${er ? ", extended release" : ""}` }) : Promise.resolve([]),
+  ]);
+  const all = [...byCode, ...byName].filter((t) => !er || /extended|er\b|xl|cd|la\b/i.test(t.name));
+  return pickSingle(all, base, doseMg);
+}
+
+/** For doctor overrides (e.g. "losartan/hydrochlorothiazide 50/12.5 mg"). */
+export async function findTreatmentByName(name: string): Promise<Treatment | null> {
+  const normalized = name.replace(/\//g, " ");
+  const code = await rxcuiForName(name);
+  const [byCode, byName] = await Promise.all([code ? searchCatalog({ code }) : Promise.resolve([]), searchCatalog({ name: normalized })]);
+  return pickAll([...byCode, ...byName], normalized);
 }
 
 export function verifyWebhook(raw: string, signature: string | null) {

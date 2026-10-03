@@ -30,7 +30,8 @@ export interface Bundle {
 
 type Phase = "record" | "generating" | "results";
 
-const SYNC_EVERY_MS = 20000; // free-tier friendly; diagnosis phrases trigger an immediate sync
+const SYNC_EVERY_MS = 15000; // safety net; normally every finished phrase triggers a sync
+const CONFIRM_SECONDS = 3; // after the diagnosis is heard: time to say "keep recording" before it generates
 // Phrases that suggest the doctor may be giving the diagnosis: sync immediately instead of waiting
 const DX_HINT = /hypertension|high blood pressure|blood pressure is (too )?high|diagnos|you have|stage (one|two|1|2)/i;
 
@@ -58,12 +59,14 @@ export function VisitWorkspace({
   meds,
   aiOn,
   autostart,
+  liveDebounceMs,
 }: {
   initial: Bundle;
   diagnoses: Diagnosis[];
   meds: MedOption[];
   aiOn: boolean;
   autostart: boolean;
+  liveDebounceMs: number;
 }) {
   const [bundle, setBundle] = useState(initial);
   const [patient, setPatient] = useState(initial.patient);
@@ -83,6 +86,10 @@ export function VisitWorkspace({
   const again = useRef(false);
   const finishing = useRef(false);
   const transcriptRef = useRef<TranscriptSegment[]>(initial.encounter.transcript);
+  const debounce = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const heardRef = useRef(false);
+  const dismissedQuote = useRef<string | null>(null);
+  const [heard, setHeard] = useState<{ quote: string | null; left: number } | null>(null);
 
   const refresh = useCallback(async () => {
     const r = await fetch(`/api/encounters/${encId}`, { cache: "no-store" });
@@ -113,7 +120,9 @@ export function VisitWorkspace({
       transcriptRef.current = all;
       setEnc((e) => ({ ...e, transcript: all }));
       dirty.current = true;
-      if (DX_HINT.test(latest.text)) void syncNow();
+      // Update the chart as soon as the speaker pauses (immediately for diagnosis-like phrases)
+      if (debounce.current) clearTimeout(debounce.current);
+      debounce.current = setTimeout(() => void syncNow(), DX_HINT.test(latest.text) ? 0 : liveDebounceMs);
     },
     onVideoSaved: (path) => {
       fetch(`/api/encounters/${encId}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ video_path: path }) });
@@ -141,7 +150,11 @@ export function VisitWorkspace({
       setSyncError(null);
       setPatient(j.patient);
       setEnc((e) => ({ ...j.encounter, transcript: transcriptRef.current.length >= j.encounter.transcript.length ? transcriptRef.current : j.encounter.transcript, id: e.id }));
-      if (j.diagnosisStated) finishRef.current();
+      const quote: string | null = j.encounter.live_state?.diagnosis_quote ?? null;
+      if (j.diagnosisStated && !heardRef.current && quote !== dismissedQuote.current) {
+        heardRef.current = true;
+        setHeard({ quote, left: CONFIRM_SECONDS });
+      }
     } catch (e) {
       setSyncError(e instanceof Error ? e.message : String(e));
       dirty.current = true;
@@ -183,6 +196,18 @@ export function VisitWorkspace({
   useEffect(() => {
     finishRef.current = finish;
   }, [finish]);
+
+  // Diagnosis heard: short countdown (recording continues), then generate
+  useEffect(() => {
+    if (!heard) return;
+    const t = setTimeout(() => {
+      if (heard.left <= 1) {
+        setHeard(null);
+        void finishRef.current();
+      } else setHeard({ ...heard, left: heard.left - 1 });
+    }, 1000);
+    return () => clearTimeout(t);
+  }, [heard]);
 
   // periodic live sync while recording
   useEffect(() => {
@@ -248,6 +273,27 @@ export function VisitWorkspace({
       </div>
 
       {/* ------------------------------------------------------------ RECORD */}
+      {phase === "record" && heard && (
+        <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm" role="status">
+          <Sparkles size={16} className="text-brand-700" />
+          <span>
+            Diagnosis heard{heard.quote ? <>: <span className="italic">&ldquo;{heard.quote}&rdquo;</span></> : null}. Getting recommendations in {heard.left}s…
+          </span>
+          <Button
+            variant="secondary"
+            className="ml-auto"
+            onClick={() => {
+              // ignore this statement; a new, different one can trigger again
+              dismissedQuote.current = heard.quote;
+              heardRef.current = false;
+              setHeard(null);
+            }}
+          >
+            Keep recording
+          </Button>
+          <Button onClick={() => { setHeard(null); void finish(); }}>Now</Button>
+        </div>
+      )}
       {phase === "record" && (
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
           <Card className="flex min-h-[560px] flex-col">

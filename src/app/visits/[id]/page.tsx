@@ -25,6 +25,7 @@ export default async function VisitPage({ params, searchParams }: PageProps<"/vi
       meds={meds}
       aiOn={Boolean(llmProvider())}
       autostart={sp.autostart === "1"}
+      liveDebounceMs={Number(process.env.LIVE_SYNC_DEBOUNCE_MS ?? 1200)}
     />
   );
 }
