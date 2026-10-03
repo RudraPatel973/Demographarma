@@ -3,6 +3,7 @@ import { json, route } from "@/lib/api";
 import { buildProfile } from "@/lib/scoring";
 import { comboMonthlyCost, findCombination, monthlyCost, pickStrength, sameForm, separateReasons, type Combination, type PriceRow } from "@/lib/plan";
 import type { Encounter, Medication, Patient } from "@/lib/types";
+import { comboCoverage, coverageFor, loadCoverageContext } from "@/lib/coverage-server";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -81,6 +82,15 @@ export const POST = route(async (req: Request, { params }: Ctx) => {
   }
   const [doseA, doseB] = pick.flip ? [pick.product.dose_b, pick.product.dose_a] : [pick.product.dose_a, pick.product.dose_b];
   const comboCost = comboMonthlyCost(prices, pick.product.rxcui);
+  // Insurance: a brand combination often needs PA/step therapy while the two generics don't
+  const ctx = await loadCoverageContext(patient, enc);
+  const comboCov = comboCoverage(ctx, pick.product.rxcui);
+  const sepCov = [coverageFor(ctx, prices, allMeds, medA, a.dose_mg), coverageFor(ctx, prices, allMeds, medB, b.dose_mg)];
+  const comboBlocked = comboCov.status === "not_covered" || (comboCov.prior_auth && !comboCov.pa_criteria_met) || (comboCov.step_therapy && !comboCov.step_met);
+  const sepClean = sepCov.every((c) => c.status === "covered");
+  if (ctx.formularyKnown && comboBlocked && sepClean) {
+    reasons.push(`On ${ctx.planName}, the combination pill is ${comboCov.label.toLowerCase()} but both generics are covered without restrictions.`);
+  }
   const spc = {
     id: combo.id,
     name: combo.name,
@@ -92,10 +102,11 @@ export const POST = route(async (req: Request, { params }: Ctx) => {
     dose_b: doseB,
     label: `${medA.generic_name}/${medB.generic_name} ${doseA}/${doseB} mg`,
     monthly_cost: comboCost,
+    coverage: comboCov,
   };
   // Single pill is the guideline preference (better adherence) unless there's a clinical reason to keep them separate
   // Only default to one pill when it delivers exactly the chosen doses
   if (!pick.exact) reasons.push(`The closest single tablet is ${doseA}/${doseB} mg, which changes the chosen dose (${a.dose_mg}/${b.dose_mg} mg).`);
   const recommendation = reasons.length ? "separate" : "combo";
-  return json({ recommendation, reasons, combo: spc, separate: { monthly_cost: separateCost } });
+  return json({ recommendation, reasons, combo: spc, separate: { monthly_cost: separateCost, coverage: sepCov } });
 });

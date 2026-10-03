@@ -14,7 +14,7 @@ import { MissingInfo } from "./MissingInfo";
 import { VitalsCheck } from "./VitalsCheck";
 import { missingRecommended, missingRequired, REQUIRED_LABELS, type RequiredKey } from "@/lib/requirements";
 import { uploadFile } from "@/lib/upload";
-import { patientName, type Diagnosis, type Encounter, type Medication, type ModelObservation, type Patient, type PatientMessage, type Prescription, type Recommendation, type TranscriptSegment } from "@/lib/types";
+import { patientName, type Diagnosis, type Encounter, type Medication, type ModelObservation, type Patient, type PatientMessage, type Prescription, type Recommendation, type TranscriptSegment, type MedicationTrial } from "@/lib/types";
 
 export interface Bundle {
   encounter: Encounter;
@@ -33,6 +33,8 @@ export interface Bundle {
   medications: Medication[];
   messages: PatientMessage[];
   observations: ModelObservation[];
+  trials?: MedicationTrial[];
+  priorAuths?: { id: string; drug_label: string; request_type: string; status: string; plan_name: string | null; created_at: string }[];
 }
 
 type Phase = "record" | "generating" | "results";
@@ -493,7 +495,7 @@ export function VisitWorkspace({
               }
             />
             <div className="p-5">
-              <LiveChart patient={patient} encounter={enc} />
+              <LiveChart patient={patient} encounter={enc} trials={bundle.trials ?? []} />
             </div>
           </Card>
         </div>
@@ -631,9 +633,27 @@ export function VisitWorkspace({
                 }
               />
               <div className="p-5">
-                <LiveChart patient={patient} encounter={enc} />
+                <LiveChart patient={patient} encounter={enc} trials={bundle.trials ?? []} />
               </div>
             </Card>
+            {(bundle.priorAuths?.length ?? 0) > 0 && (
+              <Card>
+                <CardHeader title="Insurance paperwork" />
+                <ul className="divide-y divide-slate-100">
+                  {bundle.priorAuths!.map((pa) => (
+                    <li key={pa.id}>
+                      <Link href={`/prior-auth/${pa.id}`} target="_blank" className="flex items-center gap-2 px-5 py-2.5 text-sm hover:bg-slate-50">
+                        <FileText size={14} className="text-slate-400" />
+                        <span className="flex-1 capitalize">
+                          {pa.request_type.replace(/_/g, " ")} — {pa.drug_label}
+                        </span>
+                        <Badge tone={pa.status === "approved" ? "green" : pa.status === "denied" ? "red" : "amber"}>{pa.status}</Badge>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </Card>
+            )}
             <Card>
               <button className="flex w-full items-center gap-2 px-5 py-3 text-left text-sm font-medium" onClick={() => setShowTranscript((s) => !s)} aria-expanded={showTranscript}>
                 Transcript ({enc.transcript.length} lines)

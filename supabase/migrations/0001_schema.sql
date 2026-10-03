@@ -1,4 +1,4 @@
--- Demographarma schema
+-- Volution schema
 -- All tables have RLS enabled with no policies: the browser never talks to
 -- Supabase directly. Every read/write goes through Next.js route handlers
 -- using the service-role key (server only).

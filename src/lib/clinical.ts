@@ -34,11 +34,32 @@ function intakeSchema(diagnosisIds: [string, ...string[]]) {
       state: z.string().nullable().describe("2-letter US state code, e.g. 'NY'"),
       postalCode: z.string().nullable().describe("5-digit ZIP"),
     }),
+    insurance: z.object({
+      payer: z.string().nullable().describe("Insurance company, e.g. 'Humana', 'Aetna', 'UnitedHealthcare'"),
+      plan_name: z.string().nullable().describe("Plan name as said, e.g. 'Humana Medicare Advantage', 'AARP Medicare Rx'"),
+      member_id: z.string().nullable(),
+      group_number: z.string().nullable(),
+      is_medicare: z.boolean().nullable(),
+    }),
+    medication_history: z
+      .array(
+        z.object({
+          drug: z.string(),
+          dose_mg: z.number().nullable(),
+          outcome: z.enum(["ongoing", "not_at_goal", "side_effect", "allergy", "stopped_other"]),
+          detail: z.string().nullable().describe("e.g. 'dry cough', 'BP still 150s after 2 months'"),
+          started_when: z.string().nullable().describe("When it was started, as said: '2 years ago', 'in 2023', 'last March'"),
+          stopped_when: z.string().nullable().describe("When it was stopped, as said (null if still taking)"),
+        }),
+      )
+      .describe("Blood-pressure medicines the patient has taken before or takes now, and how it went"),
     conditions: z.array(z.enum(CONDITIONS.map((c) => c.key) as [string, ...string[]])),
     current_medications: z.array(z.string()).describe("'name dose frequency' strings"),
     allergies: z.array(z.string()).describe("'substance - reaction' strings"),
     vitals: z.object({ bp_systolic: num, bp_diastolic: num, heart_rate: num }),
     labs: z.object({ egfr: num, potassium: num, sodium: num, uacr: num }),
+    adherence: z.string().nullable().describe("What the patient said about taking their medicines as prescribed, e.g. 'never misses doses', 'uses a pill box'"),
+    lifestyle: z.string().nullable().describe("Lifestyle measures mentioned: low-salt diet, exercise, weight loss, alcohol reduction"),
     clinical_notes: z.string().describe("Other things said that matter for choosing a BP drug: past side effects, adherence, cost, pill burden, preferences, symptoms. Empty if none."),
     diagnosis: z.object({
       stated: z.boolean().describe("true only once the DOCTOR has clearly told the patient the diagnosis"),
@@ -65,6 +86,12 @@ Extract the patient's chart from everything said so far:
 - conditions: map to the allowed keys only (e.g. "sugar diabetes" -> diabetes, "kidney disease" -> ckd, "AFib" -> afib,
   "my ankles swell" -> edema, "cough on lisinopril" -> acei_cough). If the patient DENIES a condition, leave it out.
 - current_medications and allergies: include everything mentioned, including intolerances (e.g. "lisinopril - dry cough").
+- insurance: only what is said (payer, plan name, member/ID number, group number). is_medicare true if Medicare is mentioned.
+- medication_history: every blood-pressure medicine mentioned as taken now or before, with the outcome:
+  Include when each was started/stopped if said ("two years ago", "in 2023").
+  "didn't work / pressure stayed high" -> not_at_goal; ANY unwanted effect the drug caused (cough, swelling of any body part,
+  breast/chest enlargement, dizziness, fatigue, high potassium, sexual problems…) -> side_effect, even if it was then stopped;
+  hives/rash/face or tongue swelling -> allergy; currently taking and fine -> ongoing; stopped only for cost/convenience -> stopped_other.
 - diagnosis.stated: true when the DOCTOR tells the patient they have hypertension / high blood pressure, in any wording,
   including casual or hedged ones. COUNTS (true):
     "you have stage 2 hypertension", "I'm diagnosing you with hypertension", "I think you have hypertension",
@@ -101,6 +128,34 @@ export async function extractIntake(encounter: Encounter, patient: Patient, diag
       (encounter.patient_text ? `<patient_text>\n${encounter.patient_text}\n</patient_text>` : ""),
   });
   return data;
+}
+
+/** "2 years ago" / "a couple of years ago" / "in 2023" / "last March" / "6 months ago" -> approximate ISO date */
+export function approxDate(said: string | null | undefined, now = new Date()): string | null {
+  if (!said) return null;
+  const t = said.toLowerCase();
+  const words: Record<string, number> = { a: 1, an: 1, one: 1, couple: 2, "a couple": 2, two: 2, few: 3, "a few": 3, three: 3, four: 4, five: 5, six: 6, several: 3 };
+  const d = new Date(now);
+  const m = /(\d+|a couple|couple|a few|few|an|a|one|two|three|four|five|six|several)\s*(?:of\s*)?(year|month|week)s?\s*ago/.exec(t);
+  if (m) {
+    const n = Number(m[1]) || words[m[1]] || 1;
+    if (m[2] === "year") d.setFullYear(d.getFullYear() - n);
+    else if (m[2] === "month") d.setMonth(d.getMonth() - n);
+    else d.setDate(d.getDate() - 7 * n);
+    return d.toISOString().slice(0, 10);
+  }
+  if (/last year/.test(t)) return `${now.getFullYear() - 1}-01-01`;
+  if (/this year/.test(t)) return `${now.getFullYear()}-01-01`;
+  const y = /\b(19|20)\d{2}\b/.exec(t);
+  const months = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+  const mi = months.findIndex((mm) => new RegExp(`\\b${mm}`).test(t));
+  if (y) return `${y[0]}-${String(mi >= 0 ? mi + 1 : 1).padStart(2, "0")}-01`;
+  if (mi >= 0) {
+    // "last March" / "since June" = the most recent such month
+    const year = mi > now.getMonth() ? now.getFullYear() - 1 : now.getFullYear();
+    return `${year}-${String(mi + 1).padStart(2, "0")}-01`;
+  }
+  return null;
 }
 
 function unionCI(a: string[], b: string[]) {
@@ -142,13 +197,86 @@ export async function syncFromTranscript(encounterId: string) {
     if (typeof addr.state === "string") addr.state = addr.state.toUpperCase().slice(0, 2);
     if (typeof addr.postalCode === "string") addr.postalCode = addr.postalCode.replace(/[^\d-]/g, "");
     // Fill in the ZIP (and city/state) from what was said, e.g. "560 W 163rd St, New York, NY" -> 10032
-    pu.address = await completeAddress({ ...(patient.address ?? {}), ...addr });
+    pu.address = await completeAddress({ ...(patient.address ?? {}), ...addr }, { preferLookupZip: true });
   }
+  // Pregnant/breastfeeding implies female if sex wasn't said
+  const preg = (pu.pregnancy_status as string | undefined) ?? patient.pregnancy_status;
+  if (!pu.sex && !patient.sex && (preg === "pregnant" || preg === "breastfeeding")) pu.sex = "FEMALE";
   pu.conditions = unionCI(patient.conditions, x.conditions);
   pu.current_medications = unionCI(patient.current_medications, x.current_medications);
   pu.allergies = unionCI(patient.allergies, x.allergies);
   pu.updated_at = new Date().toISOString();
+  // Insurance: keep what was said; auto-link a plan when the name matches exactly one known plan
+  const ins = Object.fromEntries(Object.entries(x.insurance ?? {}).filter(([, v]) => v !== null && v !== ""));
+  if (Object.keys(ins).length) {
+    const cur = (patient.insurance ?? {}) as Record<string, unknown>;
+    const merged: Record<string, unknown> = { ...cur, ...ins };
+    if (!cur.plan_id && typeof ins.plan_name === "string" && ins.plan_name.length > 3) {
+      const { data: plans } = await db()
+        .from("insurance_plans")
+        .select("id,name,payer,formulary_id")
+        .ilike("name", `%${ins.plan_name.replace(/[%,]/g, "")}%`)
+        .limit(60);
+      // regional copies of the same plan share one drug list, so any of them gives the right coverage
+      if (plans?.length && new Set(plans.map((x) => x.formulary_id)).size === 1) {
+        Object.assign(merged, { plan_id: plans[0].id, plan_name: plans[0].name, payer: plans[0].payer ?? merged.payer });
+      }
+    }
+    pu.insurance = merged;
+  }
+
   const newPatient = must(await db().from("patients").update(pu).eq("id", patient.id).select("*").single()) as Patient;
+
+  // Medication history -> trials (feeds step therapy / prior auth); dedupe on drug + outcome
+  if (x.medication_history?.length) {
+    const meds = must(await db().from("medications").select("id,generic_name")) as { id: string; generic_name: string }[];
+    const { data: existing } = await db().from("medication_trials").select("id,drug_name,outcome,source,started_on,ended_on").eq("patient_id", patient.id);
+    const key = (d: string) => d.toLowerCase().split(/\s+/)[0];
+    const byDrug = new Map((existing ?? []).map((t) => [key(t.drug_name), t]));
+    const failed = new Set(["not_at_goal", "side_effect", "allergy"]);
+    // Only keep a dose if that number was actually said near the drug's name (models like to fill in "typical" doses)
+    const spoken = transcriptText(encounter).toLowerCase();
+    const doseSaid = (drug: string, dose: number | null) => {
+      if (dose == null) return null;
+      const name = drug.toLowerCase().split(/\s+/)[0];
+      let i = spoken.indexOf(name);
+      while (i !== -1) {
+        const window = spoken.slice(i, i + name.length + 60);
+        if (new RegExp(`\\b${String(dose).replace(".", "\\.")}\\b`).test(window)) return dose;
+        i = spoken.indexOf(name, i + 1);
+      }
+      return null;
+    };
+    const rows: Record<string, unknown>[] = [];
+    for (const h of x.medication_history) {
+      const prev = byDrug.get(key(h.drug));
+      if (prev) {
+        // same drug heard again with a more specific outcome (e.g. "stopped" -> "side effect"): update it
+        const patch: Record<string, unknown> = {};
+        if (prev.outcome !== h.outcome && failed.has(h.outcome) && !failed.has(prev.outcome) && prev.source === "transcript") Object.assign(patch, { outcome: h.outcome, detail: h.detail });
+        // fill in dates once they're mentioned
+        if (h.started_when && !prev.started_on) patch.started_on = approxDate(h.started_when);
+        if (h.stopped_when && !prev.ended_on) patch.ended_on = approxDate(h.stopped_when);
+        if (Object.keys(patch).length && prev.id) await db().from("medication_trials").update(patch).eq("id", prev.id);
+        continue;
+      }
+      const med = meds.find((m) => m.generic_name.split(" ")[0] === key(h.drug));
+      rows.push({
+        patient_id: patient.id,
+        encounter_id: encounterId,
+        medication_id: med?.id ?? null,
+        drug_name: h.drug,
+        dose_mg: doseSaid(h.drug, h.dose_mg),
+        outcome: h.outcome,
+        detail: [h.detail, h.started_when ? `started ${h.started_when}` : null, h.stopped_when ? `stopped ${h.stopped_when}` : null].filter(Boolean).join("; ") || null,
+        started_on: approxDate(h.started_when),
+        ended_on: approxDate(h.stopped_when),
+        source: "transcript",
+      });
+      byDrug.set(key(h.drug), { id: "", drug_name: h.drug, outcome: h.outcome, source: "transcript", started_on: null, ended_on: null });
+    }
+    if (rows.length) must(await db().from("medication_trials").insert(rows).select("id"));
+  }
 
   // Encounter: vitals/labs, notes, diagnosis
   const clean = (o: Record<string, number | null>) => Object.fromEntries(Object.entries(o).filter(([, v]) => v !== null && v !== undefined));
@@ -165,6 +293,8 @@ export async function syncFromTranscript(encounterId: string) {
     live_state: {
       ...encounter.live_state,
       notes: x.clinical_notes || encounter.live_state?.notes || "",
+      adherence: x.adherence || encounter.live_state?.adherence || null,
+      lifestyle: x.lifestyle || encounter.live_state?.lifestyle || null,
       extracted_at: new Date().toISOString(),
       extracted_segments: encounter.transcript.length,
       ...(stated ? { diagnosis_quote: x.diagnosis.quote ?? undefined } : {}),

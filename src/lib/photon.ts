@@ -188,6 +188,24 @@ export async function findComboTreatment(productRxcui: string, label: string): P
   return pickAll([...byCode, ...byName], label.replace(/\//g, " "));
 }
 
+/** Practice + prescriber details Photon already knows (org name/phone/NPI, latest prescriber's name and email). */
+export async function photonOrgProfile() {
+  const d = await gql<{
+    organization: { name: string; NPI: string | null; phone: string | null; fax: string | null };
+    prescriptions: { prescriber: { name: { full: string } | null; email: string | null; phone: string | null; fax: string | null } | null }[];
+  }>(`{ organization { name NPI phone fax } prescriptions(first: 1) { prescriber { name { full } email phone fax } } }`, {});
+  const pr = d.prescriptions?.[0]?.prescriber;
+  const fmtPhone = (x: string | null | undefined) => (x ? x.replace(/^\+1(\d{3})(\d{3})(\d{4})$/, "($1) $2-$3") : null);
+  return {
+    practice_name: d.organization?.name ?? null,
+    npi: d.organization?.NPI ?? null,
+    phone: fmtPhone(d.organization?.phone ?? pr?.phone),
+    fax: fmtPhone(d.organization?.fax ?? pr?.fax),
+    prescriber_name: pr?.name?.full ?? null,
+    email: pr?.email ?? null,
+  };
+}
+
 export function verifyWebhook(raw: string, signature: string | null) {
   const secret = process.env.PHOTON_WEBHOOK_SECRET ?? "";
   if (!signature) return false;

@@ -4,7 +4,8 @@ import { useState } from "react";
 import clsx from "clsx";
 import { CheckCircle2, Loader2, Pill, Send, Sparkles } from "lucide-react";
 import { Badge, Button, Card, CardHeader, Input, Label, Textarea } from "./ui";
-import { RecCard, Excluded, type Fired } from "./Results";
+import { RecCard, Excluded, CoverageBox, type Fired } from "./Results";
+import type { Coverage } from "@/lib/coverage";
 import type { Medication, Recommendation, TreatmentPlan } from "@/lib/types";
 
 type Run = {
@@ -30,8 +31,9 @@ type CombineResult = {
     label?: string;
     monthly_cost?: number | null;
     strengths?: string[];
+    coverage?: Coverage;
   } | null;
-  separate: { monthly_cost: number | null };
+  separate: { monthly_cost: number | null; coverage?: Coverage[] };
   /** one pill made possible by swapping a drug for a same-class sibling */
   alternative?: {
     id: string;
@@ -395,6 +397,24 @@ function CombinePanel({
           </div>
         )}
 
+        {mode === "combo" && result.combo?.product_rxcui && (
+          <CoverageBox
+            coverage={result.combo.coverage}
+            encounterId={encounterId}
+            request={{ combo: { id: result.combo.id, product_rxcui: result.combo.product_rxcui, label: result.combo.label ?? result.combo.name }, sig: comboSig, quantity: 30 }}
+          />
+        )}
+        {mode === "separate" &&
+          result.separate.coverage?.map((c, i) =>
+            c.status !== "unknown" && c.status !== "covered" ? (
+              <CoverageBox
+                key={i}
+                coverage={c}
+                encounterId={encounterId}
+                request={i === 0 ? { medication_id: pill1.medication_id, dose_mg: a.dose_mg, sig: a.sig } : { medication_id: pill2.medication_id, dose_mg: b.dose_mg, sig: b.sig }}
+              />
+            ) : null,
+          )}
         <div>
           <Label>Why this plan?</Label>
           <div className="mb-2 flex flex-wrap gap-1.5">

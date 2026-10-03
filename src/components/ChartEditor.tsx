@@ -5,6 +5,7 @@ import clsx from "clsx";
 import { Loader2, X } from "lucide-react";
 import { Button, Input, Label, ListInput, Select } from "./ui";
 import { CONDITIONS, ETHNICITIES, type Encounter, type Patient } from "@/lib/types";
+import { PlanPicker } from "./PlanPicker";
 
 /** Slide-over to correct anything the scribe got wrong. Saves, then the caller can regenerate. */
 export function ChartEditor({
@@ -131,6 +132,20 @@ export function ChartEditor({
                 </Select>
               </label>
             )}
+          </div>
+          <div className="space-y-2">
+            <Label hint="Medicare plans have drug-list data">Insurance</Label>
+            <PlanPicker
+              value={p.insurance?.plan_id ? { id: p.insurance.plan_id, name: p.insurance.plan_name ?? p.insurance.plan_id } : null}
+              said={!p.insurance?.plan_id ? p.insurance?.plan_name ?? p.insurance?.payer ?? null : null}
+              onChange={(plan) =>
+                setP({ ...p, insurance: { ...(p.insurance ?? {}), plan_id: plan?.id ?? null, plan_name: plan?.name ?? p.insurance?.plan_name ?? null, payer: plan?.payer ?? p.insurance?.payer ?? null } })
+              }
+            />
+            <div className="grid grid-cols-2 gap-2">
+              <Input placeholder="Member ID" aria-label="Member ID" value={p.insurance?.member_id ?? ""} onChange={(e) => setP({ ...p, insurance: { ...(p.insurance ?? {}), member_id: e.target.value || null } })} />
+              <Input placeholder="Group #" aria-label="Group number" value={p.insurance?.group_number ?? ""} onChange={(e) => setP({ ...p, insurance: { ...(p.insurance ?? {}), group_number: e.target.value || null } })} />
+            </div>
           </div>
           <div>
             <Label>Vitals</Label>
