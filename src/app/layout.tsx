@@ -26,6 +26,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
               <Link href="/" className="hover:text-ink">Visits</Link>
               <Link href="/patients" className="hover:text-ink">Patients</Link>
               <Link href="/visits/new" className="hover:text-ink">New visit</Link>
+              <Link href="/tools" className="hover:text-ink">Tools</Link>
               <Link href="/settings" className="hover:text-ink">Settings</Link>
             </nav>
             <span className="ml-auto hidden text-xs text-slate-500 sm:block">Hypertension demo · clinician decision support</span>
