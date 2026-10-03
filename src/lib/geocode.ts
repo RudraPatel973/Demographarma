@@ -10,11 +10,12 @@ const CENSUS = "https://geocoding.geo.census.gov/geocoder/locations/onelineaddre
 
 const titleCase = (s: string) => s.toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
 
-export async function completeAddress(a: Address | null | undefined): Promise<Address | null | undefined> {
+export async function completeAddress(a: Address | null | undefined, opts: { preferLookupZip?: boolean } = {}): Promise<Address | null | undefined> {
   if (!a?.street1) return a;
-  if (a.postalCode && a.city && a.state) return a; // already complete
-  if (!a.city && !a.state && !a.postalCode) return a; // not enough to match on
-  const oneLine = [a.street1, a.city, a.state, a.postalCode].filter(Boolean).join(", ");
+  if (!opts.preferLookupZip && a.postalCode && a.city && a.state) return a; // already complete
+  if (!a.city && !a.state && (opts.preferLookupZip || !a.postalCode)) return a; // not enough to match on
+  // don't feed a possibly-invented ZIP into the lookup for transcribed addresses
+  const oneLine = [a.street1, a.city, a.state, opts.preferLookupZip ? null : a.postalCode].filter(Boolean).join(", ");
   try {
     const url = `${CENSUS}?${new URLSearchParams({ address: oneLine, benchmark: "Public_AR_Current", format: "json" })}`;
     const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
@@ -24,7 +25,8 @@ export async function completeAddress(a: Address | null | undefined): Promise<Ad
     if (!m) return a;
     return {
       ...a,
-      postalCode: a.postalCode || m.zip || null,
+      // for transcribed addresses the official ZIP wins over anything the model filled in
+      postalCode: opts.preferLookupZip ? m.zip || a.postalCode || null : a.postalCode || m.zip || null,
       city: a.city || (m.city ? titleCase(m.city) : null),
       state: a.state || m.state || null,
     };

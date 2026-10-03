@@ -142,8 +142,11 @@ export async function syncFromTranscript(encounterId: string) {
     if (typeof addr.state === "string") addr.state = addr.state.toUpperCase().slice(0, 2);
     if (typeof addr.postalCode === "string") addr.postalCode = addr.postalCode.replace(/[^\d-]/g, "");
     // Fill in the ZIP (and city/state) from what was said, e.g. "560 W 163rd St, New York, NY" -> 10032
-    pu.address = await completeAddress({ ...(patient.address ?? {}), ...addr });
+    pu.address = await completeAddress({ ...(patient.address ?? {}), ...addr }, { preferLookupZip: true });
   }
+  // Pregnant/breastfeeding implies female if sex wasn't said
+  const preg = (pu.pregnancy_status as string | undefined) ?? patient.pregnancy_status;
+  if (!pu.sex && !patient.sex && (preg === "pregnant" || preg === "breastfeeding")) pu.sex = "FEMALE";
   pu.conditions = unionCI(patient.conditions, x.conditions);
   pu.current_medications = unionCI(patient.current_medications, x.current_medications);
   pu.allergies = unionCI(patient.allergies, x.allergies);
