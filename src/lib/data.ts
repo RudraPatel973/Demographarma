@@ -5,26 +5,29 @@ import type { Diagnosis, Encounter, Medication, Patient, PatientMessage, Prescri
 export async function getEncounterBundle(id: string) {
   const encounter = must(await db().from("encounters").select("*").eq("id", id).single()) as Encounter;
   const patient = must(await db().from("patients").select("*").eq("id", encounter.patient_id).single()) as Patient;
-  const recommendations = must(
+  const allRecs = must(
     await db().from("recommendations").select("*").eq("encounter_id", id).order("created_at", { ascending: false }).order("rank"),
   ) as Recommendation[];
-  // only the latest generation run
-  const latestAt = recommendations[0]?.created_at;
-  const latest = recommendations.filter((r) => r.created_at === latestAt).sort((a, b) => a.rank - b.rank);
-  const run = must(
-    await db().from("generation_runs").select("*").eq("encounter_id", id).order("created_at", { ascending: false }).limit(1),
-  ) as { clinical_note: string | null; excluded: unknown; candidates: unknown; engine: string; model: string | null }[];
+  // latest batch for pill 1; pill 2 only if it was generated after that batch
+  const slot1At = allRecs.find((r) => (r.slot ?? 1) === 1)?.created_at;
+  const latest = allRecs.filter((r) => (r.slot ?? 1) === 1 && r.created_at === slot1At).sort((a, b) => a.rank - b.rank);
+  const slot2At = allRecs.find((r) => r.slot === 2 && slot1At && r.created_at > slot1At)?.created_at;
+  const second = slot2At ? allRecs.filter((r) => r.slot === 2 && r.created_at === slot2At).sort((a, b) => a.rank - b.rank) : [];
+  const runs = must(
+    await db().from("generation_runs").select("*").eq("encounter_id", id).order("created_at", { ascending: false }).limit(6),
+  ) as { clinical_note: string | null; excluded: unknown; candidates: { slot?: number }[]; engine: string; model: string | null; created_at: string }[];
+  const runFor = (slot: number) => runs.find((r) => (r.candidates?.[0]?.slot ?? 1) === slot) ?? null;
   const prescriptions = must(
     await db().from("prescriptions").select("*").eq("encounter_id", id).order("created_at", { ascending: false }),
   ) as Prescription[];
-  const medIds = Array.from(new Set([...latest.map((r) => r.medication_id), ...prescriptions.map((p) => p.medication_id)].filter((x): x is string => Boolean(x))));
+  const medIds = Array.from(new Set([...latest, ...second].map((r) => r.medication_id).concat(prescriptions.map((p) => p.medication_id ?? "")).filter(Boolean)));
   const medications = medIds.length
     ? (must(await db().from("medications").select("*").in("id", medIds)) as Medication[])
     : [];
   const messages = must(
     await db().from("patient_messages").select("*").eq("patient_id", patient.id).order("created_at"),
   ) as PatientMessage[];
-  return { encounter, patient, recommendations: latest, run: run[0] ?? null, prescriptions, medications, messages };
+  return { encounter, patient, recommendations: latest, second, run: runFor(1), run2: slot2At ? runFor(2) : null, prescriptions, medications, messages };
 }
 
 export async function listDiagnoses() {

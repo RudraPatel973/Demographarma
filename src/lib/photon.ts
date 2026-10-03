@@ -182,6 +182,12 @@ export async function findTreatmentByName(name: string): Promise<Treatment | nul
   return pickAll([...byCode, ...byName], normalized);
 }
 
+/** Single-pill combination by its RxNorm code (+ name as a fallback), verified to contain every ingredient and dose. */
+export async function findComboTreatment(productRxcui: string, label: string): Promise<Treatment | null> {
+  const [byCode, byName] = await Promise.all([searchCatalog({ code: productRxcui }), searchCatalog({ name: label.replace(/\//g, " ") })]);
+  return pickAll([...byCode, ...byName], label.replace(/\//g, " "));
+}
+
 export function verifyWebhook(raw: string, signature: string | null) {
   const secret = process.env.PHOTON_WEBHOOK_SECRET ?? "";
   if (!signature) return false;

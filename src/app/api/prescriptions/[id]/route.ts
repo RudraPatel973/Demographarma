@@ -20,6 +20,9 @@ export const GET = route(async (_req: Request, { params }: Ctx) => {
     devMode: (process.env.PHOTON_ENV ?? "neutron") === "neutron",
     patientId: patient.photon_patient_id,
     treatment: rx.photon_treatment_id ? { id: rx.photon_treatment_id, name: "" } : null,
+    items: rx.order_group
+      ? (must(await db().from("prescriptions").select("id,photon_treatment_id,dispense_quantity,dispense_unit,fills_allowed,days_supply,sig,notes").eq("order_group", rx.order_group).order("created_at")) as Prescription[])
+      : [rx],
     weightKg: patient.weight_kg,
     address: photonAddress(patient),
   });
@@ -55,6 +58,8 @@ export const PATCH = route(async (req: Request, { params }: Ctx) => {
   } else {
     return json({ error: "Unknown event" }, 400);
   }
-  must(await db().from("prescriptions").update(update).eq("id", id).select("id"));
+  // A two-pill order moves together
+  if (rx.order_group) must(await db().from("prescriptions").update(update).eq("order_group", rx.order_group).select("id"));
+  else must(await db().from("prescriptions").update(update).eq("id", id).select("id"));
   return json({ ok: true });
 });

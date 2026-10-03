@@ -231,8 +231,11 @@ export async function rankCandidates(args: {
   candidates: ScoredCandidate[];
   excluded: ScoredCandidate[];
   missing: string[];
+  /** When ranking the second pill: the drug(s) it will be combined with */
+  pairWith?: { name: string; drug_class: string; dose_mg: number | null; already_taking: boolean }[];
+  plan?: { mode: string; reason: string };
 }) {
-  const { patient, profile, encounter, diagnosis, candidates, excluded, missing } = args;
+  const { patient, profile, encounter, diagnosis, candidates, excluded, missing, pairWith, plan } = args;
   const context = {
     patient: {
       age: profile.age,
@@ -267,6 +270,8 @@ export async function rankCandidates(args: {
       cost_tier: c.medication.cost_tier,
     })),
     excluded_by_rules: excluded.map((c) => c.medication.id),
+    treatment_plan: plan ?? null,
+    combine_with: pairWith ?? null,
   };
   const ids = candidates.map((c) => c.medication.id) as [string, ...string[]];
   return structured({
@@ -276,6 +281,13 @@ export async function rankCandidates(args: {
     attachments: await loadAttachments(encounter),
     user:
       `<transcript>\n${transcriptText(encounter) || "(none)"}\n</transcript>\n\n` +
-      `<structured_context>\n${JSON.stringify(context)}\n</structured_context>\n\nReturn the top 3 for this patient.`,
+      `<structured_context>\n${JSON.stringify(context)}\n</structured_context>\n\n` +
+      (pairWith?.length
+        ? `This is the SECOND drug for a two-drug regimen. It will be taken together with: ${pairWith.map((p) => `${p.name}${p.dose_mg ? ` ${p.dose_mg} mg` : ""} (${p.drug_class})${p.already_taking ? " which the patient already takes" : ""}`).join(" + ")}. ` +
+          `Rank the best complementary drugs for this patient (candidates already exclude unsafe pairings; candidates' modifiers include the pairing bonus). ` +
+          `Choose doses suitable for combination therapy (usually starting doses). Do not repeat the guideline note about combination therapy. Return the top 3.`
+        : plan?.mode === "dual"
+          ? "This is the FIRST of two drugs (stage 2: a second, complementary drug will be chosen next). Rank the best first drug; prefer ones that pair well. Return the top 3."
+          : "Return the top 3 for this patient."),
   });
 }

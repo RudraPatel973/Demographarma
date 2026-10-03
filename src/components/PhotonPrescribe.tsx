@@ -9,6 +9,8 @@ export interface PhotonConfig {
   devMode: boolean;
   patientId: string;
   treatment: { id: string; name: string } | null;
+  /** two-pill orders: one draft per pill (same order) */
+  treatments?: ({ id: string; name: string } | null)[];
   weightKg: number | null;
   address?: { street1: string; street2?: string; city: string; state: string; postalCode: string; country?: string } | null;
 }
@@ -23,10 +25,13 @@ export function PhotonPrescribe({
   prescriptionId,
   draft,
   onEvent,
+  extraDrafts = [],
 }: {
   config: PhotonConfig;
   prescriptionId: string;
   draft: { dispenseQuantity: number; dispenseUnit: string; fillsAllowed: number; daysSupply: number; instructions: string; notes?: string };
+  /** extra pills in the same order (two-pill regimens) */
+  extraDrafts?: { externalId: string; treatmentId: string | null; dispenseQuantity: number; dispenseUnit: string; fillsAllowed: number; daysSupply: number; instructions: string }[];
   onEvent: (e: { event: "prescriptions_created" | "order_created" | "error"; [k: string]: unknown }) => void;
 }) {
   const host = useRef<HTMLDivElement>(null);
@@ -76,12 +81,11 @@ export function PhotonPrescribe({
           const { street1, street2, city, state, postalCode } = config.address;
           wf.setAttribute("address", JSON.stringify({ street1, ...(street2 ? { street2 } : {}), city, state, postalCode, country: "US" }));
         }
-        if (config.treatment) {
-          wf.setAttribute(
-            "initial-prescriptions",
-            JSON.stringify([{ externalId: prescriptionId, treatmentId: config.treatment.id, dispenseAsWritten: false, ...draft }]),
-          );
-        }
+        const initial = [
+          ...(config.treatment ? [{ externalId: prescriptionId, treatmentId: config.treatment.id, dispenseAsWritten: false, ...draft }] : []),
+          ...extraDrafts.filter((d) => d.treatmentId).map((d) => ({ ...d, dispenseAsWritten: false })),
+        ];
+        if (initial.length) wf.setAttribute("initial-prescriptions", JSON.stringify(initial));
         wf.setAttribute("additional-notes", "Selected with Demographarma decision support.");
 
         wf.addEventListener("photon-prescriptions-created", (e) => {
@@ -108,7 +112,7 @@ export function PhotonPrescribe({
 
   return (
     <div>
-      {!config.treatment && (
+      {(!config.treatment || extraDrafts.some((d) => !d.treatmentId)) && (
         <p className="mb-3 rounded-lg bg-amber-50 p-3 text-sm text-amber-800">
           Photon&apos;s catalog didn&apos;t return an exact match for this drug and strength, so search for it in the widget below.
         </p>

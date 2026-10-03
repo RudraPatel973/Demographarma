@@ -79,8 +79,16 @@ export interface Encounter {
   diagnosis_notes: string | null;
   chosen_recommendation_id: string | null;
   live_state: LiveState;
+  plan?: TreatmentPlan;
   created_at: string;
   updated_at: string;
+}
+
+export interface TreatmentPlan {
+  mode?: "single" | "dual" | "add_on";
+  reason?: string;
+  current?: string[];
+  pill1?: { medication_id: string; dose_mg: number | null; recommendation_id?: string } | null;
 }
 
 export interface LiveState {
@@ -144,6 +152,8 @@ export interface Recommendation {
   monitoring: string | null;
   engine: "ai" | "rules";
   model: string | null;
+  slot?: number;
+  monthly_cost?: number | null;
   created_at: string;
 }
 
@@ -167,6 +177,9 @@ export interface Prescription {
   recommendation_id: string | null;
   is_override: boolean;
   selection_reason: string | null;
+  order_group?: string | null;
+  combination_id?: string | null;
+  monthly_cost?: number | null;
   dose_mg: number | null;
   sig: string;
   dispense_quantity: number;

@@ -18,15 +18,17 @@ export const POST = route(async (req: Request) => {
 
   const orderId: string | undefined = evt.data?.id;
   const externalId: string | undefined = evt.data?.externalId;
-  let rx: { id: string; patient_id: string; encounter_id: string } | null = null;
-  if (externalId) rx = (await db().from("prescriptions").select("id,patient_id,encounter_id").eq("id", externalId).maybeSingle()).data;
-  if (!rx && orderId) rx = (await db().from("prescriptions").select("id,patient_id,encounter_id").eq("photon_order_id", orderId).maybeSingle()).data;
+  let rx: { id: string; patient_id: string; encounter_id: string; order_group: string | null } | null = null;
+  if (externalId) rx = (await db().from("prescriptions").select("id,patient_id,encounter_id,order_group").eq("id", externalId).maybeSingle()).data;
+  if (!rx && orderId) rx = (await db().from("prescriptions").select("id,patient_id,encounter_id,order_group").eq("photon_order_id", orderId).limit(1).maybeSingle()).data;
 
   must(await db().from("photon_events").insert({ id: evt.id, prescription_id: rx?.id ?? null, type: evt.type, subject: evt.subject ?? null, payload: evt }).select("id"));
 
   const status = statusFromEvent(evt.type, evt.data ?? {});
   if (rx && status) {
-    must(await db().from("prescriptions").update({ status, photon_order_id: orderId ?? undefined, updated_at: new Date().toISOString() }).eq("id", rx.id).select("id"));
+    const upd = { status, photon_order_id: orderId ?? undefined, updated_at: new Date().toISOString() };
+    if (rx.order_group) must(await db().from("prescriptions").update(upd).eq("order_group", rx.order_group).select("id"));
+    else must(await db().from("prescriptions").update(upd).eq("id", rx.id).select("id"));
     const text: Record<string, string> = {
       patient_notified: "Photon texted the patient to confirm their pharmacy.",
       pharmacy_selected: `Order sent to ${evt.data?.pharmacy?.name ?? "the pharmacy"}.`,
