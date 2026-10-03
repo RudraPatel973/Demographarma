@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-brand-50: #eefbf8;
+  --color-brand-100: #d5f4ec;
+  --color-brand-500: #14a38b;
+  --color-brand-600: #0e8774;
+  --color-brand-700: #0d6c5e;
+  --color-ink: #0f172a;
+}
+
+body {
+  background: #f6f7f9;
+  color: #0f172a;
+}
+
+/* Recording pulse */
+@keyframes rec-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.rec-dot { animation: rec-pulse 1.2s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .rec-dot { animation: none; }
+  * { transition: none !important; }
+}
