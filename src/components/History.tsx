@@ -92,6 +92,7 @@ export function VisitTable({ rows, showPatient = true }: { rows: VisitRowLite[];
                     <span className="flex flex-wrap items-center gap-1.5 capitalize">
                       {drug}
                       {rx.dose_mg ? ` ${rx.dose_mg} mg` : ""}
+                      {v.prescriptions.length > 1 && <span className="text-xs text-slate-500">+{v.prescriptions.length - 1} more</span>}
                       {rx.is_override && (
                         <span title="Doctor override" className="text-amber-700">
                           <UserCog size={13} />

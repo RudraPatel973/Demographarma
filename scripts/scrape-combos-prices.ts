@@ -21,7 +21,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 async function getJson(url: string, tries = 4): Promise<any> {
   for (let i = 0; i < tries; i++) {
     try {
-      const res = await fetch(url, { headers: { "user-agent": "demographarma-scraper/1.0" } });
+      const res = await fetch(url, { headers: { "user-agent": "demographarma-scraper/1.0" }, signal: AbortSignal.timeout(20000) });
       if (res.ok) return res.json();
       if (res.status === 404) return null;
     } catch {
@@ -117,17 +117,28 @@ async function main() {
     priceSeen.add(rxcui);
     const p = await nadacFor(rxcui);
     prices.push({ rxcui, name, ...extra, nadac_per_unit: p?.perUnit ?? null, effective_date: p?.date ?? null, ndc_count: p?.ndcs ?? 0 });
-    await sleep(60);
   };
-  for (const m of meds) {
-    for (const s of m.strengths) {
-      const id = (await getJson(`${RXNAV}/rxcui.json?name=${encodeURIComponent(s)}&search=2`))?.idGroup?.rxnormId?.[0];
-      const mg = /([\d.]+) MG/i.exec(s)?.[1];
-      if (id) await addPrice(id, s, { medication_id: m.id, combination_id: null, dose_mg: mg ? Number(mg) : null });
-    }
-    process.stdout.write(".");
-  }
-  for (const c of combos) for (const p of c.products) await addPrice(p.rxcui, p.name, { medication_id: null, combination_id: c.id, dose_mg: null });
+  // run lookups 6 at a time
+  const pool = async <T,>(items: T[], fn: (x: T) => Promise<void>, n = 6) => {
+    let i = 0;
+    await Promise.all(Array.from({ length: n }, async () => {
+      while (i < items.length) await fn(items[i++]);
+    }));
+  };
+  const singles = meds.flatMap((m) => m.strengths.map((s) => ({ m, s })));
+  let done = 0;
+  await pool(singles, async ({ m, s }) => {
+    const id = (await getJson(`${RXNAV}/rxcui.json?name=${encodeURIComponent(s)}&search=2`))?.idGroup?.rxnormId?.[0];
+    const mg = /([\d.]+) MG/i.exec(s)?.[1];
+    if (id) await addPrice(id, s, { medication_id: m.id, combination_id: null, dose_mg: mg ? Number(mg) : null });
+    if (++done % 25 === 0) console.log(`  single-drug prices ${done}/${singles.length}`);
+  });
+  const comboItems = combos.flatMap((c) => c.products.map((p: any) => ({ c, p })));
+  done = 0;
+  await pool(comboItems, async ({ c, p }) => {
+    await addPrice(p.rxcui, p.name, { medication_id: null, combination_id: c.id, dose_mg: null });
+    if (++done % 25 === 0) console.log(`  combo prices ${done}/${comboItems.length}`);
+  });
   console.log(`\nprices: ${prices.filter((p) => p.nadac_per_unit != null).length}/${prices.length} found in NADAC`);
 
   writeFileSync(join(ROOT, "data/hypertension/combos_prices.json"), JSON.stringify({ scraped_at: new Date().toISOString(), combos, prices }, null, 2));

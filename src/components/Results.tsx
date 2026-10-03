@@ -14,7 +14,7 @@ export type MedOption = Pick<Medication, "id" | "generic_name" | "brand_names" |
 
 // ---------------------------------------------------------------------------
 export function RecCard({
-  rec, med, evidence, line, selected, onChoose, disabled,
+  rec, med, evidence, line, selected, onChoose, disabled, chooseLabel = "Prescribe this", busy,
 }: {
   rec: Recommendation;
   med?: Medication;
@@ -23,6 +23,8 @@ export function RecCard({
   selected: boolean;
   onChoose: () => void;
   disabled?: boolean;
+  chooseLabel?: string;
+  busy?: boolean;
 }) {
   const [open, setOpen] = useState(false);
   return (
@@ -46,6 +48,11 @@ export function RecCard({
             <Pill size={14} className="text-brand-600" /> {rec.dose_mg} mg
           </div>
           <p className="mt-0.5 text-slate-600">{rec.sig}</p>
+          {rec.monthly_cost != null && (
+            <p className="mt-1 text-xs text-slate-500" title="NADAC: average price pharmacies pay (cash-price estimate, not the patient's copay)">
+              ~${Number(rec.monthly_cost).toFixed(2)} / month (generic, NADAC)
+            </p>
+          )}
         </div>
         {rec.factors_for.length > 0 && (
           <ul className="space-y-1">
@@ -107,8 +114,8 @@ export function RecCard({
         )}
       </div>
       <div className="border-t border-slate-100 p-4">
-        <Button className="w-full" variant={selected ? "primary" : "secondary"} onClick={onChoose} disabled={disabled}>
-          {selected && <CheckCircle2 size={16} />} {selected ? "Selected" : "Prescribe this"}
+        <Button className="w-full" variant={selected ? "primary" : "secondary"} onClick={onChoose} disabled={disabled || busy}>
+          {busy ? <Loader2 size={16} className="animate-spin" /> : selected ? <CheckCircle2 size={16} /> : null} {selected ? "Selected" : chooseLabel}
         </Button>
       </div>
     </Card>
@@ -307,9 +314,11 @@ const STEPS: { key: Prescription["status"]; label: string }[] = [
 ];
 
 export function RxTracker({
-  rx, med, patient, messages, onChanged,
+  rx, med, patient, messages, onChanged, group = [rx], medById,
 }: {
   rx: Prescription;
+  group?: Prescription[];
+  medById?: Map<string, Medication>;
   med?: Medication;
   patient: Patient;
   messages: PatientMessage[];
@@ -349,7 +358,20 @@ export function RxTracker({
       />
       <div className="space-y-5 p-5">
         <div className="text-sm">
-          <p className="flex flex-wrap items-center gap-2">
+          {group.length > 1 && (
+            <ul className="mb-2 space-y-1">
+              {group.map((g, i) => (
+                <li key={g.id} className="flex flex-wrap items-center gap-2">
+                  <Pill size={14} className="text-brand-600" />
+                  <span className="font-medium capitalize">
+                    Pill {i + 1}: {(g.medication_id && medById?.get(g.medication_id)?.generic_name) || g.custom_medication}
+                  </span>
+                  {g.dose_mg ? `${g.dose_mg} mg` : ""} — {g.sig}
+                </li>
+              ))}
+            </ul>
+          )}
+          <p className={clsx("flex flex-wrap items-center gap-2", group.length > 1 && "hidden")}>
             <span className="font-medium capitalize">{name}</span> {rx.dose_mg ? `${rx.dose_mg} mg` : ""} — {rx.sig}
             {rx.is_override && (
               <Badge tone="amber">
@@ -377,6 +399,9 @@ export function RxTracker({
             config={photon}
             prescriptionId={rx.id}
             draft={{ dispenseQuantity: rx.dispense_quantity, dispenseUnit: rx.dispense_unit, fillsAllowed: rx.fills_allowed, daysSupply: rx.days_supply, instructions: rx.sig, notes: rx.notes ?? undefined }}
+            extraDrafts={group
+              .filter((g) => g.id !== rx.id)
+              .map((g) => ({ externalId: g.id, treatmentId: g.photon_treatment_id, dispenseQuantity: g.dispense_quantity, dispenseUnit: g.dispense_unit, fillsAllowed: g.fills_allowed, daysSupply: g.days_supply, instructions: g.sig }))}
             onEvent={photonEvent}
           />
         )}

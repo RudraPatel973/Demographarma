@@ -1,0 +1,3758 @@
+{
+  "scraped_at": "2026-10-03T13:13:16.115Z",
+  "combos": [
+    {
+      "id": "151195",
+      "name": "atenolol / chlorthalidone",
+      "med_a": "atenolol",
+      "med_b": "chlorthalidone",
+      "brands": [
+        "Tenoretic"
+      ],
+      "products": [
+        {
+          "rxcui": "152916",
+          "name": "atenolol 50 MG / chlorthalidone 12.5 MG Oral Tablet",
+          "dose_a": 50,
+          "dose_b": 12.5,
+          "extended": false
+        },
+        {
+          "rxcui": "197382",
+          "name": "atenolol 100 MG / chlorthalidone 25 MG Oral Tablet",
+          "dose_a": 100,
+          "dose_b": 25,
+          "extended": false
+        },
+        {
+          "rxcui": "197383",
+          "name": "atenolol 50 MG / chlorthalidone 25 MG Oral Tablet",
+          "dose_a": 50,
+          "dose_b": 25,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "214418",
+      "name": "chlorthalidone / clonidine",
+      "med_a": "chlorthalidone",
+      "med_b": "clonidine",
+      "brands": [],
+      "products": [
+        {
+          "rxcui": "884198",
+          "name": "chlorthalidone 15 MG / clonidine hydrochloride 0.2 MG Oral Tablet",
+          "dose_a": 15,
+          "dose_b": 0.2,
+          "extended": false
+        },
+        {
+          "rxcui": "884203",
+          "name": "chlorthalidone 15 MG / clonidine hydrochloride 0.3 MG Oral Tablet",
+          "dose_a": 15,
+          "dose_b": 0.3,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "214212",
+      "name": "amiloride / hydrochlorothiazide",
+      "med_a": "hydrochlorothiazide",
+      "med_b": "amiloride",
+      "brands": [],
+      "products": [
+        {
+          "rxcui": "977883",
+          "name": "amiloride hydrochloride 5 MG / hydrochlorothiazide 50 MG Oral Tablet",
+          "dose_a": 50,
+          "dose_b": 5,
+          "extended": false
+        },
+        {
+          "rxcui": "977950",
+          "name": "amiloride hydrochloride 2.5 MG / hydrochlorothiazide 25 MG Oral Tablet",
+          "dose_a": 25,
+          "dose_b": 2.5,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "214287",
+      "name": "benazepril / hydrochlorothiazide",
+      "med_a": "benazepril",
+      "med_b": "hydrochlorothiazide",
+      "brands": [
+        "Lotensin HCT"
+      ],
+      "products": [
+        {
+          "rxcui": "898362",
+          "name": "benazepril hydrochloride 10 MG / hydrochlorothiazide 12.5 MG Oral Tablet",
+          "dose_a": 10,
+          "dose_b": 12.5,
+          "extended": false
+        },
+        {
+          "rxcui": "898367",
+          "name": "benazepril hydrochloride 20 MG / hydrochlorothiazide 12.5 MG Oral Tablet",
+          "dose_a": 20,
+          "dose_b": 12.5,
+          "extended": false
+        },
+        {
+          "rxcui": "898372",
+          "name": "benazepril hydrochloride 20 MG / hydrochlorothiazide 25 MG Oral Tablet",
+          "dose_a": 20,
+          "dose_b": 25,
+          "extended": false
+        },
+        {
+          "rxcui": "898378",
+          "name": "benazepril hydrochloride 5 MG / hydrochlorothiazide 6.25 MG Oral Tablet",
+          "dose_a": 5,
+          "dose_b": 6.25,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "214317",
+      "name": "bisoprolol / hydrochlorothiazide",
+      "med_a": "bisoprolol",
+      "med_b": "hydrochlorothiazide",
+      "brands": [
+        "Ziac"
+      ],
+      "products": [
+        {
+          "rxcui": "854908",
+          "name": "bisoprolol fumarate 10 MG / hydrochlorothiazide 6.25 MG Oral Tablet",
+          "dose_a": 10,
+          "dose_b": 6.25,
+          "extended": false
+        },
+        {
+          "rxcui": "854916",
+          "name": "bisoprolol fumarate 2.5 MG / hydrochlorothiazide 6.25 MG Oral Tablet",
+          "dose_a": 2.5,
+          "dose_b": 6.25,
+          "extended": false
+        },
+        {
+          "rxcui": "854919",
+          "name": "bisoprolol fumarate 5 MG / hydrochlorothiazide 6.25 MG Oral Tablet",
+          "dose_a": 5,
+          "dose_b": 6.25,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "214536",
+      "name": "enalapril / hydrochlorothiazide",
+      "med_a": "enalapril",
+      "med_b": "hydrochlorothiazide",
+      "brands": [
+        "Vaseretic"
+      ],
+      "products": [
+        {
+          "rxcui": "858824",
+          "name": "enalapril maleate 5 MG / hydrochlorothiazide 12.5 MG Oral Tablet",
+          "dose_a": 5,
+          "dose_b": 12.5,
+          "extended": false
+        },
+        {
+          "rxcui": "858828",
+          "name": "enalapril maleate 10 MG / hydrochlorothiazide 25 MG Oral Tablet",
+          "dose_a": 10,
+          "dose_b": 25,
+          "extended": false
+        },
+        {
+          "rxcui": "858921",
+          "name": "enalapril maleate 20 MG / hydrochlorothiazide 12.5 MG Oral Tablet",
+          "dose_a": 20,
+          "dose_b": 12.5,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "214615",
+      "name": "hydralazine / hydrochlorothiazide",
+      "med_a": "hydralazine",
+      "med_b": "hydrochlorothiazide",
+      "brands": [],
+      "products": [
+        {
+          "rxcui": "905203",
+          "name": "hydralazine hydrochloride 100 MG / hydrochlorothiazide 50 MG Oral Capsule",
+          "dose_a": 100,
+          "dose_b": 50,
+          "extended": false
+        },
+        {
+          "rxcui": "905211",
+          "name": "hydralazine hydrochloride 25 MG / hydrochlorothiazide 25 MG Oral Capsule",
+          "dose_a": 25,
+          "dose_b": 25,
+          "extended": false
+        },
+        {
+          "rxcui": "905217",
+          "name": "hydralazine hydrochloride 50 MG / hydrochlorothiazide 50 MG Oral Capsule",
+          "dose_a": 50,
+          "dose_b": 50,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "214617",
+      "name": "hydrochlorothiazide / irbesartan",
+      "med_a": "hydrochlorothiazide",
+      "med_b": "irbesartan",
+      "brands": [
+        "Avalide"
+      ],
+      "products": [
+        {
+          "rxcui": "310792",
+          "name": "hydrochlorothiazide 12.5 MG / irbesartan 150 MG Oral Tablet",
+          "dose_a": 12.5,
+          "dose_b": 150,
+          "extended": false
+        },
+        {
+          "rxcui": "310793",
+          "name": "hydrochlorothiazide 12.5 MG / irbesartan 300 MG Oral Tablet",
+          "dose_a": 12.5,
+          "dose_b": 300,
+          "extended": false
+        },
+        {
+          "rxcui": "485471",
+          "name": "hydrochlorothiazide 25 MG / irbesartan 300 MG Oral Tablet",
+          "dose_a": 25,
+          "dose_b": 300,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "214618",
+      "name": "hydrochlorothiazide / lisinopril",
+      "med_a": "lisinopril",
+      "med_b": "hydrochlorothiazide",
+      "brands": [
+        "Zestoretic"
+      ],
+      "products": [
+        {
+          "rxcui": "197885",
+          "name": "hydrochlorothiazide 12.5 MG / lisinopril 10 MG Oral Tablet",
+          "dose_a": 10,
+          "dose_b": 12.5,
+          "extended": false
+        },
+        {
+          "rxcui": "197886",
+          "name": "hydrochlorothiazide 12.5 MG / lisinopril 20 MG Oral Tablet",
+          "dose_a": 20,
+          "dose_b": 12.5,
+          "extended": false
+        },
+        {
+          "rxcui": "197887",
+          "name": "hydrochlorothiazide 25 MG / lisinopril 20 MG Oral Tablet",
+          "dose_a": 20,
+          "dose_b": 25,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "214619",
+      "name": "hydrochlorothiazide / losartan",
+      "med_a": "losartan",
+      "med_b": "hydrochlorothiazide",
+      "brands": [
+        "Hyzaar"
+      ],
+      "products": [
+        {
+          "rxcui": "979464",
+          "name": "hydrochlorothiazide 12.5 MG / losartan potassium 100 MG Oral Tablet",
+          "dose_a": 100,
+          "dose_b": 12.5,
+          "extended": false
+        },
+        {
+          "rxcui": "979468",
+          "name": "hydrochlorothiazide 12.5 MG / losartan potassium 50 MG Oral Tablet",
+          "dose_a": 50,
+          "dose_b": 12.5,
+          "extended": false
+        },
+        {
+          "rxcui": "979471",
+          "name": "hydrochlorothiazide 25 MG / losartan potassium 100 MG Oral Tablet",
+          "dose_a": 100,
+          "dose_b": 25,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "214620",
+      "name": "hydrochlorothiazide / methyldopa",
+      "med_a": "hydrochlorothiazide",
+      "med_b": "methyldopa",
+      "brands": [],
+      "products": [
+        {
+          "rxcui": "197960",
+          "name": "hydrochlorothiazide 25 MG / methyldopa 250 MG Oral Tablet",
+          "dose_a": 25,
+          "dose_b": 250,
+          "extended": false
+        },
+        {
+          "rxcui": "197961",
+          "name": "hydrochlorothiazide 50 MG / methyldopa 500 MG Oral Tablet",
+          "dose_a": 50,
+          "dose_b": 500,
+          "extended": false
+        },
+        {
+          "rxcui": "197962",
+          "name": "hydrochlorothiazide 30 MG / methyldopa 500 MG Oral Tablet",
+          "dose_a": 30,
+          "dose_b": 500,
+          "extended": false
+        },
+        {
+          "rxcui": "197963",
+          "name": "hydrochlorothiazide 15 MG / methyldopa 250 MG Oral Tablet",
+          "dose_a": 15,
+          "dose_b": 250,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "214621",
+      "name": "hydrochlorothiazide / metoprolol",
+      "med_a": "hydrochlorothiazide",
+      "med_b": "metoprolol_succinate",
+      "brands": [
+        "Lopressor HCT"
+      ],
+      "products": [
+        {
+          "rxcui": "1111439",
+          "name": "24 HR hydrochlorothiazide 25 MG / metoprolol tartrate 200 MG Extended Release Oral Tablet",
+          "dose_a": 25,
+          "dose_b": 200,
+          "extended": true
+        },
+        {
+          "rxcui": "866452",
+          "name": "24 HR hydrochlorothiazide 12.5 MG / metoprolol succinate 100 MG Extended Release Oral Tablet",
+          "dose_a": 12.5,
+          "dose_b": 100,
+          "extended": true
+        },
+        {
+          "rxcui": "866479",
+          "name": "hydrochlorothiazide 25 MG / metoprolol tartrate 100 MG Oral Tablet",
+          "dose_a": 25,
+          "dose_b": 100,
+          "extended": false
+        },
+        {
+          "rxcui": "866482",
+          "name": "hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet",
+          "dose_a": 25,
+          "dose_b": 50,
+          "extended": false
+        },
+        {
+          "rxcui": "866491",
+          "name": "hydrochlorothiazide 50 MG / metoprolol tartrate 100 MG Oral Tablet",
+          "dose_a": 50,
+          "dose_b": 100,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "214623",
+      "name": "hydrochlorothiazide / propranolol",
+      "med_a": "hydrochlorothiazide",
+      "med_b": "propranolol_la",
+      "brands": [],
+      "products": [
+        {
+          "rxcui": "856422",
+          "name": "hydrochlorothiazide 25 MG / propranolol hydrochloride 40 MG Oral Tablet",
+          "dose_a": 25,
+          "dose_b": 40,
+          "extended": false
+        },
+        {
+          "rxcui": "856429",
+          "name": "hydrochlorothiazide 25 MG / propranolol hydrochloride 80 MG Oral Tablet",
+          "dose_a": 25,
+          "dose_b": 80,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "214626",
+      "name": "hydrochlorothiazide / valsartan",
+      "med_a": "hydrochlorothiazide",
+      "med_b": "valsartan",
+      "brands": [
+        "Diovan HCT"
+      ],
+      "products": [
+        {
+          "rxcui": "200284",
+          "name": "hydrochlorothiazide 12.5 MG / valsartan 80 MG Oral Tablet",
+          "dose_a": 12.5,
+          "dose_b": 80,
+          "extended": false
+        },
+        {
+          "rxcui": "200285",
+          "name": "hydrochlorothiazide 12.5 MG / valsartan 160 MG Oral Tablet",
+          "dose_a": 12.5,
+          "dose_b": 160,
+          "extended": false
+        },
+        {
+          "rxcui": "349353",
+          "name": "hydrochlorothiazide 25 MG / valsartan 160 MG Oral Tablet",
+          "dose_a": 25,
+          "dose_b": 160,
+          "extended": false
+        },
+        {
+          "rxcui": "636042",
+          "name": "hydrochlorothiazide 12.5 MG / valsartan 320 MG Oral Tablet",
+          "dose_a": 12.5,
+          "dose_b": 320,
+          "extended": false
+        },
+        {
+          "rxcui": "636045",
+          "name": "hydrochlorothiazide 25 MG / valsartan 320 MG Oral Tablet",
+          "dose_a": 25,
+          "dose_b": 320,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "261417",
+      "name": "hydrochlorothiazide / quinapril",
+      "med_a": "quinapril",
+      "med_b": "hydrochlorothiazide",
+      "brands": [
+        "Accuretic"
+      ],
+      "products": [
+        {
+          "rxcui": "310796",
+          "name": "hydrochlorothiazide 12.5 MG / quinapril 10 MG Oral Tablet",
+          "dose_a": 10,
+          "dose_b": 12.5,
+          "extended": false
+        },
+        {
+          "rxcui": "310797",
+          "name": "hydrochlorothiazide 12.5 MG / quinapril 20 MG Oral Tablet",
+          "dose_a": 20,
+          "dose_b": 12.5,
+          "extended": false
+        },
+        {
+          "rxcui": "310809",
+          "name": "hydrochlorothiazide 25 MG / quinapril 20 MG Oral Tablet",
+          "dose_a": 20,
+          "dose_b": 25,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "284628",
+      "name": "candesartan / hydrochlorothiazide",
+      "med_a": "candesartan",
+      "med_b": "hydrochlorothiazide",
+      "brands": [
+        "Atacand HCT"
+      ],
+      "products": [
+        {
+          "rxcui": "578325",
+          "name": "candesartan cilexetil 16 MG / hydrochlorothiazide 12.5 MG Oral Tablet",
+          "dose_a": 16,
+          "dose_b": 12.5,
+          "extended": false
+        },
+        {
+          "rxcui": "578330",
+          "name": "candesartan cilexetil 32 MG / hydrochlorothiazide 12.5 MG Oral Tablet",
+          "dose_a": 32,
+          "dose_b": 12.5,
+          "extended": false
+        },
+        {
+          "rxcui": "802749",
+          "name": "candesartan cilexetil 32 MG / hydrochlorothiazide 25 MG Oral Tablet",
+          "dose_a": 32,
+          "dose_b": 25,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "284636",
+      "name": "hydrochlorothiazide / telmisartan",
+      "med_a": "hydrochlorothiazide",
+      "med_b": "telmisartan",
+      "brands": [
+        "Micardis-HCT"
+      ],
+      "products": [
+        {
+          "rxcui": "283316",
+          "name": "hydrochlorothiazide 12.5 MG / telmisartan 40 MG Oral Tablet",
+          "dose_a": 12.5,
+          "dose_b": 40,
+          "extended": false
+        },
+        {
+          "rxcui": "283317",
+          "name": "hydrochlorothiazide 12.5 MG / telmisartan 80 MG Oral Tablet",
+          "dose_a": 12.5,
+          "dose_b": 80,
+          "extended": false
+        },
+        {
+          "rxcui": "477130",
+          "name": "hydrochlorothiazide 25 MG / telmisartan 80 MG Oral Tablet",
+          "dose_a": 25,
+          "dose_b": 80,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "324042",
+      "name": "hydrochlorothiazide / spironolactone",
+      "med_a": "hydrochlorothiazide",
+      "med_b": "spironolactone",
+      "brands": [],
+      "products": [
+        {
+          "rxcui": "198224",
+          "name": "hydrochlorothiazide 25 MG / spironolactone 25 MG Oral Tablet",
+          "dose_a": 25,
+          "dose_b": 25,
+          "extended": false
+        },
+        {
+          "rxcui": "198225",
+          "name": "hydrochlorothiazide 50 MG / spironolactone 50 MG Oral Tablet",
+          "dose_a": 50,
+          "dose_b": 50,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "689716",
+      "name": "hydrochlorothiazide / labetalol",
+      "med_a": "hydrochlorothiazide",
+      "med_b": "labetalol",
+      "brands": [],
+      "products": [
+        {
+          "rxcui": "896976",
+          "name": "hydrochlorothiazide 25 MG / labetalol hydrochloride 300 MG Oral Tablet",
+          "dose_a": 25,
+          "dose_b": 300,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "802519",
+      "name": "aliskiren / hydrochlorothiazide",
+      "med_a": "aliskiren",
+      "med_b": "hydrochlorothiazide",
+      "brands": [
+        "Tekturna HCT"
+      ],
+      "products": [
+        {
+          "rxcui": "1011710",
+          "name": "aliskiren 150 MG / hydrochlorothiazide 12.5 MG Oral Tablet",
+          "dose_a": 150,
+          "dose_b": 12.5,
+          "extended": false
+        },
+        {
+          "rxcui": "1011713",
+          "name": "aliskiren 150 MG / hydrochlorothiazide 25 MG Oral Tablet",
+          "dose_a": 150,
+          "dose_b": 25,
+          "extended": false
+        },
+        {
+          "rxcui": "1011750",
+          "name": "aliskiren 300 MG / hydrochlorothiazide 12.5 MG Oral Tablet",
+          "dose_a": 300,
+          "dose_b": 12.5,
+          "extended": false
+        },
+        {
+          "rxcui": "1011753",
+          "name": "aliskiren 300 MG / hydrochlorothiazide 25 MG Oral Tablet",
+          "dose_a": 300,
+          "dose_b": 25,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "817496",
+      "name": "hydrochlorothiazide / olmesartan",
+      "med_a": "olmesartan",
+      "med_b": "hydrochlorothiazide",
+      "brands": [
+        "Benicar HCT"
+      ],
+      "products": [
+        {
+          "rxcui": "403853",
+          "name": "hydrochlorothiazide 12.5 MG / olmesartan medoxomil 20 MG Oral Tablet",
+          "dose_a": 20,
+          "dose_b": 12.5,
+          "extended": false
+        },
+        {
+          "rxcui": "403854",
+          "name": "hydrochlorothiazide 12.5 MG / olmesartan medoxomil 40 MG Oral Tablet",
+          "dose_a": 40,
+          "dose_b": 12.5,
+          "extended": false
+        },
+        {
+          "rxcui": "403855",
+          "name": "hydrochlorothiazide 25 MG / olmesartan medoxomil 40 MG Oral Tablet",
+          "dose_a": 40,
+          "dose_b": 25,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "389179",
+      "name": "felodipine / ramipril",
+      "med_a": "ramipril",
+      "med_b": "felodipine",
+      "brands": [],
+      "products": [
+        {
+          "rxcui": "389180",
+          "name": "felodipine 2.5 MG / ramipril 2.5 MG Oral Tablet",
+          "dose_a": 2.5,
+          "dose_b": 2.5,
+          "extended": false
+        },
+        {
+          "rxcui": "389181",
+          "name": "felodipine 5 MG / ramipril 5 MG Oral Tablet",
+          "dose_a": 5,
+          "dose_b": 5,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "214223",
+      "name": "amlodipine / benazepril",
+      "med_a": "amlodipine",
+      "med_b": "benazepril",
+      "brands": [
+        "Lotrel"
+      ],
+      "products": [
+        {
+          "rxcui": "898342",
+          "name": "amlodipine 10 MG / benazepril hydrochloride 20 MG Oral Capsule",
+          "dose_a": 10,
+          "dose_b": 20,
+          "extended": false
+        },
+        {
+          "rxcui": "898346",
+          "name": "amlodipine 10 MG / benazepril hydrochloride 40 MG Oral Capsule",
+          "dose_a": 10,
+          "dose_b": 40,
+          "extended": false
+        },
+        {
+          "rxcui": "898350",
+          "name": "amlodipine 2.5 MG / benazepril hydrochloride 10 MG Oral Capsule",
+          "dose_a": 2.5,
+          "dose_b": 10,
+          "extended": false
+        },
+        {
+          "rxcui": "898353",
+          "name": "amlodipine 5 MG / benazepril hydrochloride 10 MG Oral Capsule",
+          "dose_a": 5,
+          "dose_b": 10,
+          "extended": false
+        },
+        {
+          "rxcui": "898356",
+          "name": "amlodipine 5 MG / benazepril hydrochloride 20 MG Oral Capsule",
+          "dose_a": 5,
+          "dose_b": 20,
+          "extended": false
+        },
+        {
+          "rxcui": "898359",
+          "name": "amlodipine 5 MG / benazepril hydrochloride 40 MG Oral Capsule",
+          "dose_a": 5,
+          "dose_b": 40,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "1798280",
+      "name": "nebivolol / valsartan",
+      "med_a": "nebivolol",
+      "med_b": "valsartan",
+      "brands": [
+        "Byvalson"
+      ],
+      "products": [
+        {
+          "rxcui": "1798281",
+          "name": "nebivolol 5 MG / valsartan 80 MG Oral Tablet",
+          "dose_a": 5,
+          "dose_b": 80,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "729455",
+      "name": "amlodipine / valsartan",
+      "med_a": "amlodipine",
+      "med_b": "valsartan",
+      "brands": [
+        "Exforge"
+      ],
+      "products": [
+        {
+          "rxcui": "722126",
+          "name": "amlodipine 10 MG / valsartan 160 MG Oral Tablet",
+          "dose_a": 10,
+          "dose_b": 160,
+          "extended": false
+        },
+        {
+          "rxcui": "722131",
+          "name": "amlodipine 10 MG / valsartan 320 MG Oral Tablet",
+          "dose_a": 10,
+          "dose_b": 320,
+          "extended": false
+        },
+        {
+          "rxcui": "722134",
+          "name": "amlodipine 5 MG / valsartan 160 MG Oral Tablet",
+          "dose_a": 5,
+          "dose_b": 160,
+          "extended": false
+        },
+        {
+          "rxcui": "722137",
+          "name": "amlodipine 5 MG / valsartan 320 MG Oral Tablet",
+          "dose_a": 5,
+          "dose_b": 320,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "900937",
+      "name": "aliskiren / valsartan",
+      "med_a": "aliskiren",
+      "med_b": "valsartan",
+      "brands": [],
+      "products": [
+        {
+          "rxcui": "1011718",
+          "name": "aliskiren 150 MG / valsartan 160 MG Oral Tablet",
+          "dose_a": 150,
+          "dose_b": 160,
+          "extended": false
+        },
+        {
+          "rxcui": "1011729",
+          "name": "aliskiren 300 MG / valsartan 320 MG Oral Tablet",
+          "dose_a": 300,
+          "dose_b": 320,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "1009015",
+      "name": "amlodipine / olmesartan",
+      "med_a": "amlodipine",
+      "med_b": "olmesartan",
+      "brands": [
+        "Azor"
+      ],
+      "products": [
+        {
+          "rxcui": "730861",
+          "name": "amlodipine 10 MG / olmesartan medoxomil 20 MG Oral Tablet",
+          "dose_a": 10,
+          "dose_b": 20,
+          "extended": false
+        },
+        {
+          "rxcui": "730866",
+          "name": "amlodipine 10 MG / olmesartan medoxomil 40 MG Oral Tablet",
+          "dose_a": 10,
+          "dose_b": 40,
+          "extended": false
+        },
+        {
+          "rxcui": "730869",
+          "name": "amlodipine 5 MG / olmesartan medoxomil 20 MG Oral Tablet",
+          "dose_a": 5,
+          "dose_b": 20,
+          "extended": false
+        },
+        {
+          "rxcui": "730872",
+          "name": "amlodipine 5 MG / olmesartan medoxomil 40 MG Oral Tablet",
+          "dose_a": 5,
+          "dose_b": 40,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "901212",
+      "name": "amlodipine / telmisartan",
+      "med_a": "amlodipine",
+      "med_b": "telmisartan",
+      "brands": [
+        "Twynsta"
+      ],
+      "products": [
+        {
+          "rxcui": "876514",
+          "name": "amlodipine 10 MG / telmisartan 40 MG Oral Tablet",
+          "dose_a": 10,
+          "dose_b": 40,
+          "extended": false
+        },
+        {
+          "rxcui": "876519",
+          "name": "amlodipine 10 MG / telmisartan 80 MG Oral Tablet",
+          "dose_a": 10,
+          "dose_b": 80,
+          "extended": false
+        },
+        {
+          "rxcui": "876524",
+          "name": "amlodipine 5 MG / telmisartan 40 MG Oral Tablet",
+          "dose_a": 5,
+          "dose_b": 40,
+          "extended": false
+        },
+        {
+          "rxcui": "876529",
+          "name": "amlodipine 5 MG / telmisartan 80 MG Oral Tablet",
+          "dose_a": 5,
+          "dose_b": 80,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "392475",
+      "name": "atenolol / nifedipine",
+      "med_a": "atenolol",
+      "med_b": "nifedipine_er",
+      "brands": [],
+      "products": [
+        {
+          "rxcui": "393275",
+          "name": "atenolol 50 MG / nifedipine 20 MG Extended Release Oral Capsule",
+          "dose_a": 50,
+          "dose_b": 20,
+          "extended": true
+        }
+      ]
+    },
+    {
+      "id": "392462",
+      "name": "furosemide / spironolactone",
+      "med_a": "furosemide",
+      "med_b": "spironolactone",
+      "brands": [],
+      "products": [
+        {
+          "rxcui": "246399",
+          "name": "furosemide 20 MG / spironolactone 50 MG Oral Capsule",
+          "dose_a": 20,
+          "dose_b": 50,
+          "extended": false
+        }
+      ]
+    },
+    {
+      "id": "818351",
+      "name": "amiloride / furosemide",
+      "med_a": "furosemide",
+      "med_b": "amiloride",
+      "brands": [],
+      "products": [
+        {
+          "rxcui": "977890",
+          "name": "amiloride hydrochloride 10 MG / furosemide 80 MG Oral Tablet",
+          "dose_a": 80,
+          "dose_b": 10,
+          "extended": false
+        },
+        {
+          "rxcui": "977945",
+          "name": "amiloride hydrochloride 2.5 MG / furosemide 20 MG Oral Tablet",
+          "dose_a": 20,
+          "dose_b": 2.5,
+          "extended": false
+        },
+        {
+          "rxcui": "977959",
+          "name": "amiloride hydrochloride 5 MG / furosemide 40 MG Oral Tablet",
+          "dose_a": 40,
+          "dose_b": 5,
+          "extended": false
+        }
+      ]
+    }
+  ],
+  "prices": [
+    {
+      "rxcui": "428539",
+      "name": "chlorthalidone 12.5 MG Oral Tablet",
+      "medication_id": "chlorthalidone",
+      "combination_id": null,
+      "dose_mg": 12.5,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "197498",
+      "name": "chlorthalidone 15 MG Oral Tablet",
+      "medication_id": "chlorthalidone",
+      "combination_id": null,
+      "dose_mg": 15,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "429503",
+      "name": "hydrochlorothiazide 12.5 MG Oral Tablet",
+      "medication_id": "hydrochlorothiazide",
+      "combination_id": null,
+      "dose_mg": 12.5,
+      "nadac_per_unit": 0.03397,
+      "effective_date": "2026-09-23",
+      "ndc_count": 13
+    },
+    {
+      "rxcui": "197500",
+      "name": "chlorthalidone 50 MG Oral Tablet",
+      "medication_id": "chlorthalidone",
+      "combination_id": null,
+      "dose_mg": 50,
+      "nadac_per_unit": 0.12175,
+      "effective_date": "2026-09-23",
+      "ndc_count": 22
+    },
+    {
+      "rxcui": "433844",
+      "name": "24 HR indapamide 1.5 MG Extended Release Oral Tablet",
+      "medication_id": "indapamide",
+      "combination_id": null,
+      "dose_mg": 1.5,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "199903",
+      "name": "hydrochlorothiazide 12.5 MG Oral Capsule",
+      "medication_id": "hydrochlorothiazide",
+      "combination_id": null,
+      "dose_mg": 12.5,
+      "nadac_per_unit": 0.02754,
+      "effective_date": "2026-09-23",
+      "ndc_count": 18
+    },
+    {
+      "rxcui": "197815",
+      "name": "indapamide 1.25 MG Oral Tablet",
+      "medication_id": "indapamide",
+      "combination_id": null,
+      "dose_mg": 1.25,
+      "nadac_per_unit": 0.10867,
+      "effective_date": "2026-09-23",
+      "ndc_count": 4
+    },
+    {
+      "rxcui": "197816",
+      "name": "indapamide 2.5 MG Oral Tablet",
+      "medication_id": "indapamide",
+      "combination_id": null,
+      "dose_mg": 2.5,
+      "nadac_per_unit": 0.10761,
+      "effective_date": "2026-09-23",
+      "ndc_count": 4
+    },
+    {
+      "rxcui": "197770",
+      "name": "hydrochlorothiazide 50 MG Oral Tablet",
+      "medication_id": "hydrochlorothiazide",
+      "combination_id": null,
+      "dose_mg": 50,
+      "nadac_per_unit": 0.03165,
+      "effective_date": "2026-09-23",
+      "ndc_count": 18
+    },
+    {
+      "rxcui": "310798",
+      "name": "hydrochlorothiazide 25 MG Oral Tablet",
+      "medication_id": "hydrochlorothiazide",
+      "combination_id": null,
+      "dose_mg": 25,
+      "nadac_per_unit": 0.01153,
+      "effective_date": "2026-09-23",
+      "ndc_count": 23
+    },
+    {
+      "rxcui": "197499",
+      "name": "chlorthalidone 25 MG Oral Tablet",
+      "medication_id": "chlorthalidone",
+      "combination_id": null,
+      "dose_mg": 25,
+      "nadac_per_unit": 0.08397,
+      "effective_date": "2026-09-23",
+      "ndc_count": 37
+    },
+    {
+      "rxcui": "311353",
+      "name": "lisinopril 2.5 MG Oral Tablet",
+      "medication_id": "lisinopril",
+      "combination_id": null,
+      "dose_mg": 2.5,
+      "nadac_per_unit": 0.01404,
+      "effective_date": "2026-09-23",
+      "ndc_count": 27
+    },
+    {
+      "rxcui": "205326",
+      "name": "lisinopril 30 MG Oral Tablet",
+      "medication_id": "lisinopril",
+      "combination_id": null,
+      "dose_mg": 30,
+      "nadac_per_unit": 0.052,
+      "effective_date": "2026-09-23",
+      "ndc_count": 21
+    },
+    {
+      "rxcui": "197884",
+      "name": "lisinopril 40 MG Oral Tablet",
+      "medication_id": "lisinopril",
+      "combination_id": null,
+      "dose_mg": 40,
+      "nadac_per_unit": 0.04625,
+      "effective_date": "2026-09-23",
+      "ndc_count": 36
+    },
+    {
+      "rxcui": "314076",
+      "name": "lisinopril 10 MG Oral Tablet",
+      "medication_id": "lisinopril",
+      "combination_id": null,
+      "dose_mg": 10,
+      "nadac_per_unit": 0.01815,
+      "effective_date": "2026-09-23",
+      "ndc_count": 34
+    },
+    {
+      "rxcui": "858817",
+      "name": "enalapril maleate 10 MG Oral Tablet",
+      "medication_id": "enalapril",
+      "combination_id": null,
+      "dose_mg": 10,
+      "nadac_per_unit": 0.06635,
+      "effective_date": "2026-09-23",
+      "ndc_count": 18
+    },
+    {
+      "rxcui": "858804",
+      "name": "enalapril maleate 2.5 MG Oral Tablet",
+      "medication_id": "enalapril",
+      "combination_id": null,
+      "dose_mg": 2.5,
+      "nadac_per_unit": 0.06251,
+      "effective_date": "2026-09-23",
+      "ndc_count": 16
+    },
+    {
+      "rxcui": "311354",
+      "name": "lisinopril 5 MG Oral Tablet",
+      "medication_id": "lisinopril",
+      "combination_id": null,
+      "dose_mg": 5,
+      "nadac_per_unit": 0.01433,
+      "effective_date": "2026-09-23",
+      "ndc_count": 32
+    },
+    {
+      "rxcui": "314077",
+      "name": "lisinopril 20 MG Oral Tablet",
+      "medication_id": "lisinopril",
+      "combination_id": null,
+      "dose_mg": 20,
+      "nadac_per_unit": 0.02536,
+      "effective_date": "2026-09-23",
+      "ndc_count": 36
+    },
+    {
+      "rxcui": "401965",
+      "name": "ramipril 1.25 MG Oral Tablet",
+      "medication_id": "ramipril",
+      "combination_id": null,
+      "dose_mg": 1.25,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "401968",
+      "name": "ramipril 10 MG Oral Tablet",
+      "medication_id": "ramipril",
+      "combination_id": null,
+      "dose_mg": 10,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "845488",
+      "name": "ramipril 1.25 MG Oral Capsule",
+      "medication_id": "ramipril",
+      "combination_id": null,
+      "dose_mg": 1.25,
+      "nadac_per_unit": 0.08041,
+      "effective_date": "2026-09-23",
+      "ndc_count": 9
+    },
+    {
+      "rxcui": "251856",
+      "name": "ramipril 2.5 MG Oral Tablet",
+      "medication_id": "ramipril",
+      "combination_id": null,
+      "dose_mg": 2.5,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "858810",
+      "name": "enalapril maleate 20 MG Oral Tablet",
+      "medication_id": "enalapril",
+      "combination_id": null,
+      "dose_mg": 20,
+      "nadac_per_unit": 0.09526,
+      "effective_date": "2026-09-23",
+      "ndc_count": 18
+    },
+    {
+      "rxcui": "251857",
+      "name": "ramipril 5 MG Oral Tablet",
+      "medication_id": "ramipril",
+      "combination_id": null,
+      "dose_mg": 5,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "858813",
+      "name": "enalapril maleate 5 MG Oral Tablet",
+      "medication_id": "enalapril",
+      "combination_id": null,
+      "dose_mg": 5,
+      "nadac_per_unit": 0.0724,
+      "effective_date": "2026-09-23",
+      "ndc_count": 18
+    },
+    {
+      "rxcui": "198188",
+      "name": "ramipril 2.5 MG Oral Capsule",
+      "medication_id": "ramipril",
+      "combination_id": null,
+      "dose_mg": 2.5,
+      "nadac_per_unit": 0.0473,
+      "effective_date": "2026-09-23",
+      "ndc_count": 15
+    },
+    {
+      "rxcui": "261962",
+      "name": "ramipril 10 MG Oral Capsule",
+      "medication_id": "ramipril",
+      "combination_id": null,
+      "dose_mg": 10,
+      "nadac_per_unit": 0.07071,
+      "effective_date": "2026-09-23",
+      "ndc_count": 16
+    },
+    {
+      "rxcui": "198189",
+      "name": "ramipril 5 MG Oral Capsule",
+      "medication_id": "ramipril",
+      "combination_id": null,
+      "dose_mg": 5,
+      "nadac_per_unit": 0.05141,
+      "effective_date": "2026-09-23",
+      "ndc_count": 16
+    },
+    {
+      "rxcui": "898687",
+      "name": "benazepril hydrochloride 10 MG Oral Tablet",
+      "medication_id": "benazepril",
+      "combination_id": null,
+      "dose_mg": 10,
+      "nadac_per_unit": 0.06515,
+      "effective_date": "2026-09-23",
+      "ndc_count": 12
+    },
+    {
+      "rxcui": "898723",
+      "name": "benazepril hydrochloride 5 MG Oral Tablet",
+      "medication_id": "benazepril",
+      "combination_id": null,
+      "dose_mg": 5,
+      "nadac_per_unit": 0.04842,
+      "effective_date": "2026-09-23",
+      "ndc_count": 10
+    },
+    {
+      "rxcui": "898719",
+      "name": "benazepril hydrochloride 40 MG Oral Tablet",
+      "medication_id": "benazepril",
+      "combination_id": null,
+      "dose_mg": 40,
+      "nadac_per_unit": 0.10107,
+      "effective_date": "2026-09-23",
+      "ndc_count": 13
+    },
+    {
+      "rxcui": "312748",
+      "name": "quinapril 10 MG Oral Tablet",
+      "medication_id": "quinapril",
+      "combination_id": null,
+      "dose_mg": 10,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "312749",
+      "name": "quinapril 20 MG Oral Tablet",
+      "medication_id": "quinapril",
+      "combination_id": null,
+      "dose_mg": 20,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "314203",
+      "name": "quinapril 40 MG Oral Tablet",
+      "medication_id": "quinapril",
+      "combination_id": null,
+      "dose_mg": 40,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "312750",
+      "name": "quinapril 5 MG Oral Tablet",
+      "medication_id": "quinapril",
+      "combination_id": null,
+      "dose_mg": 5,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "898690",
+      "name": "benazepril hydrochloride 20 MG Oral Tablet",
+      "medication_id": "benazepril",
+      "combination_id": null,
+      "dose_mg": 20,
+      "nadac_per_unit": 0.07888,
+      "effective_date": "2026-09-23",
+      "ndc_count": 13
+    },
+    {
+      "rxcui": "199919",
+      "name": "valsartan 160 MG Oral Capsule",
+      "medication_id": "valsartan",
+      "combination_id": null,
+      "dose_mg": 160,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "153077",
+      "name": "valsartan 40 MG Oral Capsule",
+      "medication_id": "valsartan",
+      "combination_id": null,
+      "dose_mg": 40,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "349201",
+      "name": "valsartan 160 MG Oral Tablet",
+      "medication_id": "valsartan",
+      "combination_id": null,
+      "dose_mg": 160,
+      "nadac_per_unit": 0.10604,
+      "effective_date": "2026-09-23",
+      "ndc_count": 19
+    },
+    {
+      "rxcui": "199850",
+      "name": "valsartan 80 MG Oral Capsule",
+      "medication_id": "valsartan",
+      "combination_id": null,
+      "dose_mg": 80,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "979480",
+      "name": "losartan potassium 100 MG Oral Tablet",
+      "medication_id": "losartan",
+      "combination_id": null,
+      "dose_mg": 100,
+      "nadac_per_unit": 0.04453,
+      "effective_date": "2026-09-23",
+      "ndc_count": 44
+    },
+    {
+      "rxcui": "401971",
+      "name": "olmesartan medoxomil 10 MG Oral Tablet",
+      "medication_id": "olmesartan",
+      "combination_id": null,
+      "dose_mg": 10,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "349200",
+      "name": "valsartan 320 MG Oral Tablet",
+      "medication_id": "valsartan",
+      "combination_id": null,
+      "dose_mg": 320,
+      "nadac_per_unit": 0.16341,
+      "effective_date": "2026-09-23",
+      "ndc_count": 15
+    },
+    {
+      "rxcui": "349483",
+      "name": "valsartan 40 MG Oral Tablet",
+      "medication_id": "valsartan",
+      "combination_id": null,
+      "dose_mg": 40,
+      "nadac_per_unit": 0.0963,
+      "effective_date": "2026-09-23",
+      "ndc_count": 20
+    },
+    {
+      "rxcui": "979485",
+      "name": "losartan potassium 25 MG Oral Tablet",
+      "medication_id": "losartan",
+      "combination_id": null,
+      "dose_mg": 25,
+      "nadac_per_unit": 0.02183,
+      "effective_date": "2026-09-23",
+      "ndc_count": 39
+    },
+    {
+      "rxcui": "349199",
+      "name": "valsartan 80 MG Oral Tablet",
+      "medication_id": "valsartan",
+      "combination_id": null,
+      "dose_mg": 80,
+      "nadac_per_unit": 0.08197,
+      "effective_date": "2026-09-23",
+      "ndc_count": 18
+    },
+    {
+      "rxcui": "979492",
+      "name": "losartan potassium 50 MG Oral Tablet",
+      "medication_id": "losartan",
+      "combination_id": null,
+      "dose_mg": 50,
+      "nadac_per_unit": 0.03267,
+      "effective_date": "2026-09-23",
+      "ndc_count": 46
+    },
+    {
+      "rxcui": "349373",
+      "name": "olmesartan medoxomil 5 MG Oral Tablet",
+      "medication_id": "olmesartan",
+      "combination_id": null,
+      "dose_mg": 5,
+      "nadac_per_unit": 0.05748,
+      "effective_date": "2026-09-23",
+      "ndc_count": 28
+    },
+    {
+      "rxcui": "200095",
+      "name": "irbesartan 150 MG Oral Tablet",
+      "medication_id": "irbesartan",
+      "combination_id": null,
+      "dose_mg": 150,
+      "nadac_per_unit": 0.11093,
+      "effective_date": "2026-09-23",
+      "ndc_count": 22
+    },
+    {
+      "rxcui": "349401",
+      "name": "olmesartan medoxomil 20 MG Oral Tablet",
+      "medication_id": "olmesartan",
+      "combination_id": null,
+      "dose_mg": 20,
+      "nadac_per_unit": 0.08049,
+      "effective_date": "2026-09-23",
+      "ndc_count": 35
+    },
+    {
+      "rxcui": "200096",
+      "name": "irbesartan 300 MG Oral Tablet",
+      "medication_id": "irbesartan",
+      "combination_id": null,
+      "dose_mg": 300,
+      "nadac_per_unit": 0.16228,
+      "effective_date": "2026-09-23",
+      "ndc_count": 22
+    },
+    {
+      "rxcui": "200094",
+      "name": "irbesartan 75 MG Oral Tablet",
+      "medication_id": "irbesartan",
+      "combination_id": null,
+      "dose_mg": 75,
+      "nadac_per_unit": 0.08228,
+      "effective_date": "2026-09-23",
+      "ndc_count": 19
+    },
+    {
+      "rxcui": "349405",
+      "name": "olmesartan medoxomil 40 MG Oral Tablet",
+      "medication_id": "olmesartan",
+      "combination_id": null,
+      "dose_mg": 40,
+      "nadac_per_unit": 0.11097,
+      "effective_date": "2026-09-23",
+      "ndc_count": 35
+    },
+    {
+      "rxcui": "639536",
+      "name": "candesartan cilexetil 2 MG Oral Tablet",
+      "medication_id": "candesartan",
+      "combination_id": null,
+      "dose_mg": 2,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "577776",
+      "name": "candesartan cilexetil 16 MG Oral Tablet",
+      "medication_id": "candesartan",
+      "combination_id": null,
+      "dose_mg": 16,
+      "nadac_per_unit": 0.47843,
+      "effective_date": "2026-09-23",
+      "ndc_count": 8
+    },
+    {
+      "rxcui": "639537",
+      "name": "candesartan cilexetil 32 MG Oral Tablet",
+      "medication_id": "candesartan",
+      "combination_id": null,
+      "dose_mg": 32,
+      "nadac_per_unit": 0.51886,
+      "effective_date": "2026-09-23",
+      "ndc_count": 7
+    },
+    {
+      "rxcui": "282755",
+      "name": "telmisartan 20 MG Oral Tablet",
+      "medication_id": "telmisartan",
+      "combination_id": null,
+      "dose_mg": 20,
+      "nadac_per_unit": 0.10581,
+      "effective_date": "2026-09-23",
+      "ndc_count": 21
+    },
+    {
+      "rxcui": "153822",
+      "name": "candesartan cilexetil 4 MG Oral Tablet",
+      "medication_id": "candesartan",
+      "combination_id": null,
+      "dose_mg": 4,
+      "nadac_per_unit": 0.56857,
+      "effective_date": "2026-09-23",
+      "ndc_count": 6
+    },
+    {
+      "rxcui": "153823",
+      "name": "candesartan cilexetil 8 MG Oral Tablet",
+      "medication_id": "candesartan",
+      "combination_id": null,
+      "dose_mg": 8,
+      "nadac_per_unit": 0.5364,
+      "effective_date": "2026-09-23",
+      "ndc_count": 7
+    },
+    {
+      "rxcui": "205305",
+      "name": "telmisartan 80 MG Oral Tablet",
+      "medication_id": "telmisartan",
+      "combination_id": null,
+      "dose_mg": 80,
+      "nadac_per_unit": 0.16325,
+      "effective_date": "2026-09-23",
+      "ndc_count": 21
+    },
+    {
+      "rxcui": "205304",
+      "name": "telmisartan 40 MG Oral Tablet",
+      "medication_id": "telmisartan",
+      "combination_id": null,
+      "dose_mg": 40,
+      "nadac_per_unit": 0.15031,
+      "effective_date": "2026-09-23",
+      "ndc_count": 20
+    },
+    {
+      "rxcui": "227058",
+      "name": "24 HR nifedipine 30 MG Extended Release Oral Capsule",
+      "medication_id": "nifedipine_er",
+      "combination_id": null,
+      "dose_mg": 30,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "250384",
+      "name": "24 HR nifedipine 40 MG Extended Release Oral Tablet",
+      "medication_id": "nifedipine_er",
+      "combination_id": null,
+      "dose_mg": 40,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "227059",
+      "name": "24 HR nifedipine 60 MG Extended Release Oral Capsule",
+      "medication_id": "nifedipine_er",
+      "combination_id": null,
+      "dose_mg": 60,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "198035",
+      "name": "24 HR nifedipine 60 MG Extended Release Oral Tablet",
+      "medication_id": "nifedipine_er",
+      "combination_id": null,
+      "dose_mg": 60,
+      "nadac_per_unit": 0.16266,
+      "effective_date": "2026-09-23",
+      "ndc_count": 2
+    },
+    {
+      "rxcui": "198034",
+      "name": "24 HR nifedipine 30 MG Extended Release Oral Tablet",
+      "medication_id": "nifedipine_er",
+      "combination_id": null,
+      "dose_mg": 30,
+      "nadac_per_unit": 0.11663,
+      "effective_date": "2026-09-23",
+      "ndc_count": 2
+    },
+    {
+      "rxcui": "198036",
+      "name": "24 HR nifedipine 90 MG Extended Release Oral Tablet",
+      "medication_id": "nifedipine_er",
+      "combination_id": null,
+      "dose_mg": 90,
+      "nadac_per_unit": 0.25884,
+      "effective_date": "2026-09-23",
+      "ndc_count": 2
+    },
+    {
+      "rxcui": "308136",
+      "name": "amlodipine 2.5 MG Oral Tablet",
+      "medication_id": "amlodipine",
+      "combination_id": null,
+      "dose_mg": 2.5,
+      "nadac_per_unit": 0.01061,
+      "effective_date": "2026-09-23",
+      "ndc_count": 36
+    },
+    {
+      "rxcui": "1812011",
+      "name": "Osmotic 24 HR nifedipine 30 MG Extended Release Oral Tablet",
+      "medication_id": "nifedipine_er",
+      "combination_id": null,
+      "dose_mg": 30,
+      "nadac_per_unit": 0.13006,
+      "effective_date": "2026-09-23",
+      "ndc_count": 19
+    },
+    {
+      "rxcui": "1812015",
+      "name": "Osmotic 24 HR nifedipine 90 MG Extended Release Oral Tablet",
+      "medication_id": "nifedipine_er",
+      "combination_id": null,
+      "dose_mg": 90,
+      "nadac_per_unit": 0.28191,
+      "effective_date": "2026-08-19",
+      "ndc_count": 15
+    },
+    {
+      "rxcui": "1812013",
+      "name": "Osmotic 24 HR nifedipine 60 MG Extended Release Oral Tablet",
+      "medication_id": "nifedipine_er",
+      "combination_id": null,
+      "dose_mg": 60,
+      "nadac_per_unit": 0.17645,
+      "effective_date": "2026-09-23",
+      "ndc_count": 19
+    },
+    {
+      "rxcui": "197361",
+      "name": "amlodipine 5 MG Oral Tablet",
+      "medication_id": "amlodipine",
+      "combination_id": null,
+      "dose_mg": 5,
+      "nadac_per_unit": 0.01018,
+      "effective_date": "2026-09-23",
+      "ndc_count": 43
+    },
+    {
+      "rxcui": "308135",
+      "name": "amlodipine 10 MG Oral Tablet",
+      "medication_id": "amlodipine",
+      "combination_id": null,
+      "dose_mg": 10,
+      "nadac_per_unit": 0.01479,
+      "effective_date": "2026-09-23",
+      "ndc_count": 36
+    },
+    {
+      "rxcui": "402695",
+      "name": "24 HR felodipine 10 MG Extended Release Oral Tablet",
+      "medication_id": "felodipine",
+      "combination_id": null,
+      "dose_mg": 10,
+      "nadac_per_unit": 0.13524,
+      "effective_date": "2026-09-23",
+      "ndc_count": 11
+    },
+    {
+      "rxcui": "830874",
+      "name": "24 HR diltiazem hydrochloride 120 MG Extended Release Oral Tablet",
+      "medication_id": "diltiazem_er",
+      "combination_id": null,
+      "dose_mg": 120,
+      "nadac_per_unit": 1.12264,
+      "effective_date": "2026-09-23",
+      "ndc_count": 4
+    },
+    {
+      "rxcui": "402696",
+      "name": "24 HR felodipine 5 MG Extended Release Oral Tablet",
+      "medication_id": "felodipine",
+      "combination_id": null,
+      "dose_mg": 5,
+      "nadac_per_unit": 0.12262,
+      "effective_date": "2026-09-23",
+      "ndc_count": 11
+    },
+    {
+      "rxcui": "402698",
+      "name": "24 HR felodipine 2.5 MG Extended Release Oral Tablet",
+      "medication_id": "felodipine",
+      "combination_id": null,
+      "dose_mg": 2.5,
+      "nadac_per_unit": 0.12686,
+      "effective_date": "2026-09-23",
+      "ndc_count": 11
+    },
+    {
+      "rxcui": "830877",
+      "name": "24 HR diltiazem hydrochloride 180 MG Extended Release Oral Tablet",
+      "medication_id": "diltiazem_er",
+      "combination_id": null,
+      "dose_mg": 180,
+      "nadac_per_unit": 1.03058,
+      "effective_date": "2026-09-23",
+      "ndc_count": 4
+    },
+    {
+      "rxcui": "830861",
+      "name": "24 HR diltiazem hydrochloride 120 MG Extended Release Oral Capsule",
+      "medication_id": "diltiazem_er",
+      "combination_id": null,
+      "dose_mg": 120,
+      "nadac_per_unit": 0.14353,
+      "effective_date": "2026-09-23",
+      "ndc_count": 21
+    },
+    {
+      "rxcui": "830845",
+      "name": "24 HR diltiazem hydrochloride 180 MG Extended Release Oral Capsule",
+      "medication_id": "diltiazem_er",
+      "combination_id": null,
+      "dose_mg": 180,
+      "nadac_per_unit": 0.1873,
+      "effective_date": "2026-09-23",
+      "ndc_count": 22
+    },
+    {
+      "rxcui": "830879",
+      "name": "24 HR diltiazem hydrochloride 240 MG Extended Release Oral Tablet",
+      "medication_id": "diltiazem_er",
+      "combination_id": null,
+      "dose_mg": 240,
+      "nadac_per_unit": 1.0087,
+      "effective_date": "2026-09-23",
+      "ndc_count": 4
+    },
+    {
+      "rxcui": "830882",
+      "name": "24 HR diltiazem hydrochloride 300 MG Extended Release Oral Tablet",
+      "medication_id": "diltiazem_er",
+      "combination_id": null,
+      "dose_mg": 300,
+      "nadac_per_unit": 1.92826,
+      "effective_date": "2026-09-23",
+      "ndc_count": 4
+    },
+    {
+      "rxcui": "830801",
+      "name": "24 HR diltiazem hydrochloride 300 MG Extended Release Oral Capsule",
+      "medication_id": "diltiazem_er",
+      "combination_id": null,
+      "dose_mg": 300,
+      "nadac_per_unit": 0.30196,
+      "effective_date": "2026-09-23",
+      "ndc_count": 15
+    },
+    {
+      "rxcui": "830837",
+      "name": "24 HR diltiazem hydrochloride 240 MG Extended Release Oral Capsule",
+      "medication_id": "diltiazem_er",
+      "combination_id": null,
+      "dose_mg": 240,
+      "nadac_per_unit": 0.19688,
+      "effective_date": "2026-09-23",
+      "ndc_count": 21
+    },
+    {
+      "rxcui": "830897",
+      "name": "24 HR diltiazem hydrochloride 360 MG Extended Release Oral Tablet",
+      "medication_id": "diltiazem_er",
+      "combination_id": null,
+      "dose_mg": 360,
+      "nadac_per_unit": 1.83372,
+      "effective_date": "2026-09-23",
+      "ndc_count": 4
+    },
+    {
+      "rxcui": "831359",
+      "name": "24 HR diltiazem hydrochloride 420 MG Extended Release Oral Capsule",
+      "medication_id": "diltiazem_er",
+      "combination_id": null,
+      "dose_mg": 420,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "830795",
+      "name": "24 HR diltiazem hydrochloride 360 MG Extended Release Oral Capsule",
+      "medication_id": "diltiazem_er",
+      "combination_id": null,
+      "dose_mg": 360,
+      "nadac_per_unit": 0.33265,
+      "effective_date": "2026-09-23",
+      "ndc_count": 8
+    },
+    {
+      "rxcui": "830900",
+      "name": "24 HR diltiazem hydrochloride 420 MG Extended Release Oral Tablet",
+      "medication_id": "diltiazem_er",
+      "combination_id": null,
+      "dose_mg": 420,
+      "nadac_per_unit": 2.63186,
+      "effective_date": "2026-09-23",
+      "ndc_count": 4
+    },
+    {
+      "rxcui": "897584",
+      "name": "24 HR verapamil hydrochloride 100 MG Extended Release Oral Capsule",
+      "medication_id": "verapamil_er",
+      "combination_id": null,
+      "dose_mg": 100,
+      "nadac_per_unit": 4.08287,
+      "effective_date": "2026-09-23",
+      "ndc_count": 3
+    },
+    {
+      "rxcui": "897612",
+      "name": "24 HR verapamil hydrochloride 120 MG Extended Release Oral Capsule",
+      "medication_id": "verapamil_er",
+      "combination_id": null,
+      "dose_mg": 120,
+      "nadac_per_unit": 2.74927,
+      "effective_date": "2026-09-23",
+      "ndc_count": 5
+    },
+    {
+      "rxcui": "897618",
+      "name": "24 HR verapamil hydrochloride 180 MG Extended Release Oral Capsule",
+      "medication_id": "verapamil_er",
+      "combination_id": null,
+      "dose_mg": 180,
+      "nadac_per_unit": 2.08661,
+      "effective_date": "2026-09-23",
+      "ndc_count": 3
+    },
+    {
+      "rxcui": "897590",
+      "name": "24 HR verapamil hydrochloride 200 MG Extended Release Oral Capsule",
+      "medication_id": "verapamil_er",
+      "combination_id": null,
+      "dose_mg": 200,
+      "nadac_per_unit": 5.63549,
+      "effective_date": "2026-09-23",
+      "ndc_count": 2
+    },
+    {
+      "rxcui": "897596",
+      "name": "24 HR verapamil hydrochloride 300 MG Extended Release Oral Capsule",
+      "medication_id": "verapamil_er",
+      "combination_id": null,
+      "dose_mg": 300,
+      "nadac_per_unit": 7.95983,
+      "effective_date": "2026-09-23",
+      "ndc_count": 2
+    },
+    {
+      "rxcui": "897659",
+      "name": "verapamil hydrochloride 120 MG Extended Release Oral Tablet",
+      "medication_id": "verapamil_er",
+      "combination_id": null,
+      "dose_mg": 120,
+      "nadac_per_unit": 0.17779,
+      "effective_date": "2026-09-23",
+      "ndc_count": 3
+    },
+    {
+      "rxcui": "897624",
+      "name": "24 HR verapamil hydrochloride 240 MG Extended Release Oral Capsule",
+      "medication_id": "verapamil_er",
+      "combination_id": null,
+      "dose_mg": 240,
+      "nadac_per_unit": 3.1476,
+      "effective_date": "2026-09-23",
+      "ndc_count": 3
+    },
+    {
+      "rxcui": "897630",
+      "name": "24 HR verapamil hydrochloride 360 MG Extended Release Oral Capsule",
+      "medication_id": "verapamil_er",
+      "combination_id": null,
+      "dose_mg": 360,
+      "nadac_per_unit": 7.88391,
+      "effective_date": "2026-09-23",
+      "ndc_count": 2
+    },
+    {
+      "rxcui": "1999033",
+      "name": "24 HR metoprolol succinate 200 MG Extended Release Oral Capsule",
+      "medication_id": "metoprolol_succinate",
+      "combination_id": null,
+      "dose_mg": 200,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "897640",
+      "name": "verapamil hydrochloride 180 MG Extended Release Oral Tablet",
+      "medication_id": "verapamil_er",
+      "combination_id": null,
+      "dose_mg": 180,
+      "nadac_per_unit": 0.19107,
+      "effective_date": "2026-09-23",
+      "ndc_count": 6
+    },
+    {
+      "rxcui": "1999031",
+      "name": "24 HR metoprolol succinate 100 MG Extended Release Oral Capsule",
+      "medication_id": "metoprolol_succinate",
+      "combination_id": null,
+      "dose_mg": 100,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "1999035",
+      "name": "24 HR metoprolol succinate 25 MG Extended Release Oral Capsule",
+      "medication_id": "metoprolol_succinate",
+      "combination_id": null,
+      "dose_mg": 25,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "897649",
+      "name": "verapamil hydrochloride 240 MG Extended Release Oral Tablet",
+      "medication_id": "verapamil_er",
+      "combination_id": null,
+      "dose_mg": 240,
+      "nadac_per_unit": 0.17613,
+      "effective_date": "2026-09-23",
+      "ndc_count": 6
+    },
+    {
+      "rxcui": "1999037",
+      "name": "24 HR metoprolol succinate 50 MG Extended Release Oral Capsule",
+      "medication_id": "metoprolol_succinate",
+      "combination_id": null,
+      "dose_mg": 50,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "866419",
+      "name": "24 HR metoprolol succinate 200 MG Extended Release Oral Tablet",
+      "medication_id": "metoprolol_succinate",
+      "combination_id": null,
+      "dose_mg": 200,
+      "nadac_per_unit": 0.188,
+      "effective_date": "2026-09-23",
+      "ndc_count": 36
+    },
+    {
+      "rxcui": "2723025",
+      "name": "metoprolol tartrate 12.5 MG Oral Tablet",
+      "medication_id": "metoprolol_succinate",
+      "combination_id": null,
+      "dose_mg": 12.5,
+      "nadac_per_unit": 2.87431,
+      "effective_date": "2026-09-23",
+      "ndc_count": 1
+    },
+    {
+      "rxcui": "866412",
+      "name": "24 HR metoprolol succinate 100 MG Extended Release Oral Tablet",
+      "medication_id": "metoprolol_succinate",
+      "combination_id": null,
+      "dose_mg": 100,
+      "nadac_per_unit": 0.08496,
+      "effective_date": "2026-09-23",
+      "ndc_count": 56
+    },
+    {
+      "rxcui": "1606347",
+      "name": "metoprolol tartrate 37.5 MG Oral Tablet",
+      "medication_id": "metoprolol_succinate",
+      "combination_id": null,
+      "dose_mg": 37.5,
+      "nadac_per_unit": 0.07585,
+      "effective_date": "2026-09-23",
+      "ndc_count": 3
+    },
+    {
+      "rxcui": "1606349",
+      "name": "metoprolol tartrate 75 MG Oral Tablet",
+      "medication_id": "metoprolol_succinate",
+      "combination_id": null,
+      "dose_mg": 75,
+      "nadac_per_unit": 0.15412,
+      "effective_date": "2026-09-23",
+      "ndc_count": 3
+    },
+    {
+      "rxcui": "866427",
+      "name": "24 HR metoprolol succinate 25 MG Extended Release Oral Tablet",
+      "medication_id": "metoprolol_succinate",
+      "combination_id": null,
+      "dose_mg": 25,
+      "nadac_per_unit": 0.04762,
+      "effective_date": "2026-09-23",
+      "ndc_count": 50
+    },
+    {
+      "rxcui": "866436",
+      "name": "24 HR metoprolol succinate 50 MG Extended Release Oral Tablet",
+      "medication_id": "metoprolol_succinate",
+      "combination_id": null,
+      "dose_mg": 50,
+      "nadac_per_unit": 0.05152,
+      "effective_date": "2026-09-23",
+      "ndc_count": 52
+    },
+    {
+      "rxcui": "866511",
+      "name": "metoprolol tartrate 100 MG Oral Tablet",
+      "medication_id": "metoprolol_succinate",
+      "combination_id": null,
+      "dose_mg": 100,
+      "nadac_per_unit": 0.02866,
+      "effective_date": "2026-09-23",
+      "ndc_count": 25
+    },
+    {
+      "rxcui": "860510",
+      "name": "24 HR carvedilol phosphate 10 MG Extended Release Oral Capsule",
+      "medication_id": "carvedilol",
+      "combination_id": null,
+      "dose_mg": 10,
+      "nadac_per_unit": 6.52042,
+      "effective_date": "2026-09-23",
+      "ndc_count": 3
+    },
+    {
+      "rxcui": "860516",
+      "name": "24 HR carvedilol phosphate 20 MG Extended Release Oral Capsule",
+      "medication_id": "carvedilol",
+      "combination_id": null,
+      "dose_mg": 20,
+      "nadac_per_unit": 6.73661,
+      "effective_date": "2026-09-23",
+      "ndc_count": 3
+    },
+    {
+      "rxcui": "860522",
+      "name": "24 HR carvedilol phosphate 40 MG Extended Release Oral Capsule",
+      "medication_id": "carvedilol",
+      "combination_id": null,
+      "dose_mg": 40,
+      "nadac_per_unit": 6.37871,
+      "effective_date": "2026-09-23",
+      "ndc_count": 4
+    },
+    {
+      "rxcui": "860532",
+      "name": "24 HR carvedilol phosphate 80 MG Extended Release Oral Capsule",
+      "medication_id": "carvedilol",
+      "combination_id": null,
+      "dose_mg": 80,
+      "nadac_per_unit": 5.79162,
+      "effective_date": "2026-09-23",
+      "ndc_count": 3
+    },
+    {
+      "rxcui": "866924",
+      "name": "metoprolol tartrate 25 MG Oral Tablet",
+      "medication_id": "metoprolol_succinate",
+      "combination_id": null,
+      "dose_mg": 25,
+      "nadac_per_unit": 0.01587,
+      "effective_date": "2026-09-23",
+      "ndc_count": 27
+    },
+    {
+      "rxcui": "865154",
+      "name": "bisoprolol fumarate 1.25 MG Oral Tablet",
+      "medication_id": "bisoprolol",
+      "combination_id": null,
+      "dose_mg": 1.25,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "200032",
+      "name": "carvedilol 12.5 MG Oral Tablet",
+      "medication_id": "carvedilol",
+      "combination_id": null,
+      "dose_mg": 12.5,
+      "nadac_per_unit": 0.0216,
+      "effective_date": "2026-09-23",
+      "ndc_count": 21
+    },
+    {
+      "rxcui": "686924",
+      "name": "carvedilol 3.125 MG Oral Tablet",
+      "medication_id": "carvedilol",
+      "combination_id": null,
+      "dose_mg": 3.125,
+      "nadac_per_unit": 0.01664,
+      "effective_date": "2026-09-23",
+      "ndc_count": 19
+    },
+    {
+      "rxcui": "866514",
+      "name": "metoprolol tartrate 50 MG Oral Tablet",
+      "medication_id": "metoprolol_succinate",
+      "combination_id": null,
+      "dose_mg": 50,
+      "nadac_per_unit": 0.01949,
+      "effective_date": "2026-09-23",
+      "ndc_count": 28
+    },
+    {
+      "rxcui": "854901",
+      "name": "bisoprolol fumarate 10 MG Oral Tablet",
+      "medication_id": "bisoprolol",
+      "combination_id": null,
+      "dose_mg": 10,
+      "nadac_per_unit": 0.17855,
+      "effective_date": "2026-09-23",
+      "ndc_count": 21
+    },
+    {
+      "rxcui": "865157",
+      "name": "bisoprolol fumarate 3.75 MG Oral Tablet",
+      "medication_id": "bisoprolol",
+      "combination_id": null,
+      "dose_mg": 3.75,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "200033",
+      "name": "carvedilol 25 MG Oral Tablet",
+      "medication_id": "carvedilol",
+      "combination_id": null,
+      "dose_mg": 25,
+      "nadac_per_unit": 0.03235,
+      "effective_date": "2026-09-23",
+      "ndc_count": 19
+    },
+    {
+      "rxcui": "865155",
+      "name": "bisoprolol fumarate 2.5 MG Oral Tablet",
+      "medication_id": "bisoprolol",
+      "combination_id": null,
+      "dose_mg": 2.5,
+      "nadac_per_unit": 2.51999,
+      "effective_date": "2026-09-23",
+      "ndc_count": 1
+    },
+    {
+      "rxcui": "865159",
+      "name": "bisoprolol fumarate 7.5 MG Oral Tablet",
+      "medication_id": "bisoprolol",
+      "combination_id": null,
+      "dose_mg": 7.5,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "854905",
+      "name": "bisoprolol fumarate 5 MG Oral Tablet",
+      "medication_id": "bisoprolol",
+      "combination_id": null,
+      "dose_mg": 5,
+      "nadac_per_unit": 0.12481,
+      "effective_date": "2026-09-23",
+      "ndc_count": 25
+    },
+    {
+      "rxcui": "751618",
+      "name": "nebivolol 2.5 MG Oral Tablet",
+      "medication_id": "nebivolol",
+      "combination_id": null,
+      "dose_mg": 2.5,
+      "nadac_per_unit": 0.11695,
+      "effective_date": "2026-09-23",
+      "ndc_count": 15
+    },
+    {
+      "rxcui": "200031",
+      "name": "carvedilol 6.25 MG Oral Tablet",
+      "medication_id": "carvedilol",
+      "combination_id": null,
+      "dose_mg": 6.25,
+      "nadac_per_unit": 0.01794,
+      "effective_date": "2026-09-23",
+      "ndc_count": 22
+    },
+    {
+      "rxcui": "751612",
+      "name": "nebivolol 10 MG Oral Tablet",
+      "medication_id": "nebivolol",
+      "combination_id": null,
+      "dose_mg": 10,
+      "nadac_per_unit": 0.14736,
+      "effective_date": "2026-09-23",
+      "ndc_count": 28
+    },
+    {
+      "rxcui": "387013",
+      "name": "nebivolol 5 MG Oral Tablet",
+      "medication_id": "nebivolol",
+      "combination_id": null,
+      "dose_mg": 5,
+      "nadac_per_unit": 0.10425,
+      "effective_date": "2026-09-23",
+      "ndc_count": 28
+    },
+    {
+      "rxcui": "827073",
+      "name": "nebivolol 20 MG Oral Tablet",
+      "medication_id": "nebivolol",
+      "combination_id": null,
+      "dose_mg": 20,
+      "nadac_per_unit": 0.18196,
+      "effective_date": "2026-09-23",
+      "ndc_count": 25
+    },
+    {
+      "rxcui": "896758",
+      "name": "labetalol hydrochloride 100 MG Oral Tablet",
+      "medication_id": "labetalol",
+      "combination_id": null,
+      "dose_mg": 100,
+      "nadac_per_unit": 0.08397,
+      "effective_date": "2026-09-30",
+      "ndc_count": 31
+    },
+    {
+      "rxcui": "896766",
+      "name": "labetalol hydrochloride 300 MG Oral Tablet",
+      "medication_id": "labetalol",
+      "combination_id": null,
+      "dose_mg": 300,
+      "nadac_per_unit": 0.21462,
+      "effective_date": "2026-09-30",
+      "ndc_count": 31
+    },
+    {
+      "rxcui": "197381",
+      "name": "atenolol 50 MG Oral Tablet",
+      "medication_id": "atenolol",
+      "combination_id": null,
+      "dose_mg": 50,
+      "nadac_per_unit": 0.0236,
+      "effective_date": "2026-09-30",
+      "ndc_count": 17
+    },
+    {
+      "rxcui": "896762",
+      "name": "labetalol hydrochloride 200 MG Oral Tablet",
+      "medication_id": "labetalol",
+      "combination_id": null,
+      "dose_mg": 200,
+      "nadac_per_unit": 0.13952,
+      "effective_date": "2026-09-23",
+      "ndc_count": 29
+    },
+    {
+      "rxcui": "896983",
+      "name": "labetalol hydrochloride 400 MG Oral Tablet",
+      "medication_id": "labetalol",
+      "combination_id": null,
+      "dose_mg": 400,
+      "nadac_per_unit": 1.55254,
+      "effective_date": "2026-09-23",
+      "ndc_count": 3
+    },
+    {
+      "rxcui": "197380",
+      "name": "atenolol 25 MG Oral Tablet",
+      "medication_id": "atenolol",
+      "combination_id": null,
+      "dose_mg": 25,
+      "nadac_per_unit": 0.02171,
+      "effective_date": "2026-09-30",
+      "ndc_count": 21
+    },
+    {
+      "rxcui": "896987",
+      "name": "labetalol hydrochloride 50 MG Oral Tablet",
+      "medication_id": "labetalol",
+      "combination_id": null,
+      "dose_mg": 50,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "197379",
+      "name": "atenolol 100 MG Oral Tablet",
+      "medication_id": "atenolol",
+      "combination_id": null,
+      "dose_mg": 100,
+      "nadac_per_unit": 0.03614,
+      "effective_date": "2026-09-23",
+      "ndc_count": 18
+    },
+    {
+      "rxcui": "856460",
+      "name": "24 HR propranolol hydrochloride 120 MG Extended Release Oral Capsule",
+      "medication_id": "propranolol_la",
+      "combination_id": null,
+      "dose_mg": 120,
+      "nadac_per_unit": 0.19561,
+      "effective_date": "2026-09-23",
+      "ndc_count": 4
+    },
+    {
+      "rxcui": "856481",
+      "name": "24 HR propranolol hydrochloride 160 MG Extended Release Oral Capsule",
+      "medication_id": "propranolol_la",
+      "combination_id": null,
+      "dose_mg": 160,
+      "nadac_per_unit": 0.305,
+      "effective_date": "2026-09-23",
+      "ndc_count": 4
+    },
+    {
+      "rxcui": "856569",
+      "name": "24 HR propranolol hydrochloride 80 MG Extended Release Oral Capsule",
+      "medication_id": "propranolol_la",
+      "combination_id": null,
+      "dose_mg": 80,
+      "nadac_per_unit": 0.19078,
+      "effective_date": "2026-09-23",
+      "ndc_count": 6
+    },
+    {
+      "rxcui": "351258",
+      "name": "eplerenone 100 MG Oral Tablet",
+      "medication_id": "eplerenone",
+      "combination_id": null,
+      "dose_mg": 100,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "856535",
+      "name": "24 HR propranolol hydrochloride 60 MG Extended Release Oral Capsule",
+      "medication_id": "propranolol_la",
+      "combination_id": null,
+      "dose_mg": 60,
+      "nadac_per_unit": 0.17007,
+      "effective_date": "2026-09-23",
+      "ndc_count": 6
+    },
+    {
+      "rxcui": "351256",
+      "name": "eplerenone 25 MG Oral Tablet",
+      "medication_id": "eplerenone",
+      "combination_id": null,
+      "dose_mg": 25,
+      "nadac_per_unit": 0.30015,
+      "effective_date": "2026-07-22",
+      "ndc_count": 16
+    },
+    {
+      "rxcui": "630032",
+      "name": "furosemide 12.5 MG Oral Tablet",
+      "medication_id": "furosemide",
+      "combination_id": null,
+      "dose_mg": 12.5,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "198222",
+      "name": "spironolactone 100 MG Oral Tablet",
+      "medication_id": "spironolactone",
+      "combination_id": null,
+      "dose_mg": 100,
+      "nadac_per_unit": 0.16783,
+      "effective_date": "2026-09-23",
+      "ndc_count": 27
+    },
+    {
+      "rxcui": "351257",
+      "name": "eplerenone 50 MG Oral Tablet",
+      "medication_id": "eplerenone",
+      "combination_id": null,
+      "dose_mg": 50,
+      "nadac_per_unit": 0.4659,
+      "effective_date": "2026-08-19",
+      "ndc_count": 14
+    },
+    {
+      "rxcui": "199610",
+      "name": "furosemide 500 MG Oral Tablet",
+      "medication_id": "furosemide",
+      "combination_id": null,
+      "dose_mg": 500,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "248657",
+      "name": "furosemide 50 MG Oral Tablet",
+      "medication_id": "furosemide",
+      "combination_id": null,
+      "dose_mg": 50,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "198223",
+      "name": "spironolactone 50 MG Oral Tablet",
+      "medication_id": "spironolactone",
+      "combination_id": null,
+      "dose_mg": 50,
+      "nadac_per_unit": 0.08319,
+      "effective_date": "2026-09-23",
+      "ndc_count": 27
+    },
+    {
+      "rxcui": "198369",
+      "name": "torsemide 10 MG Oral Tablet",
+      "medication_id": "torsemide",
+      "combination_id": null,
+      "dose_mg": 10,
+      "nadac_per_unit": 0.06594,
+      "effective_date": "2026-09-23",
+      "ndc_count": 7
+    },
+    {
+      "rxcui": "197732",
+      "name": "furosemide 80 MG Oral Tablet",
+      "medication_id": "furosemide",
+      "combination_id": null,
+      "dose_mg": 80,
+      "nadac_per_unit": 0.04982,
+      "effective_date": "2026-09-30",
+      "ndc_count": 14
+    },
+    {
+      "rxcui": "250044",
+      "name": "torsemide 2.5 MG Oral Tablet",
+      "medication_id": "torsemide",
+      "combination_id": null,
+      "dose_mg": 2.5,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "313096",
+      "name": "spironolactone 25 MG Oral Tablet",
+      "medication_id": "spironolactone",
+      "combination_id": null,
+      "dose_mg": 25,
+      "nadac_per_unit": 0.04332,
+      "effective_date": "2026-09-23",
+      "ndc_count": 37
+    },
+    {
+      "rxcui": "198370",
+      "name": "torsemide 100 MG Oral Tablet",
+      "medication_id": "torsemide",
+      "combination_id": null,
+      "dose_mg": 100,
+      "nadac_per_unit": 0.17384,
+      "effective_date": "2026-09-23",
+      "ndc_count": 7
+    },
+    {
+      "rxcui": "2589881",
+      "name": "torsemide 40 MG Oral Tablet",
+      "medication_id": "torsemide",
+      "combination_id": null,
+      "dose_mg": 40,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "2589885",
+      "name": "torsemide 60 MG Oral Tablet",
+      "medication_id": "torsemide",
+      "combination_id": null,
+      "dose_mg": 60,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "198371",
+      "name": "torsemide 20 MG Oral Tablet",
+      "medication_id": "torsemide",
+      "combination_id": null,
+      "dose_mg": 20,
+      "nadac_per_unit": 0.06502,
+      "effective_date": "2026-08-19",
+      "ndc_count": 14
+    },
+    {
+      "rxcui": "198372",
+      "name": "torsemide 5 MG Oral Tablet",
+      "medication_id": "torsemide",
+      "combination_id": null,
+      "dose_mg": 5,
+      "nadac_per_unit": 0.05726,
+      "effective_date": "2026-09-23",
+      "ndc_count": 7
+    },
+    {
+      "rxcui": "636360",
+      "name": "24 HR doxazosin 4 MG Extended Release Oral Tablet",
+      "medication_id": "doxazosin",
+      "combination_id": null,
+      "dose_mg": 4,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "313988",
+      "name": "furosemide 40 MG Oral Tablet",
+      "medication_id": "furosemide",
+      "combination_id": null,
+      "dose_mg": 40,
+      "nadac_per_unit": 0.0291,
+      "effective_date": "2026-09-30",
+      "ndc_count": 16
+    },
+    {
+      "rxcui": "636361",
+      "name": "24 HR doxazosin 8 MG Extended Release Oral Tablet",
+      "medication_id": "doxazosin",
+      "combination_id": null,
+      "dose_mg": 8,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "977880",
+      "name": "amiloride hydrochloride 5 MG Oral Tablet",
+      "medication_id": "amiloride",
+      "combination_id": null,
+      "dose_mg": 5,
+      "nadac_per_unit": 0.1901,
+      "effective_date": "2026-09-23",
+      "ndc_count": 4
+    },
+    {
+      "rxcui": "310429",
+      "name": "furosemide 20 MG Oral Tablet",
+      "medication_id": "furosemide",
+      "combination_id": null,
+      "dose_mg": 20,
+      "nadac_per_unit": 0.02602,
+      "effective_date": "2026-09-30",
+      "ndc_count": 16
+    },
+    {
+      "rxcui": "197625",
+      "name": "doxazosin 1 MG Oral Tablet",
+      "medication_id": "doxazosin",
+      "combination_id": null,
+      "dose_mg": 1,
+      "nadac_per_unit": 0.07787,
+      "effective_date": "2026-05-20",
+      "ndc_count": 24
+    },
+    {
+      "rxcui": "892791",
+      "name": "clonidine hydrochloride 0.025 MG Oral Tablet",
+      "medication_id": "clonidine",
+      "combination_id": null,
+      "dose_mg": 0.025,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "1013930",
+      "name": "12 HR clonidine hydrochloride 0.1 MG Extended Release Oral Tablet",
+      "medication_id": "clonidine",
+      "combination_id": null,
+      "dose_mg": 0.1,
+      "nadac_per_unit": 0.21173,
+      "effective_date": "2026-09-23",
+      "ndc_count": 8
+    },
+    {
+      "rxcui": "2740803",
+      "name": "clonidine hydrochloride 0.05 MG Oral Tablet",
+      "medication_id": "clonidine",
+      "combination_id": null,
+      "dose_mg": 0.05,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "885880",
+      "name": "24 HR clonidine 0.17 MG Extended Release Oral Tablet",
+      "medication_id": "clonidine",
+      "combination_id": null,
+      "dose_mg": 0.17,
+      "nadac_per_unit": 15.23568,
+      "effective_date": "2026-09-23",
+      "ndc_count": 1
+    },
+    {
+      "rxcui": "892795",
+      "name": "clonidine hydrochloride 0.25 MG Extended Release Oral Capsule",
+      "medication_id": "clonidine",
+      "combination_id": null,
+      "dose_mg": 0.25,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "197628",
+      "name": "doxazosin 8 MG Oral Tablet",
+      "medication_id": "doxazosin",
+      "combination_id": null,
+      "dose_mg": 8,
+      "nadac_per_unit": 0.10707,
+      "effective_date": "2026-07-22",
+      "ndc_count": 18
+    },
+    {
+      "rxcui": "197955",
+      "name": "methyldopa 125 MG Oral Tablet",
+      "medication_id": "methyldopa",
+      "combination_id": null,
+      "dose_mg": 125,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "104357",
+      "name": "methyldopa 250 MG Oral Capsule",
+      "medication_id": "methyldopa",
+      "combination_id": null,
+      "dose_mg": 250,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "197956",
+      "name": "methyldopa 250 MG Oral Tablet",
+      "medication_id": "methyldopa",
+      "combination_id": null,
+      "dose_mg": 250,
+      "nadac_per_unit": 7.49991,
+      "effective_date": "2025-08-27",
+      "ndc_count": 3
+    },
+    {
+      "rxcui": "197626",
+      "name": "doxazosin 2 MG Oral Tablet",
+      "medication_id": "doxazosin",
+      "combination_id": null,
+      "dose_mg": 2,
+      "nadac_per_unit": 0.06814,
+      "effective_date": "2026-09-23",
+      "ndc_count": 23
+    },
+    {
+      "rxcui": "197627",
+      "name": "doxazosin 4 MG Oral Tablet",
+      "medication_id": "doxazosin",
+      "combination_id": null,
+      "dose_mg": 4,
+      "nadac_per_unit": 0.08343,
+      "effective_date": "2026-09-23",
+      "ndc_count": 23
+    },
+    {
+      "rxcui": "197958",
+      "name": "methyldopa 500 MG Oral Tablet",
+      "medication_id": "methyldopa",
+      "combination_id": null,
+      "dose_mg": 500,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "884189",
+      "name": "clonidine hydrochloride 0.3 MG Oral Tablet",
+      "medication_id": "clonidine",
+      "combination_id": null,
+      "dose_mg": 0.3,
+      "nadac_per_unit": 0.04075,
+      "effective_date": "2026-09-23",
+      "ndc_count": 14
+    },
+    {
+      "rxcui": "905199",
+      "name": "hydralazine hydrochloride 10 MG Oral Tablet",
+      "medication_id": "hydralazine",
+      "combination_id": null,
+      "dose_mg": 10,
+      "nadac_per_unit": 0.02709,
+      "effective_date": "2026-09-23",
+      "ndc_count": 17
+    },
+    {
+      "rxcui": "884185",
+      "name": "clonidine hydrochloride 0.2 MG Oral Tablet",
+      "medication_id": "clonidine",
+      "combination_id": null,
+      "dose_mg": 0.2,
+      "nadac_per_unit": 0.03299,
+      "effective_date": "2026-09-23",
+      "ndc_count": 24
+    },
+    {
+      "rxcui": "905222",
+      "name": "hydralazine hydrochloride 100 MG Oral Tablet",
+      "medication_id": "hydralazine",
+      "combination_id": null,
+      "dose_mg": 100,
+      "nadac_per_unit": 0.0717,
+      "effective_date": "2026-09-23",
+      "ndc_count": 11
+    },
+    {
+      "rxcui": "1011736",
+      "name": "aliskiren 150 MG Oral Tablet",
+      "medication_id": "aliskiren",
+      "combination_id": null,
+      "dose_mg": 150,
+      "nadac_per_unit": 3.93745,
+      "effective_date": "2026-09-23",
+      "ndc_count": 2
+    },
+    {
+      "rxcui": "1011739",
+      "name": "aliskiren 300 MG Oral Tablet",
+      "medication_id": "aliskiren",
+      "combination_id": null,
+      "dose_mg": 300,
+      "nadac_per_unit": 5.85836,
+      "effective_date": "2026-09-23",
+      "ndc_count": 2
+    },
+    {
+      "rxcui": "905225",
+      "name": "hydralazine hydrochloride 25 MG Oral Tablet",
+      "medication_id": "hydralazine",
+      "combination_id": null,
+      "dose_mg": 25,
+      "nadac_per_unit": 0.03559,
+      "effective_date": "2026-09-23",
+      "ndc_count": 22
+    },
+    {
+      "rxcui": "905395",
+      "name": "hydralazine hydrochloride 50 MG Oral Tablet",
+      "medication_id": "hydralazine",
+      "combination_id": null,
+      "dose_mg": 50,
+      "nadac_per_unit": 0.04454,
+      "effective_date": "2026-09-23",
+      "ndc_count": 22
+    },
+    {
+      "rxcui": "884173",
+      "name": "clonidine hydrochloride 0.1 MG Oral Tablet",
+      "medication_id": "clonidine",
+      "combination_id": null,
+      "dose_mg": 0.1,
+      "nadac_per_unit": 0.02411,
+      "effective_date": "2026-09-23",
+      "ndc_count": 24
+    },
+    {
+      "rxcui": "152916",
+      "name": "atenolol 50 MG / chlorthalidone 12.5 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "151195",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "884198",
+      "name": "chlorthalidone 15 MG / clonidine hydrochloride 0.2 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214418",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "977950",
+      "name": "amiloride hydrochloride 2.5 MG / hydrochlorothiazide 25 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214212",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "884203",
+      "name": "chlorthalidone 15 MG / clonidine hydrochloride 0.3 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214418",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "898362",
+      "name": "benazepril hydrochloride 10 MG / hydrochlorothiazide 12.5 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214287",
+      "dose_mg": null,
+      "nadac_per_unit": 0.22678,
+      "effective_date": "2026-09-23",
+      "ndc_count": 4
+    },
+    {
+      "rxcui": "898372",
+      "name": "benazepril hydrochloride 20 MG / hydrochlorothiazide 25 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214287",
+      "dose_mg": null,
+      "nadac_per_unit": 0.25257,
+      "effective_date": "2026-09-23",
+      "ndc_count": 5
+    },
+    {
+      "rxcui": "197383",
+      "name": "atenolol 50 MG / chlorthalidone 25 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "151195",
+      "dose_mg": null,
+      "nadac_per_unit": 0.22171,
+      "effective_date": "2026-09-23",
+      "ndc_count": 5
+    },
+    {
+      "rxcui": "898367",
+      "name": "benazepril hydrochloride 20 MG / hydrochlorothiazide 12.5 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214287",
+      "dose_mg": null,
+      "nadac_per_unit": 0.22162,
+      "effective_date": "2026-09-23",
+      "ndc_count": 5
+    },
+    {
+      "rxcui": "197382",
+      "name": "atenolol 100 MG / chlorthalidone 25 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "151195",
+      "dose_mg": null,
+      "nadac_per_unit": 0.33513,
+      "effective_date": "2026-09-23",
+      "ndc_count": 5
+    },
+    {
+      "rxcui": "977883",
+      "name": "amiloride hydrochloride 5 MG / hydrochlorothiazide 50 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214212",
+      "dose_mg": null,
+      "nadac_per_unit": 0.44985,
+      "effective_date": "2026-09-23",
+      "ndc_count": 2
+    },
+    {
+      "rxcui": "898378",
+      "name": "benazepril hydrochloride 5 MG / hydrochlorothiazide 6.25 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214287",
+      "dose_mg": null,
+      "nadac_per_unit": 0.50927,
+      "effective_date": "2026-09-23",
+      "ndc_count": 3
+    },
+    {
+      "rxcui": "854908",
+      "name": "bisoprolol fumarate 10 MG / hydrochlorothiazide 6.25 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214317",
+      "dose_mg": null,
+      "nadac_per_unit": 0.20063,
+      "effective_date": "2026-07-22",
+      "ndc_count": 16
+    },
+    {
+      "rxcui": "905203",
+      "name": "hydralazine hydrochloride 100 MG / hydrochlorothiazide 50 MG Oral Capsule",
+      "medication_id": null,
+      "combination_id": "214615",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "858921",
+      "name": "enalapril maleate 20 MG / hydrochlorothiazide 12.5 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214536",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "905211",
+      "name": "hydralazine hydrochloride 25 MG / hydrochlorothiazide 25 MG Oral Capsule",
+      "medication_id": null,
+      "combination_id": "214615",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "905217",
+      "name": "hydralazine hydrochloride 50 MG / hydrochlorothiazide 50 MG Oral Capsule",
+      "medication_id": null,
+      "combination_id": "214615",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "858824",
+      "name": "enalapril maleate 5 MG / hydrochlorothiazide 12.5 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214536",
+      "dose_mg": null,
+      "nadac_per_unit": 0.16989,
+      "effective_date": "2026-09-23",
+      "ndc_count": 1
+    },
+    {
+      "rxcui": "858828",
+      "name": "enalapril maleate 10 MG / hydrochlorothiazide 25 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214536",
+      "dose_mg": null,
+      "nadac_per_unit": 0.20863,
+      "effective_date": "2026-09-23",
+      "ndc_count": 1
+    },
+    {
+      "rxcui": "854916",
+      "name": "bisoprolol fumarate 2.5 MG / hydrochlorothiazide 6.25 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214317",
+      "dose_mg": null,
+      "nadac_per_unit": 0.21329,
+      "effective_date": "2026-09-23",
+      "ndc_count": 15
+    },
+    {
+      "rxcui": "854919",
+      "name": "bisoprolol fumarate 5 MG / hydrochlorothiazide 6.25 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214317",
+      "dose_mg": null,
+      "nadac_per_unit": 0.22026,
+      "effective_date": "2026-09-23",
+      "ndc_count": 15
+    },
+    {
+      "rxcui": "310793",
+      "name": "hydrochlorothiazide 12.5 MG / irbesartan 300 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214617",
+      "dose_mg": null,
+      "nadac_per_unit": 0.1881,
+      "effective_date": "2026-09-23",
+      "ndc_count": 8
+    },
+    {
+      "rxcui": "485471",
+      "name": "hydrochlorothiazide 25 MG / irbesartan 300 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214617",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "310792",
+      "name": "hydrochlorothiazide 12.5 MG / irbesartan 150 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214617",
+      "dose_mg": null,
+      "nadac_per_unit": 0.14881,
+      "effective_date": "2026-09-23",
+      "ndc_count": 8
+    },
+    {
+      "rxcui": "197885",
+      "name": "hydrochlorothiazide 12.5 MG / lisinopril 10 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214618",
+      "dose_mg": null,
+      "nadac_per_unit": 0.02934,
+      "effective_date": "2026-09-23",
+      "ndc_count": 14
+    },
+    {
+      "rxcui": "197960",
+      "name": "hydrochlorothiazide 25 MG / methyldopa 250 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214620",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "197961",
+      "name": "hydrochlorothiazide 50 MG / methyldopa 500 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214620",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "197962",
+      "name": "hydrochlorothiazide 30 MG / methyldopa 500 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214620",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "197963",
+      "name": "hydrochlorothiazide 15 MG / methyldopa 250 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214620",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "1111439",
+      "name": "24 HR hydrochlorothiazide 25 MG / metoprolol tartrate 200 MG Extended Release Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214621",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "866452",
+      "name": "24 HR hydrochlorothiazide 12.5 MG / metoprolol succinate 100 MG Extended Release Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214621",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "197887",
+      "name": "hydrochlorothiazide 25 MG / lisinopril 20 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214618",
+      "dose_mg": null,
+      "nadac_per_unit": 0.04084,
+      "effective_date": "2026-09-23",
+      "ndc_count": 14
+    },
+    {
+      "rxcui": "866479",
+      "name": "hydrochlorothiazide 25 MG / metoprolol tartrate 100 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214621",
+      "dose_mg": null,
+      "nadac_per_unit": 1.4111,
+      "effective_date": "2026-09-23",
+      "ndc_count": 3
+    },
+    {
+      "rxcui": "979464",
+      "name": "hydrochlorothiazide 12.5 MG / losartan potassium 100 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214619",
+      "dose_mg": null,
+      "nadac_per_unit": 0.07495,
+      "effective_date": "2026-09-23",
+      "ndc_count": 23
+    },
+    {
+      "rxcui": "856422",
+      "name": "hydrochlorothiazide 25 MG / propranolol hydrochloride 40 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214623",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "856429",
+      "name": "hydrochlorothiazide 25 MG / propranolol hydrochloride 80 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214623",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "197886",
+      "name": "hydrochlorothiazide 12.5 MG / lisinopril 20 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214618",
+      "dose_mg": null,
+      "nadac_per_unit": 0.03612,
+      "effective_date": "2026-09-23",
+      "ndc_count": 14
+    },
+    {
+      "rxcui": "866482",
+      "name": "hydrochlorothiazide 25 MG / metoprolol tartrate 50 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214621",
+      "dose_mg": null,
+      "nadac_per_unit": 0.90917,
+      "effective_date": "2026-09-23",
+      "ndc_count": 4
+    },
+    {
+      "rxcui": "979468",
+      "name": "hydrochlorothiazide 12.5 MG / losartan potassium 50 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214619",
+      "dose_mg": null,
+      "nadac_per_unit": 0.05732,
+      "effective_date": "2026-09-23",
+      "ndc_count": 23
+    },
+    {
+      "rxcui": "866491",
+      "name": "hydrochlorothiazide 50 MG / metoprolol tartrate 100 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214621",
+      "dose_mg": null,
+      "nadac_per_unit": 1.3598,
+      "effective_date": "2026-09-23",
+      "ndc_count": 1
+    },
+    {
+      "rxcui": "979471",
+      "name": "hydrochlorothiazide 25 MG / losartan potassium 100 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214619",
+      "dose_mg": null,
+      "nadac_per_unit": 0.07833,
+      "effective_date": "2026-09-23",
+      "ndc_count": 23
+    },
+    {
+      "rxcui": "200284",
+      "name": "hydrochlorothiazide 12.5 MG / valsartan 80 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214626",
+      "dose_mg": null,
+      "nadac_per_unit": 0.09732,
+      "effective_date": "2026-09-23",
+      "ndc_count": 7
+    },
+    {
+      "rxcui": "200285",
+      "name": "hydrochlorothiazide 12.5 MG / valsartan 160 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214626",
+      "dose_mg": null,
+      "nadac_per_unit": 0.10137,
+      "effective_date": "2026-09-23",
+      "ndc_count": 8
+    },
+    {
+      "rxcui": "349353",
+      "name": "hydrochlorothiazide 25 MG / valsartan 160 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214626",
+      "dose_mg": null,
+      "nadac_per_unit": 0.12141,
+      "effective_date": "2026-09-23",
+      "ndc_count": 8
+    },
+    {
+      "rxcui": "310796",
+      "name": "hydrochlorothiazide 12.5 MG / quinapril 10 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "261417",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "310797",
+      "name": "hydrochlorothiazide 12.5 MG / quinapril 20 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "261417",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "636042",
+      "name": "hydrochlorothiazide 12.5 MG / valsartan 320 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214626",
+      "dose_mg": null,
+      "nadac_per_unit": 0.18604,
+      "effective_date": "2026-09-23",
+      "ndc_count": 8
+    },
+    {
+      "rxcui": "636045",
+      "name": "hydrochlorothiazide 25 MG / valsartan 320 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "214626",
+      "dose_mg": null,
+      "nadac_per_unit": 0.1916,
+      "effective_date": "2026-09-23",
+      "ndc_count": 8
+    },
+    {
+      "rxcui": "310809",
+      "name": "hydrochlorothiazide 25 MG / quinapril 20 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "261417",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "578325",
+      "name": "candesartan cilexetil 16 MG / hydrochlorothiazide 12.5 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "284628",
+      "dose_mg": null,
+      "nadac_per_unit": 0.95417,
+      "effective_date": "2026-09-23",
+      "ndc_count": 5
+    },
+    {
+      "rxcui": "578330",
+      "name": "candesartan cilexetil 32 MG / hydrochlorothiazide 12.5 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "284628",
+      "dose_mg": null,
+      "nadac_per_unit": 0.81993,
+      "effective_date": "2026-09-23",
+      "ndc_count": 5
+    },
+    {
+      "rxcui": "198225",
+      "name": "hydrochlorothiazide 50 MG / spironolactone 50 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "324042",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "896976",
+      "name": "hydrochlorothiazide 25 MG / labetalol hydrochloride 300 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "689716",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "802749",
+      "name": "candesartan cilexetil 32 MG / hydrochlorothiazide 25 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "284628",
+      "dose_mg": null,
+      "nadac_per_unit": 1.07781,
+      "effective_date": "2026-09-23",
+      "ndc_count": 5
+    },
+    {
+      "rxcui": "1011710",
+      "name": "aliskiren 150 MG / hydrochlorothiazide 12.5 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "802519",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "1011713",
+      "name": "aliskiren 150 MG / hydrochlorothiazide 25 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "802519",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "1011750",
+      "name": "aliskiren 300 MG / hydrochlorothiazide 12.5 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "802519",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "1011753",
+      "name": "aliskiren 300 MG / hydrochlorothiazide 25 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "802519",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "283316",
+      "name": "hydrochlorothiazide 12.5 MG / telmisartan 40 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "284636",
+      "dose_mg": null,
+      "nadac_per_unit": 0.3567,
+      "effective_date": "2026-09-23",
+      "ndc_count": 6
+    },
+    {
+      "rxcui": "283317",
+      "name": "hydrochlorothiazide 12.5 MG / telmisartan 80 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "284636",
+      "dose_mg": null,
+      "nadac_per_unit": 0.31445,
+      "effective_date": "2026-09-23",
+      "ndc_count": 6
+    },
+    {
+      "rxcui": "389180",
+      "name": "felodipine 2.5 MG / ramipril 2.5 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "389179",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "389181",
+      "name": "felodipine 5 MG / ramipril 5 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "389179",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "477130",
+      "name": "hydrochlorothiazide 25 MG / telmisartan 80 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "284636",
+      "dose_mg": null,
+      "nadac_per_unit": 0.33828,
+      "effective_date": "2026-09-23",
+      "ndc_count": 6
+    },
+    {
+      "rxcui": "198224",
+      "name": "hydrochlorothiazide 25 MG / spironolactone 25 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "324042",
+      "dose_mg": null,
+      "nadac_per_unit": 0.48325,
+      "effective_date": "2026-09-23",
+      "ndc_count": 7
+    },
+    {
+      "rxcui": "898346",
+      "name": "amlodipine 10 MG / benazepril hydrochloride 40 MG Oral Capsule",
+      "medication_id": null,
+      "combination_id": "214223",
+      "dose_mg": null,
+      "nadac_per_unit": 0.15216,
+      "effective_date": "2026-09-23",
+      "ndc_count": 7
+    },
+    {
+      "rxcui": "898350",
+      "name": "amlodipine 2.5 MG / benazepril hydrochloride 10 MG Oral Capsule",
+      "medication_id": null,
+      "combination_id": "214223",
+      "dose_mg": null,
+      "nadac_per_unit": 0.09561,
+      "effective_date": "2026-09-23",
+      "ndc_count": 6
+    },
+    {
+      "rxcui": "898342",
+      "name": "amlodipine 10 MG / benazepril hydrochloride 20 MG Oral Capsule",
+      "medication_id": null,
+      "combination_id": "214223",
+      "dose_mg": null,
+      "nadac_per_unit": 0.11375,
+      "effective_date": "2026-09-23",
+      "ndc_count": 7
+    },
+    {
+      "rxcui": "403853",
+      "name": "hydrochlorothiazide 12.5 MG / olmesartan medoxomil 20 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "817496",
+      "dose_mg": null,
+      "nadac_per_unit": 0.16502,
+      "effective_date": "2026-09-23",
+      "ndc_count": 19
+    },
+    {
+      "rxcui": "403854",
+      "name": "hydrochlorothiazide 12.5 MG / olmesartan medoxomil 40 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "817496",
+      "dose_mg": null,
+      "nadac_per_unit": 0.21959,
+      "effective_date": "2026-09-23",
+      "ndc_count": 19
+    },
+    {
+      "rxcui": "1798281",
+      "name": "nebivolol 5 MG / valsartan 80 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "1798280",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "403855",
+      "name": "hydrochlorothiazide 25 MG / olmesartan medoxomil 40 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "817496",
+      "dose_mg": null,
+      "nadac_per_unit": 0.20907,
+      "effective_date": "2026-09-23",
+      "ndc_count": 19
+    },
+    {
+      "rxcui": "898353",
+      "name": "amlodipine 5 MG / benazepril hydrochloride 10 MG Oral Capsule",
+      "medication_id": null,
+      "combination_id": "214223",
+      "dose_mg": null,
+      "nadac_per_unit": 0.09904,
+      "effective_date": "2026-09-23",
+      "ndc_count": 8
+    },
+    {
+      "rxcui": "722126",
+      "name": "amlodipine 10 MG / valsartan 160 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "729455",
+      "dose_mg": null,
+      "nadac_per_unit": 0.32969,
+      "effective_date": "2026-09-23",
+      "ndc_count": 8
+    },
+    {
+      "rxcui": "1011718",
+      "name": "aliskiren 150 MG / valsartan 160 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "900937",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "1011729",
+      "name": "aliskiren 300 MG / valsartan 320 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "900937",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "722131",
+      "name": "amlodipine 10 MG / valsartan 320 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "729455",
+      "dose_mg": null,
+      "nadac_per_unit": 0.43177,
+      "effective_date": "2026-09-23",
+      "ndc_count": 8
+    },
+    {
+      "rxcui": "898359",
+      "name": "amlodipine 5 MG / benazepril hydrochloride 40 MG Oral Capsule",
+      "medication_id": null,
+      "combination_id": "214223",
+      "dose_mg": null,
+      "nadac_per_unit": 0.14392,
+      "effective_date": "2026-09-23",
+      "ndc_count": 6
+    },
+    {
+      "rxcui": "722134",
+      "name": "amlodipine 5 MG / valsartan 160 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "729455",
+      "dose_mg": null,
+      "nadac_per_unit": 0.26403,
+      "effective_date": "2026-09-23",
+      "ndc_count": 8
+    },
+    {
+      "rxcui": "898356",
+      "name": "amlodipine 5 MG / benazepril hydrochloride 20 MG Oral Capsule",
+      "medication_id": null,
+      "combination_id": "214223",
+      "dose_mg": null,
+      "nadac_per_unit": 0.1035,
+      "effective_date": "2026-09-23",
+      "ndc_count": 8
+    },
+    {
+      "rxcui": "722137",
+      "name": "amlodipine 5 MG / valsartan 320 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "729455",
+      "dose_mg": null,
+      "nadac_per_unit": 0.3511,
+      "effective_date": "2026-09-23",
+      "ndc_count": 8
+    },
+    {
+      "rxcui": "730861",
+      "name": "amlodipine 10 MG / olmesartan medoxomil 20 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "1009015",
+      "dose_mg": null,
+      "nadac_per_unit": 0.22983,
+      "effective_date": "2026-08-19",
+      "ndc_count": 14
+    },
+    {
+      "rxcui": "730872",
+      "name": "amlodipine 5 MG / olmesartan medoxomil 40 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "1009015",
+      "dose_mg": null,
+      "nadac_per_unit": 0.31221,
+      "effective_date": "2026-08-19",
+      "ndc_count": 14
+    },
+    {
+      "rxcui": "730866",
+      "name": "amlodipine 10 MG / olmesartan medoxomil 40 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "1009015",
+      "dose_mg": null,
+      "nadac_per_unit": 0.31608,
+      "effective_date": "2026-08-19",
+      "ndc_count": 14
+    },
+    {
+      "rxcui": "393275",
+      "name": "atenolol 50 MG / nifedipine 20 MG Extended Release Oral Capsule",
+      "medication_id": null,
+      "combination_id": "392475",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "730869",
+      "name": "amlodipine 5 MG / olmesartan medoxomil 20 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "1009015",
+      "dose_mg": null,
+      "nadac_per_unit": 0.2257,
+      "effective_date": "2026-08-19",
+      "ndc_count": 14
+    },
+    {
+      "rxcui": "246399",
+      "name": "furosemide 20 MG / spironolactone 50 MG Oral Capsule",
+      "medication_id": null,
+      "combination_id": "392462",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "977890",
+      "name": "amiloride hydrochloride 10 MG / furosemide 80 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "818351",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "977945",
+      "name": "amiloride hydrochloride 2.5 MG / furosemide 20 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "818351",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "977959",
+      "name": "amiloride hydrochloride 5 MG / furosemide 40 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "818351",
+      "dose_mg": null,
+      "nadac_per_unit": null,
+      "effective_date": null,
+      "ndc_count": 0
+    },
+    {
+      "rxcui": "876514",
+      "name": "amlodipine 10 MG / telmisartan 40 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "901212",
+      "dose_mg": null,
+      "nadac_per_unit": 2.87974,
+      "effective_date": "2026-09-23",
+      "ndc_count": 1
+    },
+    {
+      "rxcui": "876519",
+      "name": "amlodipine 10 MG / telmisartan 80 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "901212",
+      "dose_mg": null,
+      "nadac_per_unit": 2.93583,
+      "effective_date": "2026-09-23",
+      "ndc_count": 1
+    },
+    {
+      "rxcui": "876529",
+      "name": "amlodipine 5 MG / telmisartan 80 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "901212",
+      "dose_mg": null,
+      "nadac_per_unit": 2.87025,
+      "effective_date": "2026-09-23",
+      "ndc_count": 1
+    },
+    {
+      "rxcui": "876524",
+      "name": "amlodipine 5 MG / telmisartan 40 MG Oral Tablet",
+      "medication_id": null,
+      "combination_id": "901212",
+      "dose_mg": null,
+      "nadac_per_unit": 3.19076,
+      "effective_date": "2026-09-23",
+      "ndc_count": 1
+    }
+  ]
+}

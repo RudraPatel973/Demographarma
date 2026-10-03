@@ -57,9 +57,10 @@ export default async function VisitSummary({ params }: PageProps<"/visits/[id]/s
   const dx = (await listDiagnoses()).find((d) => d.id === enc.diagnosis_id);
   const medById = new Map(medications.map((m) => [m.id, m]));
   const rx = prescriptions[0];
+  const rxGroup = rx?.order_group ? prescriptions.filter((p) => p.order_group === rx.order_group) : rx ? [rx] : [];
   const rxMed = rx?.medication_id ? medById.get(rx.medication_id) : undefined;
   const chosenRec = recommendations.find((r) => r.id === rx?.recommendation_id);
-  const rxMessages = messages.filter((m) => rx && m.prescription_id === rx.id);
+  const rxMessages = messages.filter((m) => rxGroup.some((g) => g.id === m.prescription_id));
   const stepIdx = rx ? RX_STEPS.indexOf(rx.status) : -1;
 
   return (
@@ -104,7 +105,21 @@ export default async function VisitSummary({ params }: PageProps<"/visits/[id]/s
             />
             {rx ? (
               <div className="space-y-4 p-5 text-sm">
-                <div className="flex flex-wrap items-center gap-2">
+                {rxGroup.length > 1 && (
+                  <ul className="space-y-1.5">
+                    {rxGroup.map((g, i) => (
+                      <li key={g.id} className="flex flex-wrap items-center gap-2">
+                        <Pill size={16} className="text-brand-600" />
+                        <span className="font-semibold capitalize">
+                          Pill {i + 1}: {(g.medication_id && medById.get(g.medication_id)?.generic_name) || g.custom_medication}
+                        </span>
+                        {g.dose_mg ? <span>{g.dose_mg} mg</span> : null}
+                        <span className="text-slate-500">— {g.sig}</span>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <div className={`flex flex-wrap items-center gap-2 ${rxGroup.length > 1 ? "hidden" : ""}`}>
                   <Pill size={16} className="text-brand-600" />
                   <span className="text-base font-semibold capitalize">{rxMed?.generic_name ?? rx.custom_medication}</span>
                   {rx.dose_mg ? <span className="text-base">{rx.dose_mg} mg</span> : null}

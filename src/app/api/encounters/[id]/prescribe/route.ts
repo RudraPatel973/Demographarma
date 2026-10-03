@@ -86,7 +86,8 @@ export const POST = route(async (req: Request, { params }: Ctx) => {
       .select("id"),
   );
 
-  const toInsert = rows.map(({ label: _l, med: _m, item: _i, ...r }) => r);
+  // drop the helper fields before inserting
+  const toInsert = rows.map((r) => Object.fromEntries(Object.entries(r).filter(([k]) => !["label", "med", "item"].includes(k))));
 
   if (mode === "live") {
     const missing: string[] = (["first_name", "last_name", "date_of_birth", "sex", "phone"] as const).filter((k) => !patient[k]);

@@ -9,6 +9,7 @@ import { LiveChart } from "./LiveChart";
 import { ChartEditor } from "./ChartEditor";
 import { DecisionPanel, Excluded, RecCard, RxTracker, type Fired, type MedOption } from "./Results";
 import { useVisitRecorder } from "./useVisitRecorder";
+import { TwoPillFlow } from "./TwoPill";
 import { MissingInfo } from "./MissingInfo";
 import { missingRecommended, missingRequired, REQUIRED_LABELS, type RequiredKey } from "@/lib/requirements";
 import { uploadFile } from "@/lib/upload";
@@ -18,6 +19,8 @@ export interface Bundle {
   encounter: Encounter;
   patient: Patient;
   recommendations: Recommendation[];
+  second?: Recommendation[];
+  run2?: Bundle["run"];
   run: {
     clinical_note: string | null;
     engine: string;
@@ -488,9 +491,43 @@ export function VisitWorkspace({
           <div className="space-y-5">
             {!rx && (
               <>
+                {enc.plan?.mode === "dual" ? (
+                  <>
+                    <div className="flex flex-wrap items-end gap-3">
+                      <p className="text-sm text-slate-500">
+                        {bundle.run?.engine === "ai" ? `Ranked by ${bundle.run.model} from the rule-engine shortlist` : "Ranked by the rule engine"}
+                        {enc.live_state?.diagnosis_quote ? <> · diagnosis heard: &ldquo;{enc.live_state.diagnosis_quote}&rdquo;</> : null}
+                      </p>
+                      <Button variant="secondary" className="ml-auto" onClick={() => setChoice({ rec: null, override: true })}>
+                        <UserCog size={16} /> Write my own prescription
+                      </Button>
+                    </div>
+                    {choice?.override ? (
+                      <DecisionPanel key="override" encounterId={encId} rec={null} override meds={meds} onCancel={() => setChoice(null)} onDone={refresh} />
+                    ) : (
+                      <TwoPillFlow
+                        encounterId={encId}
+                        plan={enc.plan}
+                        first={bundle.recommendations}
+                        second={bundle.second ?? []}
+                        run={bundle.run}
+                        run2={bundle.run2 ?? null}
+                        medById={medById}
+                        onRefresh={refresh}
+                      />
+                    )}
+                  </>
+                ) : (
+                <>
+                {enc.plan?.mode === "add_on" && (
+                  <Card className="border-brand-200 bg-brand-50/60 p-4 text-sm">
+                    <p className="font-medium text-brand-700">Add-on to current medication</p>
+                    <p className="mt-1 text-slate-700">{enc.plan.reason}</p>
+                  </Card>
+                )}
                 <div className="flex flex-wrap items-end gap-3">
                   <div>
-                    <h2 className="text-lg font-semibold">Top 3 for this patient</h2>
+                    <h2 className="text-lg font-semibold">{enc.plan?.mode === "add_on" ? "Top 3 add-on options" : "Top 3 for this patient"}</h2>
                     <p className="text-sm text-slate-500">
                       {bundle.run?.engine === "ai" ? `Ranked by ${bundle.run.model} from the rule-engine shortlist` : "Ranked by the rule engine"}
                       {enc.live_state?.diagnosis_quote ? <> · diagnosis heard: &ldquo;{enc.live_state.diagnosis_quote}&rdquo;</> : null}
@@ -534,14 +571,18 @@ export function VisitWorkspace({
                   />
                 )}
                 {bundle.run && <Excluded items={bundle.run.excluded} />}
+                </>
+                )}
               </>
             )}
             {rx && (
               <RxTracker
                 rx={rx}
+                group={rx.order_group ? bundle.prescriptions.filter((x) => x.order_group === rx.order_group) : [rx]}
+                medById={medById}
                 med={rx.medication_id ? medById.get(rx.medication_id) : undefined}
                 patient={patient}
-                messages={bundle.messages.filter((m) => m.prescription_id === rx.id)}
+                messages={bundle.messages.filter((m) => (rx.order_group ? bundle.prescriptions.some((x) => x.order_group === rx.order_group && x.id === m.prescription_id) : m.prescription_id === rx.id))}
                 onChanged={refresh}
               />
             )}

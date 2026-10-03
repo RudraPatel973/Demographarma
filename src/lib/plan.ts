@@ -140,6 +140,20 @@ export function findCombination(combos: Combination[], a: string, b: string) {
 }
 
 /** Pick the combo strength that matches the chosen doses (exact if possible, otherwise the closest sensible one). */
+/** Keep only combo products in the same release form as the chosen drugs (e.g. metoprolol succinate ER, not tartrate). */
+export function sameForm(combo: Combination, medsById: Map<string, Medication>): Combination {
+  const ma = medsById.get(combo.medication_a);
+  const mb = medsById.get(combo.medication_b);
+  const wantsER = [ma, mb].some((m) => m && /extended-release|succinate/.test(m.generic_name));
+  const products = combo.products.filter((p) => {
+    if (wantsER !== Boolean(p.extended)) return false;
+    for (const m of [ma, mb]) if (m && /succinate/.test(m.generic_name) && !/succinate/i.test(p.name)) return false;
+    return true;
+  });
+  // brand names are per ingredient pair, not per release form; drop them if we filtered forms out
+  return { ...combo, products, brand_names: products.length === combo.products.length ? combo.brand_names : [] };
+}
+
 export function pickStrength(combo: Combination, medA: string, doseA: number, doseB: number) {
   const flip = combo.medication_a !== medA;
   const want = flip ? { a: doseB, b: doseA } : { a: doseA, b: doseB };
