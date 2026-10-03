@@ -3,14 +3,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import clsx from "clsx";
-import { ChevronDown, FileText, History, Loader2, Mic, Paperclip, Pencil, RefreshCw, Smartphone, Sparkles, Square, UserCog } from "lucide-react";
+import { AlertCircle, ChevronDown, FileText, History, Loader2, Mic, Paperclip, Pencil, RefreshCw, Smartphone, Sparkles, Square, UserCog } from "lucide-react";
 import { Badge, Button, Card, CardHeader } from "./ui";
 import { LiveChart } from "./LiveChart";
 import { ChartEditor } from "./ChartEditor";
 import { DecisionPanel, Excluded, RecCard, RxTracker, type Fired, type MedOption } from "./Results";
 import { useVisitRecorder } from "./useVisitRecorder";
 import { MissingInfo } from "./MissingInfo";
-import { missingRecommended, missingRequired, REQUIRED_LABELS } from "@/lib/requirements";
+import { missingRecommended, missingRequired, REQUIRED_LABELS, type RequiredKey } from "@/lib/requirements";
 import { uploadFile } from "@/lib/upload";
 import { patientName, type Diagnosis, type Encounter, type Medication, type Patient, type PatientMessage, type Prescription, type Recommendation, type TranscriptSegment } from "@/lib/types";
 
@@ -94,6 +94,11 @@ export function VisitWorkspace({
   const [heard, setHeard] = useState<{ quote: string | null; left: number } | null>(null);
   // true when the doctor tried to finish but required chart items are missing
   const [waiting, setWaiting] = useState(false);
+  // What the server said was missing on the last attempt (cleared whenever the chart changes)
+  const [serverMissing, setServerMissing] = useState<string[]>([]);
+  // The server reports a field this page doesn't track: the tab is running an older version of the app
+  const [stale, setStale] = useState(false);
+
 
   const refresh = useCallback(async () => {
     const r = await fetch(`/api/encounters/${encId}`, { cache: "no-store" });
@@ -152,6 +157,7 @@ export function VisitWorkspace({
       const j = await r.json();
       if (!r.ok) throw new Error(j.error ?? "Live update failed");
       setSyncError(null);
+      setServerMissing([]);
       setPatient(j.patient);
       setEnc((e) => ({ ...j.encounter, transcript: transcriptRef.current.length >= j.encounter.transcript.length ? transcriptRef.current : j.encounter.transcript, id: e.id }));
       const quote: string | null = j.encounter.live_state?.diagnosis_quote ?? null;
@@ -173,7 +179,11 @@ export function VisitWorkspace({
     }
   }, [encId]);
 
-  const missing = useMemo(() => missingRequired(patient, enc), [patient, enc]);
+  const clientMissing = useMemo(() => missingRequired(patient, enc), [patient, enc]);
+  const missing = useMemo(
+    () => Array.from(new Set([...clientMissing, ...serverMissing])) as RequiredKey[],
+    [clientMissing, serverMissing],
+  );
   const recommended = useMemo(() => missingRecommended(enc), [enc]);
   const missingRef = useRef(missing);
   useEffect(() => {
@@ -196,7 +206,11 @@ export function VisitWorkspace({
       await fetch(`/api/encounters/${encId}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ transcript: segs }) });
       const r = await fetch(`/api/encounters/${encId}/generate`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ sync: true }) });
       const j = await r.json();
-      if (r.status === 422 && j.missing) {
+      if (r.status === 422 && Array.isArray(j.missing)) {
+        const known = j.missing.filter((k: string) => k in REQUIRED_LABELS);
+        // Server wants something this version of the page can't collect -> ask for a reload instead of retrying
+        if (known.length < j.missing.length) setStale(true);
+        setServerMissing(j.missing);
         await refresh();
         setWaiting(true);
         setPhase("record");
@@ -221,13 +235,13 @@ export function VisitWorkspace({
 
   // Was waiting on missing info and now everything is in: continue automatically
   useEffect(() => {
-    if (!waiting || missing.length) return;
+    if (!waiting || missing.length || stale) return;
     const t = setTimeout(() => {
       setWaiting(false);
       setHeard({ quote: enc.live_state?.diagnosis_quote ?? null, left: CONFIRM_SECONDS });
     }, 400);
     return () => clearTimeout(t);
-  }, [waiting, missing.length, enc.live_state?.diagnosis_quote]);
+  }, [waiting, missing.length, stale, enc.live_state?.diagnosis_quote]);
 
   // Diagnosis heard: short countdown (recording continues), then generate
   useEffect(() => {
@@ -317,15 +331,41 @@ export function VisitWorkspace({
       </div>
 
       {/* ------------------------------------------------------------ RECORD */}
-      {phase === "record" && waiting && missing.length > 0 && (
+      {phase === "record" && !waiting && !stale && missing.length > 0 && (enc.transcript.length > 0 || recording) && (
+        <div className="mb-4 flex flex-wrap items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 py-2.5 text-sm text-amber-950" role="status" aria-live="polite">
+          <AlertCircle size={16} className="shrink-0 text-amber-700" />
+          <span className="font-medium">Still needed before recommendations:</span>
+          {missing.map((k) => (
+            <span key={k} className="rounded-full bg-white px-2.5 py-0.5 text-xs font-medium ring-1 ring-amber-300">
+              {REQUIRED_LABELS[k] ?? k}
+            </span>
+          ))}
+          <span className="text-xs text-amber-800">Ask the patient — each item ticks off as it&apos;s said.</span>
+        </div>
+      )}
+      {stale && (
+        <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-sky-300 bg-sky-50 px-4 py-3 text-sm" role="alert">
+          <span>This page is out of date — the app was updated while it was open. Reload to continue; nothing from this visit is lost.</span>
+          <Button className="ml-auto" onClick={() => window.location.reload()}>
+            Reload
+          </Button>
+        </div>
+      )}
+      {phase === "record" && waiting && missing.length > 0 && !stale && (
         <MissingInfo
           missing={missing}
           recommended={recommended}
           patient={patient}
           encounter={enc}
           listening={recording}
-          onPatient={setPatient}
-          onEncounter={(e) => setEnc((cur) => ({ ...cur, ...e }))}
+          onPatient={(p) => {
+            setServerMissing([]);
+            setPatient(p);
+          }}
+          onEncounter={(e) => {
+            setServerMissing([]);
+            setEnc((cur) => ({ ...cur, ...e }));
+          }}
           onCancel={() => setWaiting(false)}
         />
       )}
@@ -407,7 +447,7 @@ export function VisitWorkspace({
                 syncError
                   ? `Update failed: ${syncError}`
                   : missing.length
-                    ? `Still needed: ${missing.map((k) => REQUIRED_LABELS[k]).join(", ")}`
+                    ? `Still needed: ${missing.map((k) => REQUIRED_LABELS[k] ?? k).join(", ")}`
                     : "✓ Ready for recommendations"
               }
               right={
@@ -550,10 +590,14 @@ export function VisitWorkspace({
           onClose={() => setEditing(false)}
           saveLabel={phase === "results" && !rx ? "Save & regenerate" : "Save chart"}
           onSaved={async (p, e) => {
+            // Only re-rank when something that affects drug choice changed (not name/phone/address)
+            const clinical = (x: Patient, v: Pick<Encounter, "vitals" | "labs">) =>
+              JSON.stringify([x.date_of_birth, x.sex, x.ethnicity, x.height_cm, x.weight_kg, x.pregnancy_status, [...x.conditions].sort(), x.current_medications, x.allergies, v.vitals, v.labs]);
+            const changed = clinical(patient, enc) !== clinical(p, e);
             setPatient(p);
             setEnc((cur) => ({ ...cur, ...e }));
             setEditing(false);
-            if (phase === "results" && !rx) {
+            if (phase === "results" && !rx && changed) {
               setPhase("generating");
               const r = await fetch(`/api/encounters/${encId}/generate`, { method: "POST", headers: { "content-type": "application/json" }, body: "{}" });
               if (!r.ok) setGenError((await r.json()).error ?? "Regenerate failed");

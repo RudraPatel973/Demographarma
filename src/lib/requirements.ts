@@ -45,8 +45,7 @@ export function missingRequired(p: Patient, e: Pick<Encounter, "vitals">): Requi
   if (!p.date_of_birth) out.push("date_of_birth");
   if (!p.sex || p.sex === "UNKNOWN") out.push("sex");
   if (!p.phone || p.phone.replace(/\D/g, "").length < 10) out.push("phone");
-  const a = p.address;
-  if (!a?.street1 || !a?.city || !a?.state || !a?.postalCode) out.push("address");
+  if (addressMissing(p)) out.push("address");
   if (!p.height_cm) out.push("height_cm");
   if (!p.weight_kg) out.push("weight_kg");
   if (!e.vitals?.bp_systolic || !e.vitals?.bp_diastolic) out.push("blood_pressure");
@@ -61,4 +60,10 @@ export function missingRecommended(e: Pick<Encounter, "labs">): string[] {
   if (e.labs?.egfr == null) out.push("eGFR (kidney function)");
   if (e.labs?.potassium == null) out.push("Potassium");
   return out;
+}
+
+/** Street, city, state and ZIP present (ZIP is auto-looked-up when the street and city/state are said). */
+export function addressMissing(p: Pick<Patient, "address">) {
+  const a = p.address;
+  return !a?.street1 || !a?.city || !a?.state || !a?.postalCode;
 }

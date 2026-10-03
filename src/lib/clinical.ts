@@ -2,6 +2,7 @@ import "server-only";
 import * as z from "zod/v4";
 import { db, must } from "./supabase";
 import { loadAttachments, structured, transcriptText } from "./llm";
+import { completeAddress } from "./geocode";
 import { CONDITIONS, ETHNICITIES, type Diagnosis, type Encounter, type Patient } from "./types";
 import type { PatientProfile, ScoredCandidate } from "./scoring";
 
@@ -56,7 +57,8 @@ Extract the patient's chart from everything said so far:
 - Convert units: feet/inches -> cm, pounds -> kg, "one fifty-four over ninety-five" -> 154/95. Spell out the phone number as digits.
 - address: the patient's home address if said. Write numbers as digits ("forty two" -> 42, "one one two oh one" -> 11201),
   abbreviate the street type (Street -> St, Avenue -> Ave), put apartment/unit in street2, state as the 2-letter code
-  ("New York" -> NY). If the city is a NYC borough or neighborhood, keep what was said (e.g. Brooklyn). null for parts not said.
+  ("New York" -> NY). If the city is a NYC borough or neighborhood, keep what was said (e.g. Brooklyn). null for parts not said
+  (a missing ZIP is looked up automatically). Listen for apartment/unit/floor/suite wherever it's said.
 - Names: as the patient said them (fix obvious speech-recognition casing).
 - sex: only if stated or unambiguous from context (e.g. "Mr./Mrs.", "my husband" is NOT enough, but pregnancy, tubal ligation,
   prostate, or the doctor saying "she/he" about the patient are).
@@ -139,7 +141,8 @@ export async function syncFromTranscript(encounterId: string) {
   if (Object.keys(addr).length) {
     if (typeof addr.state === "string") addr.state = addr.state.toUpperCase().slice(0, 2);
     if (typeof addr.postalCode === "string") addr.postalCode = addr.postalCode.replace(/[^\d-]/g, "");
-    pu.address = { ...(patient.address ?? {}), ...addr };
+    // Fill in the ZIP (and city/state) from what was said, e.g. "560 W 163rd St, New York, NY" -> 10032
+    pu.address = await completeAddress({ ...(patient.address ?? {}), ...addr });
   }
   pu.conditions = unionCI(patient.conditions, x.conditions);
   pu.current_medications = unionCI(patient.current_medications, x.current_medications);

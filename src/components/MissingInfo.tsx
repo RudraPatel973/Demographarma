@@ -113,7 +113,7 @@ export function MissingInfo({
       <div className="mt-3 flex flex-wrap gap-1.5">
         {missing.map((k) => (
           <span key={k} className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-amber-900 ring-1 ring-amber-300">
-            {REQUIRED_LABELS[k]}
+            {REQUIRED_LABELS[k] ?? k}
           </span>
         ))}
         {recommended.map((k) => (
@@ -147,7 +147,7 @@ export function MissingInfo({
             <Input className="col-span-2 sm:col-span-1" aria-label="Apartment or unit" placeholder="Apt" value={f.street2} onChange={set("street2")} />
             <Input className="col-span-4 sm:col-span-1" aria-label="City" placeholder="City" value={f.city} onChange={set("city")} />
             <Input className="col-span-2 sm:col-span-1" aria-label="State" placeholder="State" maxLength={2} value={f.state} onChange={set("state")} />
-            <Input className="col-span-4 sm:col-span-1" aria-label="ZIP code" placeholder="ZIP" inputMode="numeric" value={f.postalCode} onChange={set("postalCode")} />
+            <Input className="col-span-4 sm:col-span-1" aria-label="ZIP code" placeholder="ZIP (auto)" inputMode="numeric" value={f.postalCode} onChange={set("postalCode")} />
           </div>
         )}
         {has("height_cm") && (
