@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Activity } from "lucide-react";
 import "./globals.css";
+import { PhotonCallback } from "@/components/PhotonCallback";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
@@ -26,12 +27,18 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             </Link>
             <nav className="flex items-center gap-4 text-sm text-slate-600">
               <Link href="/" className="hover:text-ink">Visits</Link>
+              <Link href="/patients" className="hover:text-ink">Patients</Link>
               <Link href="/visits/new" className="hover:text-ink">New visit</Link>
             </nav>
             <span className="ml-auto hidden text-xs text-slate-500 sm:block">Hypertension demo · clinician decision support</span>
           </div>
         </header>
         <main className="flex-1">{children}</main>
+        <PhotonCallback
+          clientId={process.env.NEXT_PUBLIC_PHOTON_CLIENT_ID}
+          orgId={process.env.NEXT_PUBLIC_PHOTON_ORG_ID}
+          devMode={(process.env.PHOTON_ENV ?? "neutron") === "neutron"}
+        />
       </body>
     </html>
   );

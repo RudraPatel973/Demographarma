@@ -3,12 +3,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import clsx from "clsx";
-import { ChevronDown, FileText, Loader2, Mic, Paperclip, Pencil, RefreshCw, Smartphone, Sparkles, Square, UserCog } from "lucide-react";
+import { ChevronDown, FileText, History, Loader2, Mic, Paperclip, Pencil, RefreshCw, Smartphone, Sparkles, Square, UserCog } from "lucide-react";
 import { Badge, Button, Card, CardHeader } from "./ui";
 import { LiveChart } from "./LiveChart";
 import { ChartEditor } from "./ChartEditor";
 import { DecisionPanel, Excluded, RecCard, RxTracker, type Fired, type MedOption } from "./Results";
 import { useVisitRecorder } from "./useVisitRecorder";
+import { MissingInfo } from "./MissingInfo";
+import { missingRecommended, missingRequired, REQUIRED_LABELS } from "@/lib/requirements";
 import { uploadFile } from "@/lib/upload";
 import { patientName, type Diagnosis, type Encounter, type Medication, type Patient, type PatientMessage, type Prescription, type Recommendation, type TranscriptSegment } from "@/lib/types";
 
@@ -90,6 +92,8 @@ export function VisitWorkspace({
   const heardRef = useRef(false);
   const dismissedQuote = useRef<string | null>(null);
   const [heard, setHeard] = useState<{ quote: string | null; left: number } | null>(null);
+  // true when the doctor tried to finish but required chart items are missing
+  const [waiting, setWaiting] = useState(false);
 
   const refresh = useCallback(async () => {
     const r = await fetch(`/api/encounters/${encId}`, { cache: "no-store" });
@@ -153,7 +157,8 @@ export function VisitWorkspace({
       const quote: string | null = j.encounter.live_state?.diagnosis_quote ?? null;
       if (j.diagnosisStated && !heardRef.current && quote !== dismissedQuote.current) {
         heardRef.current = true;
-        setHeard({ quote, left: CONFIRM_SECONDS });
+        if (missingRequired(j.patient, j.encounter).length) setWaiting(true);
+        else setHeard({ quote, left: CONFIRM_SECONDS });
       }
     } catch (e) {
       setSyncError(e instanceof Error ? e.message : String(e));
@@ -168,8 +173,19 @@ export function VisitWorkspace({
     }
   }, [encId]);
 
+  const missing = useMemo(() => missingRequired(patient, enc), [patient, enc]);
+  const recommended = useMemo(() => missingRecommended(enc), [enc]);
+  const missingRef = useRef(missing);
+  useEffect(() => {
+    missingRef.current = missing;
+  }, [missing]);
+
   const finish = useCallback(async () => {
     if (finishing.current) return;
+    if (missingRef.current.length) {
+      setWaiting(true); // keep recording; the panel lists what's needed
+      return;
+    }
     finishing.current = true;
     const segs = recording ? recStop() : transcriptRef.current;
     setPhase("generating");
@@ -180,6 +196,12 @@ export function VisitWorkspace({
       await fetch(`/api/encounters/${encId}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify({ transcript: segs }) });
       const r = await fetch(`/api/encounters/${encId}/generate`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ sync: true }) });
       const j = await r.json();
+      if (r.status === 422 && j.missing) {
+        await refresh();
+        setWaiting(true);
+        setPhase("record");
+        return;
+      }
       if (!r.ok) throw new Error(j.error ?? "Could not generate recommendations");
       await refresh();
       setChoice(null);
@@ -196,6 +218,16 @@ export function VisitWorkspace({
   useEffect(() => {
     finishRef.current = finish;
   }, [finish]);
+
+  // Was waiting on missing info and now everything is in: continue automatically
+  useEffect(() => {
+    if (!waiting || missing.length) return;
+    const t = setTimeout(() => {
+      setWaiting(false);
+      setHeard({ quote: enc.live_state?.diagnosis_quote ?? null, left: CONFIRM_SECONDS });
+    }, 400);
+    return () => clearTimeout(t);
+  }, [waiting, missing.length, enc.live_state?.diagnosis_quote]);
 
   // Diagnosis heard: short countdown (recording continues), then generate
   useEffect(() => {
@@ -267,12 +299,36 @@ export function VisitWorkspace({
           </span>
         )}
         {phase === "results" && <Badge tone="brand">{enc.status.replace("_", " ")}</Badge>}
-        <Link href={`/patient/${patient.id}`} target="_blank" className="ml-auto inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50">
+        <div className="ml-auto flex items-center gap-2">
+        {patient.first_name && (
+          <Link href={`/patients/${patient.id}`} className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50">
+            <History size={14} /> Past visits
+          </Link>
+        )}
+        {rx && (
+          <Link href={`/visits/${encId}/summary`} className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50">
+            <FileText size={14} /> Visit summary
+          </Link>
+        )}
+        <Link href={`/patient/${patient.id}`} target="_blank" className="inline-flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50">
           <Smartphone size={14} /> Patient&apos;s phone
         </Link>
+        </div>
       </div>
 
       {/* ------------------------------------------------------------ RECORD */}
+      {phase === "record" && waiting && missing.length > 0 && (
+        <MissingInfo
+          missing={missing}
+          recommended={recommended}
+          patient={patient}
+          encounter={enc}
+          listening={recording}
+          onPatient={setPatient}
+          onEncounter={(e) => setEnc((cur) => ({ ...cur, ...e }))}
+          onCancel={() => setWaiting(false)}
+        />
+      )}
       {phase === "record" && heard && (
         <div className="mb-4 flex flex-wrap items-center gap-3 rounded-xl border border-brand-200 bg-brand-50 px-4 py-3 text-sm" role="status">
           <Sparkles size={16} className="text-brand-700" />
@@ -347,7 +403,13 @@ export function VisitWorkspace({
           <Card className="lg:sticky lg:top-20 lg:self-start">
             <CardHeader
               title="Chart"
-              subtitle={syncError ? `Update failed: ${syncError}` : enc.live_state?.extracted_at ? `Updated ${new Date(enc.live_state.extracted_at).toLocaleTimeString()}` : "Fills in from the conversation"}
+              subtitle={
+                syncError
+                  ? `Update failed: ${syncError}`
+                  : missing.length
+                    ? `Still needed: ${missing.map((k) => REQUIRED_LABELS[k]).join(", ")}`
+                    : "✓ Ready for recommendations"
+              }
               right={
                 <div className="flex items-center gap-1">
                   {syncing && <Loader2 size={14} className="animate-spin text-slate-400" />}

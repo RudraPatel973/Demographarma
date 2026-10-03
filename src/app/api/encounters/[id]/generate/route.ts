@@ -3,6 +3,7 @@ import { json, route } from "@/lib/api";
 import { buildProfile, defaultRegimen, diversify, missingInputs, scoreCandidates, type ModifierRow, type Table1Row } from "@/lib/scoring";
 import { llmModelName, llmProvider } from "@/lib/llm";
 import { rankCandidates, syncFromTranscript } from "@/lib/clinical";
+import { missingRequired, REQUIRED_LABELS } from "@/lib/requirements";
 import type { Diagnosis, Encounter, Medication, Patient } from "@/lib/types";
 
 type Ctx = { params: Promise<{ id: string }> };
@@ -36,6 +37,12 @@ export const POST = route(async (req: Request, { params }: Ctx) => {
     encounter = must(await db().from("encounters").update({ diagnosis_id: "essential_hypertension" }).eq("id", id).select("*").single()) as Encounter;
   }
   const patient = must(await db().from("patients").select("*").eq("id", encounter.patient_id).single()) as Patient;
+
+  // The chart must be complete before matching (and Photon needs these to send the prescription)
+  const missingKeys = missingRequired(patient, encounter);
+  if (missingKeys.length) {
+    return json({ error: `Key information missing: ${missingKeys.map((k) => REQUIRED_LABELS[k]).join(", ")}`, missing: missingKeys }, 422);
+  }
   const diagnosis = must(await db().from("diagnoses").select("*").eq("id", encounter.diagnosis_id).single()) as Diagnosis;
 
   // 1. Table 1

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { PHOTON_RETURN_KEY } from "./PhotonCallback";
 
 export interface PhotonConfig {
   clientId: string;
@@ -29,6 +30,11 @@ export function PhotonPrescribe({
 }) {
   const host = useRef<HTMLDivElement>(null);
   const [error, setError] = useState<string | null>(null);
+  const [slow, setSlow] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setSlow(true), 15000);
+    return () => clearTimeout(t);
+  }, []);
 
   useEffect(() => {
     let cancelled = false;
@@ -42,8 +48,14 @@ export function PhotonPrescribe({
         const client = document.createElement("photon-client");
         client.setAttribute("id", config.clientId);
         client.setAttribute("org", config.orgId);
+        // Photon returns to the whitelisted origin; PhotonCallback (root layout) finishes sign-in and comes back here
         client.setAttribute("redirect-uri", window.location.origin);
         client.setAttribute("redirect-path", window.location.pathname);
+        try {
+          sessionStorage.setItem(PHOTON_RETURN_KEY, window.location.pathname);
+        } catch {
+          /* storage unavailable */
+        }
         client.setAttribute("auto-login", "true");
         if (config.devMode) client.setAttribute("dev-mode", "true");
 
@@ -97,6 +109,15 @@ export function PhotonPrescribe({
       )}
       {error && <p className="mb-3 text-sm text-red-600">{error}</p>}
       <div ref={host} className="min-h-96" />
+      {slow && (
+        <p className="mt-2 text-xs text-slate-500">
+          Still loading? Photon signs you in on its own page and sends you back here. Allow pop-ups/redirects for this site, and make sure{" "}
+          <code className="rounded bg-slate-100 px-1">{typeof window !== "undefined" ? window.location.origin : ""}</code> is in Photon&apos;s whitelisted URLs.{" "}
+          <button className="text-sky-700 hover:underline" onClick={() => window.location.reload()}>
+            Reload
+          </button>
+        </p>
+      )}
     </div>
   );
 }

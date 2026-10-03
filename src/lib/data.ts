@@ -36,3 +36,61 @@ export async function listMedications() {
     await db().from("medications").select("id,generic_name,brand_names,drug_class,class_key,usual_dose_min_mg,usual_dose_max_mg,start_dose_mg,doses_per_day,available_strengths").order("generic_name"),
   ) as Pick<Medication, "id" | "generic_name" | "brand_names" | "drug_class" | "class_key" | "usual_dose_min_mg" | "usual_dose_max_mg" | "start_dose_mg" | "doses_per_day" | "available_strengths">[];
 }
+
+// ---------------------------------------------------------------------------
+// History
+// ---------------------------------------------------------------------------
+export type VisitRow = {
+  id: string;
+  status: Encounter["status"];
+  created_at: string;
+  vitals: Encounter["vitals"];
+  labs: Encounter["labs"];
+  live_state: Encounter["live_state"];
+  patients: Pick<Patient, "id" | "first_name" | "last_name" | "date_of_birth" | "sex"> | null;
+  diagnoses: Pick<Diagnosis, "name" | "icd10"> | null;
+  prescriptions: (Pick<Prescription, "id" | "dose_mg" | "status" | "is_override" | "custom_medication" | "created_at"> & {
+    medications: Pick<Medication, "generic_name"> | null;
+  })[];
+};
+
+const VISIT_SELECT =
+  "id,status,created_at,vitals,labs,live_state,patients(id,first_name,last_name,date_of_birth,sex),diagnoses(name,icd10),prescriptions(id,dose_mg,status,is_override,custom_medication,created_at,medications(generic_name))";
+
+export async function listVisits(opts: { status?: string; q?: string; patientId?: string; limit?: number } = {}) {
+  let query = db()
+    .from("encounters")
+    .select(VISIT_SELECT)
+    .order("created_at", { ascending: false })
+    .limit(opts.limit ?? 100);
+  if (opts.status === "in_progress") query = query.in("status", ["in_progress", "recommended", "med_chosen"]);
+  else if (opts.status) query = query.eq("status", opts.status);
+  if (opts.patientId) query = query.eq("patient_id", opts.patientId);
+  let rows = must(await query) as unknown as VisitRow[];
+  if (opts.q) {
+    const q = opts.q.toLowerCase();
+    rows = rows.filter((r) => `${r.patients?.first_name ?? ""} ${r.patients?.last_name ?? ""}`.toLowerCase().includes(q));
+  }
+  return rows;
+}
+
+export async function listPatients(q?: string) {
+  let query = db()
+    .from("patients")
+    .select("id,first_name,last_name,date_of_birth,sex,conditions,updated_at,encounters(id,created_at)")
+    .not("first_name", "is", null)
+    .order("updated_at", { ascending: false })
+    .limit(200);
+  if (q) {
+    const safe = q.replace(/[%,()]/g, "");
+    query = query.or(`first_name.ilike.%${safe}%,last_name.ilike.%${safe}%`);
+  }
+  return must(await query) as unknown as (Pick<Patient, "id" | "first_name" | "last_name" | "date_of_birth" | "sex" | "conditions"> & {
+    updated_at: string;
+    encounters: { id: string; created_at: string }[];
+  })[];
+}
+
+export async function getPatient(id: string) {
+  return must(await db().from("patients").select("*").eq("id", id).single()) as Patient;
+}
