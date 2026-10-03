@@ -52,7 +52,7 @@ export async function buildPriorAuth(args: {
   // Why preferred alternatives can't be used: the rule engine's contraindications for this patient
   const table1 = must(await db().from("diagnosis_medications").select("medication_id,line_of_therapy,base_score,guideline,notes").eq("diagnosis_id", dx.id)) as Table1Row[];
   const modifiers = must(await db().from("demographic_modifiers").select("*").eq("active", true)) as ModifierRow[];
-  const scored = scoreCandidates(table1, meds, modifiers, buildProfile(patient, enc));
+  const scored = scoreCandidates(table1, meds, modifiers, buildProfile(patient, enc), trials);
   // leave out the requested drug and anything the patient is currently taking
   const current = patient.current_medications.join(" ").toLowerCase();
   const takingNow = new Set([

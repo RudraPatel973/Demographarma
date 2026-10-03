@@ -1,6 +1,7 @@
 import { db, must } from "@/lib/supabase";
 import { json, route } from "@/lib/api";
 import { loadCoverageContext, coverageFor } from "@/lib/coverage-server";
+import { keepClinicalLead } from "@/lib/coverage";
 import type { PriceRow } from "@/lib/plan";
 import type { Encounter, Medication, Patient } from "@/lib/types";
 
@@ -34,18 +35,16 @@ export const POST = route(async (_req: Request, { params }: Ctx) => {
   const recs = must(await db().from("recommendations").select("id,medication_id,dose_mg,match_percent,clinical_percent").eq("encounter_id", id)) as {
     id: string; medication_id: string; dose_mg: number | null; match_percent: number; clinical_percent: number | null;
   }[];
-  for (const r of recs) {
+  const next = recs.flatMap((r) => {
     const med = meds.find((m) => m.id === r.medication_id);
-    if (!med) continue;
+    if (!med) return [];
     const coverage = coverageFor(ctx, prices, meds, med, r.dose_mg);
     const clinical = r.clinical_percent ?? r.match_percent;
-    must(
-      await db()
-        .from("recommendations")
-        .update({ coverage, clinical_percent: clinical, match_percent: Math.max(1, Math.min(99, clinical + coverage.adjustment)) })
-        .eq("id", r.id)
-        .select("id"),
-    );
+    return [{ id: r.id, medication_id: r.medication_id, coverage, clinical_percent: clinical, match_percent: Math.max(1, Math.min(99, clinical + coverage.adjustment)) }];
+  });
+  keepClinicalLead(next);
+  for (const r of next) {
+    must(await db().from("recommendations").update({ coverage: r.coverage, clinical_percent: r.clinical_percent, match_percent: r.match_percent }).eq("id", r.id).select("id"));
   }
   return json({ updated: recs.length, plan: ctx.planName, formulary_known: ctx.formularyKnown });
 });

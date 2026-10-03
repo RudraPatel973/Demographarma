@@ -147,3 +147,27 @@ export function evaluateCoverage(args: {
 }
 
 export { FIRST_LINE };
+
+/** Clinical-fit lead (points) that coverage alone may not overturn. */
+export const CLINICAL_LEAD = 10;
+
+/**
+ * Coverage breaks near-ties; it never overrides a clearly better clinical fit. When a drug leads another by more than
+ * CLINICAL_LEAD clinical points but its coverage penalty would drop it below, keep it 3 points ahead (the paperwork is
+ * one click away). Mutates match_percent; returns the ids that were held up.
+ */
+export function keepClinicalLead<T extends { medication_id: string; match_percent: number; clinical_percent?: unknown }>(rows: T[]) {
+  const held: string[] = [];
+  const byClinical = [...rows].sort((a, b) => Number(b.clinical_percent ?? b.match_percent) - Number(a.clinical_percent ?? a.match_percent));
+  for (let pass = 0; pass < rows.length; pass++) {
+    for (const a of byClinical) {
+      const ca = Number(a.clinical_percent ?? a.match_percent);
+      for (const b of rows) {
+        if (a === b || ca - Number(b.clinical_percent ?? b.match_percent) <= CLINICAL_LEAD || a.match_percent > b.match_percent + 2) continue;
+        a.match_percent = Math.min(ca, 99, b.match_percent + 3);
+        if (!held.includes(a.medication_id)) held.push(a.medication_id);
+      }
+    }
+  }
+  return held;
+}

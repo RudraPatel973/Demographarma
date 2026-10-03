@@ -1,11 +1,12 @@
 import "server-only";
 import { db, must } from "./supabase";
-import { buildProfile, defaultRegimen, diversify, missingInputs, scoreCandidates, type ModifierRow, type ScoredCandidate, type Table1Row } from "./scoring";
+import { buildProfile, defaultRegimen, diversify, missingInputs, scoreCandidates, type ModifierRow, type ScoredCandidate, type Table1Row, type PriorTrial } from "./scoring";
 import { llmModelName, llmProvider } from "./llm";
 import { rankCandidates } from "./clinical";
 import { CLASS_LABEL, decidePlan, findCombination, monthlyCost, scoreSecondPill, type Combination, type PriceRow } from "./plan";
 import type { Diagnosis, Encounter, Medication, Patient } from "./types";
 import { coverageFor, loadCoverageContext } from "./coverage-server";
+import { CLINICAL_LEAD, keepClinicalLead } from "./coverage";
 
 /**
  * Generate recommendations for one "slot":
@@ -29,7 +30,8 @@ export async function recommend(encounterId: string, opts: { slot: 1 | 2; first?
   const prices = (must(await db().from("drug_prices").select("rxcui,name,medication_id,combination_id,dose_mg,nadac_per_unit")) as PriceRow[]) ?? [];
 
   const profile = buildProfile(patient, encounter);
-  const scored = scoreCandidates(table1, meds, modifiers, profile);
+  const trials = must(await db().from("medication_trials").select("medication_id,drug_name,outcome,detail,ended_on").eq("patient_id", patient.id)) as PriorTrial[];
+  const scored = scoreCandidates(table1, meds, modifiers, profile, trials);
   const eligible = scored.filter((c) => !c.contraindicated);
   const excluded = scored.filter((c) => c.contraindicated);
   const missing = missingInputs(profile);
@@ -159,6 +161,11 @@ export async function recommend(encounterId: string, opts: { slot: 1 | 2; first?
     }
   }
 
+  for (const id of keepClinicalLead(rows as (Row & { clinical_percent: number })[])) {
+    const r = rows.find((x) => x.medication_id === id)!;
+    (r.factors_for as string[]).push(`Ranked on clinical fit: it leads the covered alternatives by more than ${CLINICAL_LEAD} points, so the coverage gap is handled with a one-click exception/PA packet.`);
+  }
+
   // ---- monthly cost + price tie-break ----------------------------------
   for (const r of rows) r.monthly_cost = monthlyCost(prices, medById.get(r.medication_id)!, r.dose_mg);
   rows.sort((a, b) => b.match_percent - a.match_percent);
@@ -166,7 +173,8 @@ export async function recommend(encounterId: string, opts: { slot: 1 | 2; first?
     const a = rows[i], b = rows[i + 1];
     const ca = a.monthly_cost as number | null, cb = b.monthly_cost as number | null;
     // effectively tied on fit (within 2 points) -> the cheaper one goes first
-    if (a.match_percent - b.match_percent <= 2 && ca != null && cb != null && cb + 0.5 < ca) {
+    const clinicalGap = Number(a.clinical_percent ?? a.match_percent) - Number(b.clinical_percent ?? b.match_percent);
+    if (a.match_percent - b.match_percent <= 2 && clinicalGap <= CLINICAL_LEAD && ca != null && cb != null && cb + 0.5 < ca) {
       rows[i] = b;
       rows[i + 1] = a;
       (b.factors_for as string[]).unshift(`Tie with ${medById.get(a.medication_id)?.generic_name} broken by price (~$${cb.toFixed(2)} vs $${ca.toFixed(2)}/month)`);

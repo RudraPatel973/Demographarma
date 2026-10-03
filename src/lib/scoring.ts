@@ -196,11 +196,32 @@ export function diversify(scored: ScoredCandidate[], limit: number) {
   return out;
 }
 
+/** A drug the patient has taken before, and how it went (from medication_trials). */
+export type PriorTrial = { medication_id: string | null; drug_name: string; outcome: string; detail: string | null; ended_on?: string | null };
+
+/** What the patient's own history says about re-using a drug. */
+function historyFor(medId: string, trials: PriorTrial[]): FiredModifier[] {
+  const out: FiredModifier[] = [];
+  for (const t of trials) {
+    if (t.medication_id !== medId) continue;
+    const why = t.detail ? `: ${t.detail}` : "";
+    const base = { source: "Patient medication history", source_url: null, matched: "medication history" };
+    if (t.outcome === "allergy" || t.outcome === "contraindicated")
+      out.push({ ...base, effect: "contraindicated", delta: -100, rationale: `Previous ${t.outcome === "allergy" ? "allergic reaction" : "contraindication"} to ${t.drug_name}${why}.` });
+    else if (t.outcome === "side_effect")
+      out.push({ ...base, effect: "avoid", delta: -45, rationale: `Stopped before because of a side effect${why}. Re-challenge only if no better option.` });
+    else if (t.outcome === "not_at_goal" && t.ended_on)
+      out.push({ ...base, effect: "caution", delta: -20, rationale: `Tried before without reaching BP goal${why}.` });
+  }
+  return out;
+}
+
 export function scoreCandidates(
   table1: Table1Row[],
   meds: Medication[],
   modifiers: ModifierRow[],
   profile: PatientProfile,
+  trials: PriorTrial[] = [],
 ): ScoredCandidate[] {
   const medById = new Map(meds.map((m) => [m.id, m]));
   const out: ScoredCandidate[] = [];
@@ -234,6 +255,7 @@ export function scoreCandidates(
         matched: parts.join(" + "),
       });
     }
+    fired.push(...historyFor(medication.id, trials));
     const contraindicated = fired.some((f) => f.effect === "contraindicated");
     const raw = row.base_score + fired.reduce((s, f) => s + f.delta, 0);
     out.push({
