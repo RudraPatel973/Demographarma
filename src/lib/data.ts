@@ -1,5 +1,6 @@
 import "server-only";
 import { db, must } from "./supabase";
+import { listObservations } from "./inference";
 import type { Diagnosis, Encounter, Medication, MedicationTrial, Patient, PatientMessage, Prescription, Recommendation } from "./types";
 
 export type PriorAuthRow = { id: string; drug_label: string; request_type: string; status: string; plan_name: string | null; created_at: string; medication_id: string | null; combination_id: string | null };
@@ -33,7 +34,8 @@ export async function getEncounterBundle(id: string) {
   const priorAuths = must(
     await db().from("prior_auths").select("id,drug_label,request_type,status,plan_name,created_at,medication_id,combination_id").eq("encounter_id", id).order("created_at", { ascending: false }),
   ) as PriorAuthRow[];
-  return { encounter, patient, recommendations: latest, second, run: runFor(1), run2: slot2At ? runFor(2) : null, prescriptions, medications, messages, trials, priorAuths };
+  const observations = await listObservations(id);
+  return { encounter, patient, recommendations: latest, second, run: runFor(1), run2: slot2At ? runFor(2) : null, prescriptions, medications, messages, trials, priorAuths, observations };
 }
 
 export async function listDiagnoses() {
@@ -53,6 +55,8 @@ export type VisitRow = {
   id: string;
   status: Encounter["status"];
   created_at: string;
+  diagnosis_id: string | null;
+  diagnosis_notes: string | null;
   vitals: Encounter["vitals"];
   labs: Encounter["labs"];
   live_state: Encounter["live_state"];
@@ -64,7 +68,7 @@ export type VisitRow = {
 };
 
 const VISIT_SELECT =
-  "id,status,created_at,vitals,labs,live_state,patients(id,first_name,last_name,date_of_birth,sex),diagnoses(name,icd10),prescriptions(id,dose_mg,status,is_override,custom_medication,created_at,medications(generic_name))";
+  "id,status,created_at,vitals,labs,live_state,diagnosis_id,diagnosis_notes,patients(id,first_name,last_name,date_of_birth,sex),diagnoses(name,icd10),prescriptions(id,dose_mg,status,is_override,custom_medication,created_at,medications(generic_name))";
 
 export async function listVisits(opts: { status?: string; q?: string; patientId?: string; limit?: number } = {}) {
   let query = db()

@@ -3,9 +3,10 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Loader2, Trash2, UserCog } from "lucide-react";
+import { Loader2, Pencil, Trash2, UserCog } from "lucide-react";
 import { Badge, Button } from "./ui";
-import { patientName } from "@/lib/types";
+import { EditVisitDialog } from "./VisitActions";
+import { patientName, type Diagnosis, type Vitals } from "@/lib/types";
 import { visitHref } from "@/lib/visits";
 
 /** Formats in the viewer's timezone (server components would use the server's). */
@@ -41,11 +42,15 @@ export type VisitRowLite = {
   id: string;
   status: string;
   created_at: string;
-  vitals: { bp_systolic?: number | null; bp_diastolic?: number | null };
+  diagnosis_id: string | null;
+  diagnosis_notes: string | null;
+  vitals: Vitals;
   patients: { id: string; first_name: string | null; last_name: string | null } | null;
   diagnoses: { name: string; icd10: string } | null;
-  prescriptions: { dose_mg: number | null; is_override: boolean; custom_medication: string | null; medications: { generic_name: string } | null }[];
+  prescriptions: { status: string; dose_mg: number | null; is_override: boolean; custom_medication: string | null; medications: { generic_name: string } | null }[];
 };
+
+const STATUS_OPTIONS = Object.entries(VISIT_STATUS).map(([value, s]) => ({ value, label: s.label }));
 
 
 /** Abandoned intakes: nothing was captured, so nothing is lost by removing them. */
@@ -53,8 +58,9 @@ function isEmptyVisit(v: VisitRowLite) {
   return !v.diagnoses && !v.prescriptions.length && !v.vitals?.bp_systolic && !v.patients?.first_name && !v.patients?.last_name;
 }
 
-export function VisitTable({ rows, showPatient = true }: { rows: VisitRowLite[]; showPatient?: boolean }) {
+export function VisitTable({ rows, diagnoses, showPatient = true }: { rows: VisitRowLite[]; diagnoses: Diagnosis[]; showPatient?: boolean }) {
   const router = useRouter();
+  const [editing, setEditing] = useState<VisitRowLite | null>(null);
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -156,7 +162,7 @@ export function VisitTable({ rows, showPatient = true }: { rows: VisitRowLite[];
             <th className="px-3 py-2.5 font-medium">BP</th>
             <th className="px-3 py-2.5 font-medium">Prescribed</th>
             <th className="px-3 py-2.5 font-medium">Status</th>
-            <th className="w-12 pr-4" aria-label="Remove" />
+            <th className="w-20 pr-4" aria-label="Edit or remove" />
           </tr>
         </thead>
         <tbody className="divide-y divide-slate-100">
@@ -213,7 +219,16 @@ export function VisitTable({ rows, showPatient = true }: { rows: VisitRowLite[];
                 <td className="px-3 py-3">
                   <VisitStatus status={v.status} />
                 </td>
-                <td className="pr-4 text-right">
+                <td className="whitespace-nowrap pr-4 text-right">
+                  <button
+                    type="button"
+                    title="Edit visit"
+                    aria-label="Edit visit"
+                    onClick={() => setEditing(v)}
+                    className="rounded-md p-1.5 text-slate-400 hover:bg-slate-100 hover:text-ink sm:opacity-0 sm:group-hover:opacity-100 sm:focus:opacity-100"
+                  >
+                    <Pencil size={15} />
+                  </button>
                   <button
                     type="button"
                     title="Remove visit"
@@ -233,6 +248,18 @@ export function VisitTable({ rows, showPatient = true }: { rows: VisitRowLite[];
         </tbody>
       </table>
       </div>
+      {editing && (
+        <EditVisitDialog
+          visit={editing}
+          diagnoses={diagnoses}
+          statuses={STATUS_OPTIONS}
+          onClose={() => setEditing(null)}
+          onSaved={() => {
+            setEditing(null);
+            router.refresh();
+          }}
+        />
+      )}
     </div>
   );
 }

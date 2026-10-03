@@ -18,7 +18,7 @@ export const POST = route(async (req: Request) => {
 });
 
 /**
- * Remove visits: { ids: string[] }. Recommendations, prescriptions and packets cascade with the visit.
+ * Remove visits: { ids: string[] }. Recommendations, prescriptions, packets and model observations cascade with the visit.
  * Also clears the visit's stored media and any blank patient record a "new patient" visit created.
  */
 export const DELETE = route(async (req: Request) => {
@@ -31,6 +31,11 @@ export const DELETE = route(async (req: Request) => {
   if (!visits.length) return json({ deleted: 0 });
 
   const paths = visits.flatMap((v) => [v.video_path, ...(v.documents ?? []).map((d) => d.path)]).filter((p): p is string => !!p);
+  // Check-in camera clips aren't referenced from the visit row; they live under <id>/vitals/
+  for (const v of visits) {
+    const { data } = await db().storage.from(MEDIA_BUCKET).list(`${v.id}/vitals`, { limit: 1000 });
+    paths.push(...(data ?? []).map((f) => `${v.id}/vitals/${f.name}`));
+  }
   if (paths.length) await db().storage.from(MEDIA_BUCKET).remove(paths);
 
   must(await db().from("encounters").delete().in("id", visits.map((v) => v.id)));

@@ -281,8 +281,14 @@ export async function syncFromTranscript(encounterId: string) {
   // Encounter: vitals/labs, notes, diagnosis
   const clean = (o: Record<string, number | null>) => Object.fromEntries(Object.entries(o).filter(([, v]) => v !== null && v !== undefined));
   const stated = Boolean(x.diagnosis.stated && x.diagnosis.diagnosis_id);
+  const vitals = { ...encounter.vitals, ...clean(x.vitals) };
+  // A heart rate said in the visit replaces a model-inferred one, so it loses the model provenance
+  if (vitals.sources?.heart_rate && vitals.heart_rate !== encounter.vitals.heart_rate) {
+    vitals.sources = { ...vitals.sources };
+    delete vitals.sources.heart_rate;
+  }
   const eu: Record<string, unknown> = {
-    vitals: { ...encounter.vitals, ...clean(x.vitals) },
+    vitals,
     labs: { ...encounter.labs, ...clean(x.labs) },
     live_state: {
       ...encounter.live_state,

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import clsx from "clsx";
 import { Plus, Search } from "lucide-react";
-import { listVisits } from "@/lib/data";
+import { listDiagnoses, listVisits } from "@/lib/data";
 import { supabaseConfigured } from "@/lib/config";
 import { SetupNotice } from "@/components/SetupNotice";
 import { Card } from "@/components/ui";
@@ -21,7 +21,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
   const sp = await searchParams;
   const status = typeof sp.status === "string" ? sp.status : "";
   const q = typeof sp.q === "string" ? sp.q : "";
-  const rows = (await listVisits({ status, q })) as unknown as VisitRowLite[];
+  const [rows, diagnoses] = await Promise.all([listVisits({ status, q }) as unknown as Promise<VisitRowLite[]>, listDiagnoses()]);
 
   const href = (s: string) => `/?${new URLSearchParams({ ...(s ? { status: s } : {}), ...(q ? { q } : {}) })}`;
 
@@ -63,7 +63,7 @@ export default async function Home({ searchParams }: PageProps<"/">) {
             />
           </form>
         </div>
-        <VisitTable rows={rows} />
+        <VisitTable rows={rows} diagnoses={diagnoses} />
       </Card>
     </div>
   );

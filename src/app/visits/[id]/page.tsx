@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getEncounterBundle, listDiagnoses, listMedications } from "@/lib/data";
 import { supabaseConfigured } from "@/lib/config";
 import { llmProvider } from "@/lib/llm";
+import { availableModels } from "@/lib/inference";
 import { SetupNotice } from "@/components/SetupNotice";
 import { VisitWorkspace, type Bundle } from "@/components/VisitWorkspace";
 
@@ -26,6 +27,7 @@ export default async function VisitPage({ params, searchParams }: PageProps<"/vi
       aiOn={Boolean(llmProvider())}
       autostart={sp.autostart === "1"}
       liveDebounceMs={Number(process.env.LIVE_SYNC_DEBOUNCE_MS ?? 1200)}
+      vitalsModels={availableModels("video").map(({ id, name, captureSeconds }) => ({ id, name, captureSeconds }))}
     />
   );
 }

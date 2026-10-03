@@ -152,7 +152,12 @@ export function ChartEditor({
             <div className="grid grid-cols-3 gap-2">
               <Input placeholder="SBP" aria-label="Systolic" type="number" value={vitals.bp_systolic ?? ""} onChange={(e) => setVitals({ ...vitals, bp_systolic: num(e.target.value) })} />
               <Input placeholder="DBP" aria-label="Diastolic" type="number" value={vitals.bp_diastolic ?? ""} onChange={(e) => setVitals({ ...vitals, bp_diastolic: num(e.target.value) })} />
-              <Input placeholder="HR" aria-label="Heart rate" type="number" value={vitals.heart_rate ?? ""} onChange={(e) => setVitals({ ...vitals, heart_rate: num(e.target.value) })} />
+              <Input placeholder="HR" aria-label="Heart rate" type="number" value={vitals.heart_rate ?? ""} onChange={(e) => {
+                  // Typed by the clinician: no longer the model's value
+                  const sources = { ...vitals.sources };
+                  delete sources.heart_rate;
+                  setVitals({ ...vitals, heart_rate: num(e.target.value), sources });
+                }} />
             </div>
           </div>
           <div>
