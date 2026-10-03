@@ -130,13 +130,13 @@ export function InsurancePanel({
               <p className="font-medium">{ins?.plan_name ?? ins?.payer}</p>
               <p className="text-xs text-slate-500">
                 {ins?.member_id ? `Member ID ${ins.member_id}` : "No member ID yet"}
-                {ins?.plan_id ? "" : " · plan not matched to a drug list — pick it to check coverage"}
+                {ins?.plan_id ? "" : " · checked against the closest matching drug list (demo)"}
               </p>
             </div>
           </div>
         ) : (
           <p className="rounded-lg border border-amber-200 bg-amber-50 p-3 text-amber-800">
-            No insurance on file. Add the plan to check coverage and pre-fill prior-auth paperwork.
+            No insurance on file — coverage is being checked against a demo Medicare drug list. Add the real plan to replace it.
           </p>
         )}
 

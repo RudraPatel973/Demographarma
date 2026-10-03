@@ -117,7 +117,7 @@ export async function buildPriorAuth(args: {
       plan_id: patient.insurance?.plan_id ?? null,
       member_id: patient.insurance?.member_id ?? null,
       // Medicare Part D cards have no employer group number
-      group_number: patient.insurance?.group_number ?? (isMedicare ? "N/A (Medicare Part D)" : null),
+      group_number: patient.insurance?.group_number ?? (isMedicare || ctx.demoPlan ? "N/A (Medicare Part D)" : null),
     },
     prescriber: {
       name: (() => {
@@ -237,7 +237,6 @@ export async function buildPriorAuth(args: {
     if (!p.fax) m.push("Practice fax (Settings)");
     if (!p.address) m.push("Practice address (Settings)");
     if (!form.insurance.plan) m.push("Insurance plan (add it in the Insurance panel)");
-    if (!form.insurance.member_id) m.push("Member ID (ask the patient or read the card)");
     for (const t of form.medications_tried) if (!t.start) m.push(`When ${t.drug} was started`);
     if (!form.adherence) m.push("Adherence statement (ask: do you ever miss doses?)");
     (form as Record<string, unknown>).missing_items = Array.from(new Set(m));

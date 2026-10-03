@@ -99,7 +99,7 @@ export default async function PriorAuthPage({ params }: PageProps<"/prior-auth/[
           <Row label="Payer" value={f.insurance.payer} />
           <Row label="Plan" value={f.insurance.plan} />
           <Row label="Plan ID" value={f.insurance.plan_id} />
-          <Row label="Member ID" value={f.insurance.member_id} />
+          <Row label="Member ID" value={f.insurance.member_id ?? "Not provided"} />
           <Row label="Group #" value={f.insurance.group_number} />
         </section>
 

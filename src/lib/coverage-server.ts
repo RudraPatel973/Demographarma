@@ -8,15 +8,28 @@ import type { Encounter, Medication, Patient } from "./types";
 export async function loadCoverageContext(patient: Patient, encounter?: Pick<Encounter, "vitals"> | null) {
   const planId = patient.insurance?.plan_id ?? null;
   const planNameSaid = patient.insurance?.plan_name ?? patient.insurance?.payer ?? null;
-  let plan: { id: string; name: string; formulary_id: string | null; tier_costs: Record<string, { type: string; amount: number }> | null } | null = null;
-  if (planId) plan = (await db().from("insurance_plans").select("id,name,formulary_id,tier_costs").eq("id", planId).maybeSingle()).data;
+  type PlanRow = { id: string; name: string; formulary_id: string | null; tier_costs: Record<string, { type: string; amount: number }> | null };
+  const COLS = "id,name,formulary_id,tier_costs";
+  let plan: PlanRow | null = null;
+  if (planId) plan = (await db().from("insurance_plans").select(COLS).eq("id", planId).maybeSingle()).data;
+  // Demo: no linked plan is never a dead end. Use the closest plan to what the patient said, else a default drug list.
+  let demoPlan = false;
+  if (!plan?.formulary_id) {
+    const words = (planNameSaid ?? "").replace(/[%,()]/g, " ").split(/\s+/).filter((w) => w.length > 2 && !/^(plan|the|and|medicare|insurance|health)$/i.test(w));
+    for (const w of words) {
+      plan = (await db().from("insurance_plans").select(COLS).ilike("name", `%${w}%`).not("formulary_id", "is", null).limit(1).maybeSingle()).data;
+      if (plan) break;
+    }
+    if (!plan) plan = (await db().from("insurance_plans").select(COLS).eq("id", process.env.DEMO_PLAN_ID || "S5820-034-000").maybeSingle()).data;
+    demoPlan = Boolean(plan);
+  }
   const entries = plan?.formulary_id
     ? (((await db().from("formulary_entries").select("*").eq("formulary_id", plan.formulary_id)).data ?? []) as FormularyEntry[])
     : [];
   const trials = (((await db().from("medication_trials").select("*").eq("patient_id", patient.id)).data ?? []) as Trial[]);
   const sbp = encounter?.vitals?.bp_systolic ?? 0;
   const dbp = encounter?.vitals?.bp_diastolic ?? 0;
-  return { planName: plan?.name ?? planNameSaid, formularyKnown: Boolean(plan?.formulary_id), entries, trials, tierCosts: plan?.tier_costs ?? null, aboveGoal: sbp >= 130 || dbp >= 80 };
+  return { planName: demoPlan ? planNameSaid ?? plan?.name ?? null : plan?.name ?? planNameSaid, demoPlan, demoPlanName: demoPlan ? plan?.name ?? null : null, formularyKnown: Boolean(plan?.formulary_id), entries, trials, tierCosts: plan?.tier_costs ?? null, aboveGoal: sbp >= 130 || dbp >= 80 };
 }
 
 export type CoverageContext = Awaited<ReturnType<typeof loadCoverageContext>>;
