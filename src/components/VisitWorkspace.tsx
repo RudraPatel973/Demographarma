@@ -11,14 +11,8 @@ import { DecisionPanel, Excluded, RecCard, RxTracker, type Fired, type MedOption
 import { useVisitRecorder } from "./useVisitRecorder";
 import { TwoPillFlow } from "./TwoPill";
 import { MissingInfo } from "./MissingInfo";
-import { useVisitRecorder } from "./useVisitRecorder";
-import { TwoPillFlow } from "./TwoPill";
-import { MissingInfo } from "./MissingInfo";
 import { InsurancePanel, type PacketRow } from "./InsurancePanel";
 import { VitalsCheck } from "./VitalsCheck";
-import { missingRecommended, missingRequired, REQUIRED_LABELS, type RequiredKey } from "@/lib/requirements";
-import { uploadFile } from "@/lib/upload";
-import { patientName, type Diagnosis, type Encounter, type Medication, type ModelObservation, type Patient, type PatientMessage, type Prescription, type Recommendation, type TranscriptSegment, type MedicationTrial } from "@/lib/types";
 import { missingRecommended, missingRequired, REQUIRED_LABELS, type RequiredKey } from "@/lib/requirements";
 import { uploadFile } from "@/lib/upload";
 import { patientName, type Diagnosis, type Encounter, type Medication, type ModelObservation, type Patient, type PatientMessage, type Prescription, type Recommendation, type TranscriptSegment, type MedicationTrial } from "@/lib/types";
