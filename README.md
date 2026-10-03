@@ -63,6 +63,7 @@ A new visit starts with a 30-second camera check before the voice recording. The
 - `src/lib/inference/` is model-agnostic: a model implements `ClinicalModel` and only returns observations. Every reading is stored in `model_observations` (value, vendor confidence, model version, model card, quality hints). Only a pulse where at least 3 readings met the vendor's accuracy standard (±3 bpm) is written to `encounters.vitals`, tagged with its source in `vitals.sources` (the observation records `accepted_via: auto`). A heart rate the doctor types or says later replaces it and drops the tag.
 - The SDK is a native Node module (macOS arm64, Linux x64/arm64 with glibc ≥ 2.35, Windows x64), so run it locally or on a Node server. It hasn't been tested in Vercel functions. The browser records H.264 because the SDK's bundled decoder doesn't read VP8/VP9.
 - The clip is played back to the SDK at camera speed (~30 fps); decoding it as fast as possible gives almost no readings.
+- `/tools` shows every AI model, agent, data source and service by visit step (integrated, available, planned). The catalogue is `src/lib/integrations.ts`.
 - `scripts/smartspectra-test.mjs` measures from the webcam in a terminal, which is handy for comparing against a wearable.
 - Camera vitals are an investigational estimate, not a calibrated measurement. The SDK's arterial pressure trace is unitless and is never used as blood pressure.
 
