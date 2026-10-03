@@ -20,7 +20,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           <div className="mx-auto flex h-14 max-w-7xl items-center gap-6 px-4">
             <Link href="/" aria-label="Volution home" className="flex items-center">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/volution-logo.png" alt="Volution" className="h-8 w-auto" />
+              <img src="/volution-wordmark.png" alt="Volution" className="h-8 w-auto" />
             </Link>
             <nav className="flex items-center gap-4 text-sm text-slate-600">
               <Link href="/" className="hover:text-ink">Visits</Link>
