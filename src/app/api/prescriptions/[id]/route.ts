@@ -1,6 +1,7 @@
 import { db, must } from "@/lib/supabase";
 import { json, route } from "@/lib/api";
-import type { Prescription } from "@/lib/types";
+import type { Patient, Prescription } from "@/lib/types";
+import { photonAddress, photonMode, syncPhotonPatient } from "@/lib/photon";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -8,10 +9,11 @@ type Ctx = { params: Promise<{ id: string }> };
 export const GET = route(async (_req: Request, { params }: Ctx) => {
   const { id } = await params;
   const rx = must(await db().from("prescriptions").select("*").eq("id", id).single()) as Prescription;
-  const patient = must(await db().from("patients").select("photon_patient_id,weight_kg").eq("id", rx.patient_id).single()) as {
-    photon_patient_id: string | null;
-    weight_kg: number | null;
-  };
+  const patient = must(await db().from("patients").select("*").eq("id", rx.patient_id).single()) as Patient;
+  // Push any chart edits (e.g. an address added after the draft was created) to Photon before the widget opens
+  if (photonMode() === "live" && patient.photon_patient_id) {
+    await syncPhotonPatient(patient).catch((e) => console.error("[photon] patient sync failed:", e));
+  }
   return json({
     clientId: process.env.NEXT_PUBLIC_PHOTON_CLIENT_ID,
     orgId: process.env.NEXT_PUBLIC_PHOTON_ORG_ID,
@@ -19,6 +21,7 @@ export const GET = route(async (_req: Request, { params }: Ctx) => {
     patientId: patient.photon_patient_id,
     treatment: rx.photon_treatment_id ? { id: rx.photon_treatment_id, name: "" } : null,
     weightKg: patient.weight_kg,
+    address: photonAddress(patient),
   });
 });
 

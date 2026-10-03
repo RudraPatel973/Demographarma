@@ -68,20 +68,41 @@ export function toE164(phone: string) {
   return "+" + digits;
 }
 
-export async function ensurePhotonPatient(p: Patient): Promise<string> {
-  if (p.photon_patient_id) return p.photon_patient_id;
+/** Photon's AddressInput (country is required). Null if incomplete. */
+export function photonAddress(p: Patient) {
+  const a = p.address;
+  if (!a?.street1 || !a?.city || !a?.state || !a?.postalCode) return null;
+  return { street1: a.street1, street2: a.street2 || undefined, city: a.city, state: a.state, postalCode: a.postalCode, country: "US" };
+}
+
+/**
+ * Create the patient in Photon, or update the existing record so Photon has the latest
+ * contact details and default order address (so the doctor isn't asked for it again).
+ */
+export async function syncPhotonPatient(p: Patient): Promise<string> {
+  const address = photonAddress(p) ?? undefined;
+  const fields = {
+    name: { first: p.first_name, last: p.last_name },
+    dateOfBirth: p.date_of_birth,
+    sex: p.sex,
+    phone: toE164(p.phone ?? ""),
+    email: p.email || undefined,
+    address,
+  };
+  if (p.photon_patient_id) {
+    await gql<{ updatePatient: { id: string } }>(
+      `mutation updatePatient($id: ID!, $name: NameInput, $dateOfBirth: AWSDate, $sex: SexType, $phone: AWSPhone, $email: AWSEmail, $address: AddressInput) {
+        updatePatient(id: $id, name: $name, dateOfBirth: $dateOfBirth, sex: $sex, phone: $phone, email: $email, address: $address) { id }
+      }`,
+      { id: p.photon_patient_id, ...fields },
+    );
+    return p.photon_patient_id;
+  }
   const data = await gql<{ createPatient: { id: string } }>(
-    `mutation createPatient($externalId: ID, $name: NameInput!, $dateOfBirth: AWSDate!, $sex: SexType!, $phone: AWSPhone!, $email: AWSEmail) {
-      createPatient(externalId: $externalId, name: $name, dateOfBirth: $dateOfBirth, sex: $sex, phone: $phone, email: $email) { id }
+    `mutation createPatient($externalId: ID, $name: NameInput!, $dateOfBirth: AWSDate!, $sex: SexType!, $phone: AWSPhone!, $email: AWSEmail, $address: AddressInput) {
+      createPatient(externalId: $externalId, name: $name, dateOfBirth: $dateOfBirth, sex: $sex, phone: $phone, email: $email, address: $address) { id }
     }`,
-    {
-      externalId: p.id,
-      name: { first: p.first_name, last: p.last_name },
-      dateOfBirth: p.date_of_birth,
-      sex: p.sex,
-      phone: toE164(p.phone ?? ""),
-      email: p.email || undefined,
-    },
+    { externalId: p.id, ...fields },
   );
   return data.createPatient.id;
 }

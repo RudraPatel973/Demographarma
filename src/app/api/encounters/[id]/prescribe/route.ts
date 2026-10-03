@@ -1,6 +1,6 @@
 import { db, must } from "@/lib/supabase";
 import { json, route } from "@/lib/api";
-import { ensurePhotonPatient, findTreatment, findTreatmentByName, mockMessage, photonMode } from "@/lib/photon";
+import { findTreatment, findTreatmentByName, mockMessage, photonAddress, photonMode, syncPhotonPatient } from "@/lib/photon";
 import type { Medication, Patient, Recommendation } from "@/lib/types";
 
 type Ctx = { params: Promise<{ id: string }> };
@@ -58,9 +58,10 @@ export const POST = route(async (req: Request, { params }: Ctx) => {
   );
 
   if (mode === "live") {
-    const missing = (["first_name", "last_name", "date_of_birth", "sex", "phone"] as const).filter((k) => !patient[k]);
+    const missing: string[] = (["first_name", "last_name", "date_of_birth", "sex", "phone"] as const).filter((k) => !patient[k]);
+    if (!photonAddress(patient)) missing.push("home address");
     if (missing.length) return json({ error: `Photon needs the patient's ${missing.join(", ").replace(/_/g, " ")}. Add them to the chart first.` }, 400);
-    const photonPatientId = await ensurePhotonPatient(patient);
+    const photonPatientId = await syncPhotonPatient(patient);
     if (photonPatientId !== patient.photon_patient_id) {
       must(await db().from("patients").update({ photon_patient_id: photonPatientId }).eq("id", patient.id).select("id"));
     }
@@ -76,6 +77,7 @@ export const POST = route(async (req: Request, { params }: Ctx) => {
         patientId: photonPatientId,
         treatment,
         weightKg: patient.weight_kg,
+        address: photonAddress(patient),
       },
     });
   }

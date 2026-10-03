@@ -99,6 +99,26 @@ export function ChartEditor({
               <Label>Mobile (Photon texts this)</Label>
               <Input value={p.phone ?? ""} onChange={(e) => setP({ ...p, phone: e.target.value || null })} />
             </label>
+            <label className="col-span-2">
+              <Label>Street address</Label>
+              <Input value={p.address?.street1 ?? ""} onChange={(e) => setP({ ...p, address: { ...p.address, street1: e.target.value } })} placeholder="42 Oak St" />
+            </label>
+            <label>
+              <Label>Apt / unit</Label>
+              <Input value={p.address?.street2 ?? ""} onChange={(e) => setP({ ...p, address: { ...p.address, street2: e.target.value } })} />
+            </label>
+            <label>
+              <Label>City</Label>
+              <Input value={p.address?.city ?? ""} onChange={(e) => setP({ ...p, address: { ...p.address, city: e.target.value } })} />
+            </label>
+            <label>
+              <Label>State</Label>
+              <Input maxLength={2} value={p.address?.state ?? ""} onChange={(e) => setP({ ...p, address: { ...p.address, state: e.target.value.toUpperCase() } })} placeholder="NY" />
+            </label>
+            <label>
+              <Label>ZIP</Label>
+              <Input inputMode="numeric" value={p.address?.postalCode ?? ""} onChange={(e) => setP({ ...p, address: { ...p.address, postalCode: e.target.value } })} />
+            </label>
             {p.sex !== "MALE" && (
               <label className="col-span-2">
                 <Label>Pregnancy status</Label>

@@ -41,6 +41,11 @@ export function MissingInfo({
     sbp: "",
     dbp: "",
     pregnancy_status: "",
+    street1: patient.address?.street1 ?? "",
+    street2: patient.address?.street2 ?? "",
+    city: patient.address?.city ?? "",
+    state: patient.address?.state ?? "",
+    postalCode: patient.address?.postalCode ?? "",
   });
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState<string | null>(null);
@@ -59,6 +64,16 @@ export function MissingInfo({
       if (f.ft) pu.height_cm = Math.round((Number(f.ft) * 12 + Number(f.inch || 0)) * 2.54 * 10) / 10;
       if (f.lb) pu.weight_kg = Math.round(Number(f.lb) * 0.45359237 * 10) / 10;
       if (f.pregnancy_status) pu.pregnancy_status = f.pregnancy_status;
+      if (missing.includes("address") && (f.street1 || f.city || f.state || f.postalCode)) {
+        pu.address = {
+          ...(patient.address ?? {}),
+          street1: f.street1.trim(),
+          street2: f.street2.trim() || null,
+          city: f.city.trim(),
+          state: f.state.trim().toUpperCase().slice(0, 2),
+          postalCode: f.postalCode.trim(),
+        };
+      }
       if (Object.keys(pu).length) {
         const r = await fetch(`/api/patients/${patient.id}`, { method: "PATCH", headers: { "content-type": "application/json" }, body: JSON.stringify(pu) });
         if (!r.ok) throw new Error("Could not save");
@@ -126,6 +141,15 @@ export function MissingInfo({
           </Select>
         )}
         {has("phone") && <Input aria-label="Mobile number" type="tel" placeholder="Mobile number" value={f.phone} onChange={set("phone")} />}
+        {has("address") && (
+          <div className="grid grid-cols-6 gap-2 sm:col-span-2 lg:col-span-4">
+            <Input className="col-span-6 sm:col-span-2" aria-label="Street address" placeholder="Street address" value={f.street1} onChange={set("street1")} />
+            <Input className="col-span-2 sm:col-span-1" aria-label="Apartment or unit" placeholder="Apt" value={f.street2} onChange={set("street2")} />
+            <Input className="col-span-4 sm:col-span-1" aria-label="City" placeholder="City" value={f.city} onChange={set("city")} />
+            <Input className="col-span-2 sm:col-span-1" aria-label="State" placeholder="State" maxLength={2} value={f.state} onChange={set("state")} />
+            <Input className="col-span-4 sm:col-span-1" aria-label="ZIP code" placeholder="ZIP" inputMode="numeric" value={f.postalCode} onChange={set("postalCode")} />
+          </div>
+        )}
         {has("height_cm") && (
           <div className="flex gap-2">
             <Input aria-label="Height feet" type="number" placeholder="ft" value={f.ft} onChange={set("ft")} />

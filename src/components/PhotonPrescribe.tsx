@@ -10,6 +10,7 @@ export interface PhotonConfig {
   patientId: string;
   treatment: { id: string; name: string } | null;
   weightKg: number | null;
+  address?: { street1: string; street2?: string; city: string; state: string; postalCode: string; country?: string } | null;
 }
 
 /**
@@ -69,6 +70,11 @@ export function PhotonPrescribe({
         if (config.weightKg) {
           wf.setAttribute("weight", String(config.weightKg));
           wf.setAttribute("weight-unit", "kg");
+        }
+        // Pre-fill the delivery/pharmacy-search address so the doctor isn't asked for it
+        if (config.address) {
+          const { street1, street2, city, state, postalCode } = config.address;
+          wf.setAttribute("address", JSON.stringify({ street1, ...(street2 ? { street2 } : {}), city, state, postalCode, country: "US" }));
         }
         if (config.treatment) {
           wf.setAttribute(

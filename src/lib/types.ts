@@ -1,4 +1,19 @@
 export type Sex = "MALE" | "FEMALE" | "UNKNOWN";
+
+export interface Address {
+  street1?: string | null;
+  street2?: string | null;
+  city?: string | null;
+  state?: string | null; // 2-letter
+  postalCode?: string | null;
+}
+
+export function formatAddress(a: Address | null | undefined) {
+  if (!a) return null;
+  const line1 = [a.street1, a.street2].filter(Boolean).join(", ");
+  const line2 = [a.city, [a.state, a.postalCode].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+  return [line1, line2].filter(Boolean).join(", ") || null;
+}
 export type PregnancyStatus = "not_applicable" | "not_pregnant" | "childbearing_potential" | "pregnant" | "breastfeeding";
 
 export interface Patient {
@@ -17,6 +32,7 @@ export interface Patient {
   current_medications: string[];
   allergies: string[];
   pregnancy_status: PregnancyStatus;
+  address: Address | null;
   photon_patient_id: string | null;
   created_at: string;
 }

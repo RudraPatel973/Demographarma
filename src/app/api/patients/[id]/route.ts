@@ -5,7 +5,7 @@ type Ctx = { params: Promise<{ id: string }> };
 
 const FIELDS = [
   "first_name", "last_name", "date_of_birth", "sex", "ethnicity", "phone", "email",
-  "height_cm", "weight_kg", "conditions", "current_medications", "allergies", "pregnancy_status",
+  "height_cm", "weight_kg", "conditions", "current_medications", "allergies", "pregnancy_status", "address", "dob_is_estimate",
 ];
 
 export const PATCH = route(async (req: Request, { params }: Ctx) => {

@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { CONDITIONS, ETHNICITIES, patientName, type Encounter, type Patient } from "@/lib/types";
+import { CONDITIONS, ETHNICITIES, formatAddress, patientName, type Encounter, type Patient } from "@/lib/types";
 
 function age(dob: string | null) {
   if (!dob) return null;
@@ -64,6 +64,7 @@ export function LiveChart({ patient: p, encounter: e }: { patient: Patient; enco
         <Field label="Potassium" value={e.labs.potassium ?? null} />
         {p.sex !== "MALE" && <Field label="Pregnancy" value={p.pregnancy_status !== "not_applicable" ? p.pregnancy_status.replace(/_/g, " ") : null} wide />}
         <Field label="Phone" value={p.phone} wide />
+        <Field label="Address" value={formatAddress(p.address)} wide />
       </dl>
       <div>
         <p className="mb-1 text-[11px] uppercase tracking-wide text-slate-400">Conditions</p>

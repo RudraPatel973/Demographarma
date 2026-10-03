@@ -26,6 +26,13 @@ function intakeSchema(diagnosisIds: [string, ...string[]]) {
       weight_kg: num,
       pregnancy_status: z.enum(["not_pregnant", "childbearing_potential", "pregnant", "breastfeeding"]).nullable(),
     }),
+    address: z.object({
+      street1: z.string().nullable().describe("House number + street, e.g. '42 Oak St'"),
+      street2: z.string().nullable().describe("Apartment / unit, e.g. 'Apt 3B'"),
+      city: z.string().nullable(),
+      state: z.string().nullable().describe("2-letter US state code, e.g. 'NY'"),
+      postalCode: z.string().nullable().describe("5-digit ZIP"),
+    }),
     conditions: z.array(z.enum(CONDITIONS.map((c) => c.key) as [string, ...string[]])),
     current_medications: z.array(z.string()).describe("'name dose frequency' strings"),
     allergies: z.array(z.string()).describe("'substance - reaction' strings"),
@@ -47,6 +54,9 @@ recognition: no speaker labels, may have errors, and grows as the visit continue
 Extract the patient's chart from everything said so far:
 - Only report facts actually stated in the transcript or documents. Use null / [] when not mentioned. Never guess.
 - Convert units: feet/inches -> cm, pounds -> kg, "one fifty-four over ninety-five" -> 154/95. Spell out the phone number as digits.
+- address: the patient's home address if said. Write numbers as digits ("forty two" -> 42, "one one two oh one" -> 11201),
+  abbreviate the street type (Street -> St, Avenue -> Ave), put apartment/unit in street2, state as the 2-letter code
+  ("New York" -> NY). If the city is a NYC borough or neighborhood, keep what was said (e.g. Brooklyn). null for parts not said.
 - Names: as the patient said them (fix obvious speech-recognition casing).
 - sex: only if stated or unambiguous from context (e.g. "Mr./Mrs.", "my husband" is NOT enough, but pregnancy, tubal ligation,
   prostate, or the doctor saying "she/he" about the patient are).
@@ -124,6 +134,12 @@ export async function syncFromTranscript(encounterId: string) {
     const y = new Date().getFullYear() - Math.round(p.age_years);
     pu.date_of_birth = `${y}-01-01`;
     pu.dob_is_estimate = true;
+  }
+  const addr = Object.fromEntries(Object.entries(x.address ?? {}).filter(([, v]) => typeof v === "string" && v.trim()));
+  if (Object.keys(addr).length) {
+    if (typeof addr.state === "string") addr.state = addr.state.toUpperCase().slice(0, 2);
+    if (typeof addr.postalCode === "string") addr.postalCode = addr.postalCode.replace(/[^\d-]/g, "");
+    pu.address = { ...(patient.address ?? {}), ...addr };
   }
   pu.conditions = unionCI(patient.conditions, x.conditions);
   pu.current_medications = unionCI(patient.current_medications, x.current_medications);

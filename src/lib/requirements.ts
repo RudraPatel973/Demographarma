@@ -10,6 +10,7 @@ export type RequiredKey =
   | "date_of_birth"
   | "sex"
   | "phone"
+  | "address"
   | "height_cm"
   | "weight_kg"
   | "blood_pressure"
@@ -21,6 +22,7 @@ export const REQUIRED_LABELS: Record<RequiredKey, string> = {
   date_of_birth: "Date of birth",
   sex: "Sex",
   phone: "Mobile number",
+  address: "Home address",
   height_cm: "Height",
   weight_kg: "Weight",
   blood_pressure: "Blood pressure",
@@ -43,6 +45,8 @@ export function missingRequired(p: Patient, e: Pick<Encounter, "vitals">): Requi
   if (!p.date_of_birth) out.push("date_of_birth");
   if (!p.sex || p.sex === "UNKNOWN") out.push("sex");
   if (!p.phone || p.phone.replace(/\D/g, "").length < 10) out.push("phone");
+  const a = p.address;
+  if (!a?.street1 || !a?.city || !a?.state || !a?.postalCode) out.push("address");
   if (!p.height_cm) out.push("height_cm");
   if (!p.weight_kg) out.push("weight_kg");
   if (!e.vitals?.bp_systolic || !e.vitals?.bp_diastolic) out.push("blood_pressure");
