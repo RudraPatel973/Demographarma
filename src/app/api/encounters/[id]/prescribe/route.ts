@@ -87,6 +87,19 @@ export const POST = route(async (req: Request, { params }: Ctx) => {
   );
 
   // drop the helper fields before inserting
+  // Each prescribed drug becomes an ongoing trial (if it fails later, that's documented step therapy)
+  const trialRows = rows.map((r) => ({
+    patient_id: patient.id,
+    encounter_id: id,
+    medication_id: (r.medication_id as string | null) ?? null,
+    drug_name: `${r.label}${r.dose_mg ? ` ${r.dose_mg} mg` : ""}`,
+    dose_mg: (r.dose_mg as number | null) ?? null,
+    started_on: new Date().toISOString().slice(0, 10),
+    outcome: "ongoing",
+    source: "prescription",
+  }));
+  await db().from("medication_trials").insert(trialRows);
+
   const toInsert = rows.map((r) => Object.fromEntries(Object.entries(r).filter(([k]) => !["label", "med", "item"].includes(k))));
 
   if (mode === "live") {

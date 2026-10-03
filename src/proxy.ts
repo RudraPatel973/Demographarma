@@ -17,7 +17,7 @@ export function proxy(request: NextRequest) {
   }
   return new NextResponse("Authentication required", {
     status: 401,
-    headers: { "WWW-Authenticate": 'Basic realm="Demographarma", charset="UTF-8"' },
+    headers: { "WWW-Authenticate": 'Basic realm="Volution", charset="UTF-8"' },
   });
 }
 

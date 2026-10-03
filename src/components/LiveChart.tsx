@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { CONDITIONS, ETHNICITIES, formatAddress, patientName, type Encounter, type Patient } from "@/lib/types";
+import { CONDITIONS, ETHNICITIES, formatAddress, patientName, type Encounter, type MedicationTrial, type Patient } from "@/lib/types";
 
 function age(dob: string | null) {
   if (!dob) return null;
@@ -44,7 +44,16 @@ function Chips({ items, tone }: { items: string[]; tone: "brand" | "amber" | "re
 }
 
 /** Read-only chart that fills itself in from the visit audio. */
-export function LiveChart({ patient: p, encounter: e }: { patient: Patient; encounter: Encounter }) {
+const OUTCOME: Record<string, { label: string; cls: string }> = {
+  ongoing: { label: "taking", cls: "bg-slate-100 text-slate-700" },
+  not_at_goal: { label: "didn't control BP", cls: "bg-amber-50 text-amber-800" },
+  side_effect: { label: "side effect", cls: "bg-red-50 text-red-700" },
+  allergy: { label: "allergy", cls: "bg-red-50 text-red-700" },
+  contraindicated: { label: "contraindicated", cls: "bg-red-50 text-red-700" },
+  stopped_other: { label: "stopped", cls: "bg-slate-100 text-slate-700" },
+};
+
+export function LiveChart({ patient: p, encounter: e, trials = [] }: { patient: Patient; encounter: Encounter; trials?: MedicationTrial[] }) {
   const a = age(p.date_of_birth);
   const bmi = p.height_cm && p.weight_kg ? (p.weight_kg / (p.height_cm / 100) ** 2).toFixed(1) : null;
   const conditions = p.conditions.map((k) => CONDITIONS.find((c) => c.key === k)?.label ?? k);
@@ -65,6 +74,15 @@ export function LiveChart({ patient: p, encounter: e }: { patient: Patient; enco
         {p.sex !== "MALE" && <Field label="Pregnancy" value={p.pregnancy_status !== "not_applicable" ? p.pregnancy_status.replace(/_/g, " ") : null} wide />}
         <Field label="Phone" value={p.phone} wide />
         <Field label="Address" value={formatAddress(p.address)} wide />
+        <Field
+          label="Insurance"
+          value={
+            p.insurance && (p.insurance.plan_name || p.insurance.payer)
+              ? `${p.insurance.plan_name ?? p.insurance.payer}${p.insurance.member_id ? ` · ID ${p.insurance.member_id}` : ""}${p.insurance.plan_id ? "" : " (plan not linked)"}`
+              : null
+          }
+          wide
+        />
       </dl>
       <div>
         <p className="mb-1 text-[11px] uppercase tracking-wide text-slate-400">Conditions</p>
@@ -78,6 +96,20 @@ export function LiveChart({ patient: p, encounter: e }: { patient: Patient; enco
         <p className="mb-1 text-[11px] uppercase tracking-wide text-slate-400">Allergies / intolerances</p>
         <Chips items={p.allergies} tone="red" />
       </div>
+      {trials.length > 0 && (
+        <div>
+          <p className="mb-1 text-[11px] uppercase tracking-wide text-slate-400">BP medicines tried</p>
+          <ul className="space-y-1">
+            {trials.map((t) => (
+              <li key={t.id} className="flex flex-wrap items-center gap-1.5 text-sm">
+                <span className="capitalize">{t.drug_name}</span>
+                <span className={clsx("rounded-full px-2 py-0.5 text-[11px]", OUTCOME[t.outcome]?.cls)}>{OUTCOME[t.outcome]?.label ?? t.outcome}</span>
+                {t.detail && <span className="text-xs text-slate-500">{t.detail}</span>}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       {e.live_state?.notes && (
         <div>
           <p className="mb-1 text-[11px] uppercase tracking-wide text-slate-400">Noted in conversation</p>

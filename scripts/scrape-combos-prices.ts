@@ -21,7 +21,7 @@ const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 async function getJson(url: string, tries = 4): Promise<any> {
   for (let i = 0; i < tries; i++) {
     try {
-      const res = await fetch(url, { headers: { "user-agent": "demographarma-scraper/1.0" }, signal: AbortSignal.timeout(20000) });
+      const res = await fetch(url, { headers: { "user-agent": "volution-scraper/1.0" }, signal: AbortSignal.timeout(20000) });
       if (res.ok) return res.json();
       if (res.status === 404) return null;
     } catch {

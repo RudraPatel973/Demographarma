@@ -86,7 +86,7 @@ export function PhotonPrescribe({
           ...extraDrafts.filter((d) => d.treatmentId).map((d) => ({ ...d, dispenseAsWritten: false })),
         ];
         if (initial.length) wf.setAttribute("initial-prescriptions", JSON.stringify(initial));
-        wf.setAttribute("additional-notes", "Selected with Demographarma decision support.");
+        wf.setAttribute("additional-notes", "Selected with Volution decision support.");
 
         wf.addEventListener("photon-prescriptions-created", (e) => {
           const rx = (e as CustomEvent).detail?.prescriptions?.[0];

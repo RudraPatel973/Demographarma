@@ -5,6 +5,7 @@ import { llmModelName, llmProvider } from "./llm";
 import { rankCandidates } from "./clinical";
 import { CLASS_LABEL, decidePlan, findCombination, monthlyCost, scoreSecondPill, type Combination, type PriceRow } from "./plan";
 import type { Diagnosis, Encounter, Medication, Patient } from "./types";
+import { coverageFor, loadCoverageContext } from "./coverage-server";
 
 /**
  * Generate recommendations for one "slot":
@@ -141,6 +142,21 @@ export async function recommend(encounterId: string, opts: { slot: 1 | 2; first?
       };
     });
     clinicalNote = aiError ? `The AI model was unavailable (${aiError}). These results come from the rule engine only.` : "No AI model is configured. These results come from the rule engine only.";
+  }
+
+  // ---- insurance coverage: clinical % + capped adjustment ----------------
+  const coverageCtx = await loadCoverageContext(patient, encounter);
+  const safeMeds = eligible.map((c) => c.medication);
+  for (const r of rows) {
+    const med = medById.get(r.medication_id)!;
+    const cov = coverageFor(coverageCtx, prices, safeMeds, med, r.dose_mg);
+    r.clinical_percent = r.match_percent;
+    r.coverage = cov;
+    r.match_percent = Math.max(1, Math.min(99, r.match_percent + cov.adjustment));
+    if (cov.adjustment !== 0) {
+      const list = (cov.adjustment > 0 ? r.factors_for : r.factors_against) as string[];
+      list.push(`${cov.plan_name}: ${cov.label}${cov.notes[0] ? ` — ${cov.notes[0]}` : ""}`);
+    }
   }
 
   // ---- monthly cost + price tie-break ----------------------------------

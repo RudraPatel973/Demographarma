@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import clsx from "clsx";
-import { AlertTriangle, CheckCircle2, ChevronDown, ExternalLink, Loader2, Pill, Send, ShieldAlert, UserCog } from "lucide-react";
+import { AlertTriangle, CheckCircle2, ChevronDown, ExternalLink, FileText, Loader2, Pill, Send, ShieldAlert, ShieldCheck, UserCog } from "lucide-react";
+import type { Coverage } from "@/lib/coverage";
 import { Badge, Button, Card, CardHeader, Input, Label, Select, Textarea } from "./ui";
 import { MatchMeter } from "./MatchMeter";
 import { PhotonPrescribe, type PhotonConfig } from "./PhotonPrescribe";
@@ -38,7 +39,18 @@ export function RecCard({
           <div className="mt-1.5 flex flex-wrap gap-1">
             {med && <Badge>{med.drug_class}</Badge>}
             {line && <Badge tone={line === "first_line" ? "green" : "slate"}>{line.replace("_", " ")}</Badge>}
+            {rec.coverage && rec.coverage.status !== "unknown" && (
+              <Badge tone={rec.coverage.status === "covered" ? "green" : rec.coverage.status === "restricted" ? "amber" : "red"}>
+                <ShieldCheck size={11} /> {rec.coverage.label}
+              </Badge>
+            )}
           </div>
+          {rec.clinical_percent != null && rec.clinical_percent !== rec.match_percent && (
+            <p className="mt-1 text-[11px] text-slate-500">
+              Clinical fit {rec.clinical_percent}% · coverage {rec.match_percent - rec.clinical_percent > 0 ? "+" : ""}
+              {rec.match_percent - rec.clinical_percent}
+            </p>
+          )}
         </div>
       </div>
       <div className="flex-1 space-y-3 px-5 pb-4 text-sm">
@@ -270,6 +282,14 @@ export function DecisionPanel({
             <Input value={form.sig} onChange={(e) => setForm({ ...form, sig: e.target.value })} />
           </label>
         </div>
+        {override && picked && <OverrideCoverage encounterId={encounterId} medicationId={picked.id} doseMg={form.dose_mg} sig={form.sig} quantity={form.dispense_quantity} />}
+        {!override && rec && (
+          <CoverageBox
+            coverage={rec.coverage}
+            encounterId={encounterId}
+            request={{ medication_id: rec.medication_id, dose_mg: form.dose_mg, sig: form.sig, quantity: form.dispense_quantity }}
+          />
+        )}
         <div>
           <Label>{override ? "Why are you overriding?" : "Why this one?"}</Label>
           {!override && (
@@ -438,4 +458,75 @@ export function RxTracker({
       </div>
     </Card>
   );
+}
+
+// ---------------------------------------------------------------------------
+/** Insurance status for the chosen drug + one-click prior-auth / step-therapy-exception packet. */
+export function CoverageBox({
+  coverage, encounterId, request,
+}: {
+  coverage: Coverage | null | undefined;
+  encounterId: string;
+  request: { medication_id?: string | null; dose_mg?: number | string | null; combo?: { id: string; product_rxcui: string; label: string } | null; sig?: string | null; quantity?: number | null };
+}) {
+  const [busy, setBusy] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+  if (!coverage || coverage.status === "unknown") {
+    return coverage?.plan_name ? <p className="text-xs text-slate-500">Insurance: {coverage.plan_name} — {coverage.label}.</p> : null;
+  }
+  const needsPaperwork = coverage.status !== "covered";
+  return (
+    <div className={clsx("rounded-lg border p-3 text-sm", coverage.status === "covered" ? "border-emerald-200 bg-emerald-50/60" : "border-amber-300 bg-amber-50")}>
+      <p className="font-medium">
+        {coverage.plan_name}: {coverage.label}
+      </p>
+      {coverage.notes.map((n, i) => (
+        <p key={i} className="text-slate-700">
+          {n}
+        </p>
+      ))}
+      {needsPaperwork && (
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+          <Button
+            variant="secondary"
+            disabled={busy}
+            onClick={async () => {
+              setBusy(true);
+              setErr(null);
+              try {
+                const r = await fetch(`/api/encounters/${encounterId}/prior-auth`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(request) });
+                const j = await r.json();
+                if (!r.ok) throw new Error(j.error ?? "Could not create the packet");
+                window.open(`/prior-auth/${j.id}`, "_blank");
+              } catch (e) {
+                setErr(e instanceof Error ? e.message : String(e));
+              } finally {
+                setBusy(false);
+              }
+            }}
+          >
+            {busy ? <Loader2 size={14} className="animate-spin" /> : <FileText size={14} />}{" "}
+            {coverage.step_therapy && !coverage.prior_auth ? "Generate step-therapy exception" : coverage.status === "not_covered" ? "Generate formulary exception" : "Generate prior-auth packet"}
+          </Button>
+          <span className="text-xs text-slate-500">Pre-filled from the chart, with a drafted letter of medical necessity for you to review and sign.</span>
+          {err && <span className="text-xs text-red-600">{err}</span>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+/** Coverage lookup for a drug the doctor chose themselves. */
+function OverrideCoverage({ encounterId, medicationId, doseMg, sig, quantity }: { encounterId: string; medicationId: string; doseMg: string; sig: string; quantity: number }) {
+  const [cov, setCov] = useState<Coverage | null>(null);
+  useEffect(() => {
+    let live = true;
+    fetch(`/api/encounters/${encounterId}/coverage?medication_id=${medicationId}&dose_mg=${encodeURIComponent(doseMg)}`)
+      .then((r) => r.json())
+      .then((j) => live && setCov(j.coverage));
+    return () => {
+      live = false;
+    };
+  }, [encounterId, medicationId, doseMg]);
+  return <CoverageBox coverage={cov} encounterId={encounterId} request={{ medication_id: medicationId, dose_mg: doseMg, sig, quantity }} />;
 }

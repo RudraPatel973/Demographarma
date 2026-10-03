@@ -1,4 +1,4 @@
-# Demographarma
+# Volution
 
 Clinician decision support for **hypertension** prescribing. The doctor records the visit, enters a diagnosis and clicks **Generate**. The app returns the 3 medications that best match the patient's profile, each with a match %. The doctor approves one and it's e-prescribed through **Photon Health**, which texts the patient.
 

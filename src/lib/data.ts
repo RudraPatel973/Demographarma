@@ -1,6 +1,8 @@
 import "server-only";
 import { db, must } from "./supabase";
-import type { Diagnosis, Encounter, Medication, Patient, PatientMessage, Prescription, Recommendation } from "./types";
+import type { Diagnosis, Encounter, Medication, MedicationTrial, Patient, PatientMessage, Prescription, Recommendation } from "./types";
+
+export type PriorAuthRow = { id: string; drug_label: string; request_type: string; status: string; plan_name: string | null; created_at: string };
 
 export async function getEncounterBundle(id: string) {
   const encounter = must(await db().from("encounters").select("*").eq("id", id).single()) as Encounter;
@@ -27,7 +29,11 @@ export async function getEncounterBundle(id: string) {
   const messages = must(
     await db().from("patient_messages").select("*").eq("patient_id", patient.id).order("created_at"),
   ) as PatientMessage[];
-  return { encounter, patient, recommendations: latest, second, run: runFor(1), run2: slot2At ? runFor(2) : null, prescriptions, medications, messages };
+  const trials = must(await db().from("medication_trials").select("*").eq("patient_id", patient.id).order("created_at")) as MedicationTrial[];
+  const priorAuths = must(
+    await db().from("prior_auths").select("id,drug_label,request_type,status,plan_name,created_at").eq("encounter_id", id).order("created_at", { ascending: false }),
+  ) as PriorAuthRow[];
+  return { encounter, patient, recommendations: latest, second, run: runFor(1), run2: slot2At ? runFor(2) : null, prescriptions, medications, messages, trials, priorAuths };
 }
 
 export async function listDiagnoses() {

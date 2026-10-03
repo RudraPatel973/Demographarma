@@ -8,6 +8,29 @@ export interface Address {
   postalCode?: string | null;
 }
 
+export interface Insurance {
+  plan_id?: string | null;
+  plan_name?: string | null;
+  payer?: string | null;
+  member_id?: string | null;
+  group_number?: string | null;
+  is_medicare?: boolean | null;
+}
+
+export interface MedicationTrial {
+  id: string;
+  patient_id: string;
+  medication_id: string | null;
+  drug_name: string;
+  dose_mg: number | null;
+  started_on: string | null;
+  ended_on: string | null;
+  outcome: "ongoing" | "not_at_goal" | "side_effect" | "allergy" | "contraindicated" | "stopped_other";
+  detail: string | null;
+  source: string;
+  created_at: string;
+}
+
 export function formatAddress(a: Address | null | undefined) {
   if (!a) return null;
   const line1 = [a.street1, a.street2].filter(Boolean).join(", ");
@@ -33,6 +56,7 @@ export interface Patient {
   allergies: string[];
   pregnancy_status: PregnancyStatus;
   address: Address | null;
+  insurance: Insurance | null;
   photon_patient_id: string | null;
   created_at: string;
 }
@@ -94,6 +118,8 @@ export interface TreatmentPlan {
 export interface LiveState {
   notes?: string;            // clinically relevant things said (side effects, cost, preferences)
   diagnosis_quote?: string;  // what the doctor said that triggered generation
+  adherence?: string | null; // e.g. "never misses doses"
+  lifestyle?: string | null; // e.g. "low-salt diet, walks daily"
   extracted_at?: string;
   extracted_segments?: number;
 }
@@ -150,6 +176,8 @@ export interface Recommendation {
   days_supply: number | null;
   fills_allowed: number | null;
   monitoring: string | null;
+  clinical_percent?: number | null;
+  coverage?: import("./coverage").Coverage | null;
   engine: "ai" | "rules";
   model: string | null;
   slot?: number;
