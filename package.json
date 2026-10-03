@@ -12,6 +12,7 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.131.0",
     "@photonhealth/elements": "^0.23.15",
+    "@smartspectra/node-sdk": "^3.4.0",
     "@supabase/supabase-js": "^2.117.2",
     "clsx": "^2.1.1",
     "lucide-react": "^1.51.0",

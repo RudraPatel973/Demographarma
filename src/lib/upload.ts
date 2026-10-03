@@ -1,5 +1,5 @@
 /** Browser-side: get a signed URL from our API, then PUT the file straight to Supabase Storage. */
-export async function uploadFile(encounterId: string, kind: "video" | "document", file: File): Promise<string> {
+export async function uploadFile(encounterId: string, kind: "video" | "document" | "vitals", file: File): Promise<string> {
   const res = await fetch(`/api/encounters/${encounterId}/upload`, {
     method: "POST",
     headers: { "content-type": "application/json" },

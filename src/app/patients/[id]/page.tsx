@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getPatient, listVisits } from "@/lib/data";
+import { getPatient, listDiagnoses, listVisits } from "@/lib/data";
 import { supabaseConfigured } from "@/lib/config";
 import { SetupNotice } from "@/components/SetupNotice";
 import { Card, CardHeader } from "@/components/ui";
@@ -21,7 +21,7 @@ export default async function PatientPage({ params }: PageProps<"/patients/[id]"
   } catch {
     notFound();
   }
-  const visits = await listVisits({ patientId: id });
+  const [visits, diagnoses] = await Promise.all([listVisits({ patientId: id }), listDiagnoses()]);
   const latest = visits[0];
   // LiveChart shows vitals/labs from the most recent visit
   const latestEnc = {
@@ -62,7 +62,7 @@ export default async function PatientPage({ params }: PageProps<"/patients/[id]"
         <div className="space-y-6">
           <Card>
             <CardHeader title="Visit history" subtitle="Click a visit to see what was said, recommended and prescribed" />
-            <VisitTable rows={visits as unknown as VisitRowLite[]} showPatient={false} />
+            <VisitTable rows={visits as unknown as VisitRowLite[]} diagnoses={diagnoses} showPatient={false} />
           </Card>
 
           {bp.length > 0 && (

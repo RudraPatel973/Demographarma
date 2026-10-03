@@ -54,6 +54,18 @@ Change the login with `DEMO_USER` / `DEMO_PASSWORD` in Vercel → Settings → E
 - Photon only lets authorized prescribers write prescriptions. Our backend syncs the patient and finds the treatment; the embedded Photon widget opens pre-filled, and the doctor signs in and clicks **Send Order**. Photon then texts the patient to choose a pharmacy, and webhooks update the status.
 - Without Photon keys the app runs **mock mode**: same lifecycle, simulated texts, and buttons to step through pharmacy/fill/pickup.
 
+### Check-in vitals (inference layer)
+A new visit starts with a 30-second camera check before the voice recording. The clip is analysed by **Presage SmartSpectra** (camera-based pulse, breathing, HRV). A reliable pulse goes straight into the chart and the recording starts; an unreliable one shows the problem (e.g. someone else in frame) with **Retake** or **Start visit without it**.
+- Choose the reader with `VITALS_MODEL` (unset = no check-in step), then restart:
+  - `demo`: placeholder for presentations. Records a 10-second clip, but the pulse is generated (the average of 10 readings around a resting rate), not measured. Its observations are stored as model `demo_pulse`.
+  - `smartspectra`: real camera readings from a 30-second clip. Needs `SMARTSPECTRA_API_KEY` (from physiology.presagetech.com).
+- Run `supabase/migrations/0007_model_observations.sql` first.
+- `src/lib/inference/` is model-agnostic: a model implements `ClinicalModel` and only returns observations. Every reading is stored in `model_observations` (value, vendor confidence, model version, model card, quality hints). Only a pulse where at least 3 readings met the vendor's accuracy standard (±3 bpm) is written to `encounters.vitals`, tagged with its source in `vitals.sources` (the observation records `accepted_via: auto`). A heart rate the doctor types or says later replaces it and drops the tag.
+- The SDK is a native Node module (macOS arm64, Linux x64/arm64 with glibc ≥ 2.35, Windows x64), so run it locally or on a Node server. It hasn't been tested in Vercel functions. The browser records H.264 because the SDK's bundled decoder doesn't read VP8/VP9.
+- The clip is played back to the SDK at camera speed (~30 fps); decoding it as fast as possible gives almost no readings.
+- `scripts/smartspectra-test.mjs` measures from the webcam in a terminal, which is handy for comparing against a wearable.
+- Camera vitals are an investigational estimate, not a calibrated measurement. The SDK's arterial pressure trace is unitless and is never used as blood pressure.
+
 ## Security notes
 - All tables have RLS on with no policies. The browser never talks to Supabase directly; route handlers use the service-role key on the server.
 - Media (visit video, documents) sits in a private bucket. Uploads use one-time signed URLs and playback uses 10-minute signed URLs.

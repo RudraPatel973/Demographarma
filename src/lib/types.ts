@@ -54,6 +54,46 @@ export interface Vitals {
   bp_systolic?: number | null;
   bp_diastolic?: number | null;
   heart_rate?: number | null;
+  /** Set when a value came from an AI model the clinician accepted (absent = entered or said by the clinician) */
+  sources?: Partial<Record<"heart_rate", VitalSource>>;
+}
+
+export interface VitalSource {
+  model: string;
+  model_name: string;
+  observation_id: string;
+  confidence: number | null;
+}
+
+export type ObservationMetric = "heart_rate" | "respiratory_rate" | "hrv_sdnn" | "hrv_rmssd";
+export type ObservationStatus = "pending" | "accepted" | "rejected" | "info" | "superseded";
+
+/** One metric inferred by an external model (see src/lib/inference). */
+export interface ModelObservation {
+  id: string;
+  encounter_id: string;
+  model: string;
+  model_version: string | null;
+  metric: ObservationMetric;
+  value: number | null;
+  unit: string | null;
+  confidence: number | null;
+  stable: boolean;
+  detail: {
+    model_name?: string;
+    samples?: number;
+    stable_samples?: number;
+    range?: [number, number] | null;
+    hints?: string[];
+    accuracy?: string;
+    model_card?: string;
+    /** How it reached the chart: automatically at check-in, or by a clinician's click */
+    accepted_via?: "auto" | "clinician";
+  };
+  status: ObservationStatus;
+  media_path: string | null;
+  reviewed_at: string | null;
+  created_at: string;
 }
 
 export interface Labs {

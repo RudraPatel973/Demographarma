@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import clsx from "clsx";
-import { AlertCircle, ChevronDown, FileText, History, Loader2, Mic, Paperclip, Pencil, RefreshCw, Smartphone, Sparkles, Square, UserCog } from "lucide-react";
+import { AlertCircle, ChevronDown, FileText, HeartPulse, History, Loader2, Mic, Paperclip, Pencil, RefreshCw, Smartphone, Sparkles, Square, UserCog } from "lucide-react";
 import { Badge, Button, Card, CardHeader } from "./ui";
 import { LiveChart } from "./LiveChart";
 import { ChartEditor } from "./ChartEditor";
@@ -11,9 +11,10 @@ import { DecisionPanel, Excluded, RecCard, RxTracker, type Fired, type MedOption
 import { useVisitRecorder } from "./useVisitRecorder";
 import { TwoPillFlow } from "./TwoPill";
 import { MissingInfo } from "./MissingInfo";
+import { VitalsCheck } from "./VitalsCheck";
 import { missingRecommended, missingRequired, REQUIRED_LABELS, type RequiredKey } from "@/lib/requirements";
 import { uploadFile } from "@/lib/upload";
-import { patientName, type Diagnosis, type Encounter, type Medication, type Patient, type PatientMessage, type Prescription, type Recommendation, type TranscriptSegment } from "@/lib/types";
+import { patientName, type Diagnosis, type Encounter, type Medication, type ModelObservation, type Patient, type PatientMessage, type Prescription, type Recommendation, type TranscriptSegment } from "@/lib/types";
 
 export interface Bundle {
   encounter: Encounter;
@@ -31,6 +32,7 @@ export interface Bundle {
   prescriptions: Prescription[];
   medications: Medication[];
   messages: PatientMessage[];
+  observations: ModelObservation[];
 }
 
 type Phase = "record" | "generating" | "results";
@@ -65,6 +67,7 @@ export function VisitWorkspace({
   aiOn,
   autostart,
   liveDebounceMs,
+  vitalsModels,
 }: {
   initial: Bundle;
   diagnoses: Diagnosis[];
@@ -72,6 +75,8 @@ export function VisitWorkspace({
   aiOn: boolean;
   autostart: boolean;
   liveDebounceMs: number;
+  /** Configured camera models; when present, a new visit starts with the check-in vitals step */
+  vitalsModels: { id: string; name: string; captureSeconds: number }[];
 }) {
   const [bundle, setBundle] = useState(initial);
   const [patient, setPatient] = useState(initial.patient);
@@ -84,6 +89,14 @@ export function VisitWorkspace({
   const [editing, setEditing] = useState(false);
   const [choice, setChoice] = useState<{ rec: Recommendation | null; override: boolean } | null>(null);
   const [showTranscript, setShowTranscript] = useState(false);
+  // Check-in vitals come first on a fresh visit, before the voice recording
+  const [checkIn, setCheckIn] = useState(
+    () =>
+      vitalsModels.length > 0 &&
+      !initial.recommendations.length &&
+      !initial.encounter.transcript.length &&
+      !initial.observations.some((o) => o.status !== "superseded"),
+  );
 
   const encId = enc.id;
   const inFlight = useRef(false);
@@ -268,11 +281,11 @@ export function VisitWorkspace({
   // start recording automatically for a new visit
   const started = useRef(false);
   useEffect(() => {
-    if (autostart && phase === "record" && !started.current) {
+    if (autostart && phase === "record" && !checkIn && !started.current) {
       started.current = true;
       void recStart();
     }
-  }, [autostart, phase, recStart]);
+  }, [autostart, phase, checkIn, recStart]);
 
   // poll while a prescription is in flight
   const rx = bundle.prescriptions[0];
@@ -393,7 +406,19 @@ export function VisitWorkspace({
           <Button onClick={() => { setHeard(null); void finish(); }}>Now</Button>
         </div>
       )}
-      {phase === "record" && (
+      {phase === "record" && checkIn && (
+        <VitalsCheck
+          encounterId={encId}
+          models={vitalsModels}
+          onVitals={(vitals) => setEnc((e) => ({ ...e, vitals }))}
+          onContinue={() => {
+            setCheckIn(false);
+            started.current = true;
+            void recStart();
+          }}
+        />
+      )}
+      {phase === "record" && !checkIn && (
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
           <Card className="flex min-h-[560px] flex-col">
             <div className="flex items-center gap-3 border-b border-slate-100 px-5 py-3">
@@ -410,6 +435,11 @@ export function VisitWorkspace({
                   <Paperclip size={16} />
                   <input type="file" multiple className="sr-only" accept=".pdf,.png,.jpg,.jpeg,.txt" onChange={(e) => attach(e.target.files)} />
                 </label>
+                {!recording && vitalsModels.length > 0 && (
+                  <Button variant="secondary" onClick={() => setCheckIn(true)} title="30-second camera check of pulse">
+                    <HeartPulse size={16} /> Vitals check
+                  </Button>
+                )}
                 {!recording ? (
                   <Button onClick={() => void recStart()}>
                     <Mic size={16} /> {enc.transcript.length ? "Resume" : "Start recording"}

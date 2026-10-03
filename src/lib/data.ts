@@ -1,5 +1,6 @@
 import "server-only";
-import { db, must } from "./supabase";
+import { db, MEDIA_BUCKET, must } from "./supabase";
+import { listObservations } from "./inference";
 import type { Diagnosis, Encounter, Medication, Patient, PatientMessage, Prescription, Recommendation } from "./types";
 
 export async function getEncounterBundle(id: string) {
@@ -27,7 +28,8 @@ export async function getEncounterBundle(id: string) {
   const messages = must(
     await db().from("patient_messages").select("*").eq("patient_id", patient.id).order("created_at"),
   ) as PatientMessage[];
-  return { encounter, patient, recommendations: latest, second, run: runFor(1), run2: slot2At ? runFor(2) : null, prescriptions, medications, messages };
+  const observations = await listObservations(id);
+  return { encounter, patient, recommendations: latest, second, run: runFor(1), run2: slot2At ? runFor(2) : null, prescriptions, medications, messages, observations };
 }
 
 export async function listDiagnoses() {
@@ -47,6 +49,8 @@ export type VisitRow = {
   id: string;
   status: Encounter["status"];
   created_at: string;
+  diagnosis_id: string | null;
+  diagnosis_notes: string | null;
   vitals: Encounter["vitals"];
   labs: Encounter["labs"];
   live_state: Encounter["live_state"];
@@ -58,7 +62,7 @@ export type VisitRow = {
 };
 
 const VISIT_SELECT =
-  "id,status,created_at,vitals,labs,live_state,patients(id,first_name,last_name,date_of_birth,sex),diagnoses(name,icd10),prescriptions(id,dose_mg,status,is_override,custom_medication,created_at,medications(generic_name))";
+  "id,status,created_at,vitals,labs,live_state,diagnosis_id,diagnosis_notes,patients(id,first_name,last_name,date_of_birth,sex),diagnoses(name,icd10),prescriptions(id,dose_mg,status,is_override,custom_medication,created_at,medications(generic_name))";
 
 export async function listVisits(opts: { status?: string; q?: string; patientId?: string; limit?: number } = {}) {
   let query = db()
@@ -75,6 +79,35 @@ export async function listVisits(opts: { status?: string; q?: string; patientId?
     rows = rows.filter((r) => `${r.patients?.first_name ?? ""} ${r.patients?.last_name ?? ""}`.toLowerCase().includes(q));
   }
   return rows;
+}
+
+/**
+ * Deletes a visit and everything recorded for it: recommendations, prescriptions (and their patient
+ * messages) and model observations cascade in the database; stored media (recording, documents,
+ * check-in clip) is removed from storage. The placeholder patient a "new patient" visit creates
+ * (no name, no other visits) is removed too. Prescriptions already sent to Photon are not cancelled.
+ */
+export async function deleteVisit(id: string) {
+  const enc = must(await db().from("encounters").select("id,patient_id").eq("id", id).single()) as Pick<Encounter, "id" | "patient_id">;
+  must(await db().from("encounters").delete().eq("id", id).select("id"));
+
+  const paths: string[] = [];
+  for (const kind of ["video", "document", "vitals"]) {
+    const { data } = await db().storage.from(MEDIA_BUCKET).list(`${id}/${kind}`, { limit: 1000 });
+    for (const f of data ?? []) paths.push(`${id}/${kind}/${f.name}`);
+  }
+  if (paths.length) {
+    const { error } = await db().storage.from(MEDIA_BUCKET).remove(paths);
+    if (error) console.error(`[visits] media for ${id} not removed:`, error.message);
+  }
+
+  const p = must(await db().from("patients").select("id,first_name,last_name,encounters(id)").eq("id", enc.patient_id).single()) as Pick<
+    Patient,
+    "id" | "first_name" | "last_name"
+  > & { encounters: { id: string }[] };
+  const placeholder = !p.first_name && !p.last_name && p.encounters.length === 0;
+  if (placeholder) must(await db().from("patients").delete().eq("id", p.id).select("id"));
+  return { deletedPatient: placeholder, mediaRemoved: paths.length };
 }
 
 export async function listPatients(q?: string) {

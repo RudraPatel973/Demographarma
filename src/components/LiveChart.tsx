@@ -59,7 +59,21 @@ export function LiveChart({ patient: p, encounter: e }: { patient: Patient; enco
         <Field label="Height" value={p.height_cm ? `${Math.round(p.height_cm)} cm` : null} />
         <Field label="Weight" value={p.weight_kg ? `${Math.round(p.weight_kg)} kg${bmi ? ` · BMI ${bmi}` : ""}` : null} />
         <Field label="Blood pressure" value={bp} />
-        <Field label="Heart rate" value={e.vitals.heart_rate ? `${e.vitals.heart_rate} bpm` : null} />
+        <Field
+          label="Heart rate"
+          value={
+            e.vitals.heart_rate ? (
+              <>
+                {e.vitals.heart_rate} bpm
+                {e.vitals.sources?.heart_rate && (
+                  <span className="ml-1.5 rounded-full bg-sky-50 px-1.5 py-0.5 text-[10px] font-medium text-sky-700" title="Camera estimate from the check-in. Edit the chart to replace it.">
+                    camera · {e.vitals.sources.heart_rate.model_name}
+                  </span>
+                )}
+              </>
+            ) : null
+          }
+        />
         <Field label="eGFR" value={e.labs.egfr ?? null} />
         <Field label="Potassium" value={e.labs.potassium ?? null} />
         {p.sex !== "MALE" && <Field label="Pregnancy" value={p.pregnancy_status !== "not_applicable" ? p.pregnancy_status.replace(/_/g, " ") : null} wide />}
