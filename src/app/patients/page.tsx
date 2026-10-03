@@ -5,6 +5,7 @@ import { supabaseConfigured } from "@/lib/config";
 import { SetupNotice } from "@/components/SetupNotice";
 import { Card } from "@/components/ui";
 import { LocalTime } from "@/components/History";
+import { NewPatientButton } from "@/components/NewPatientButton";
 import { CONDITIONS, patientName } from "@/lib/types";
 
 export const dynamic = "force-dynamic";
@@ -26,9 +27,14 @@ export default async function PatientsPage({ searchParams }: PageProps<"/patient
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
-      <div className="mb-6">
-        <h1 className="text-2xl font-semibold tracking-tight">Patients</h1>
-        <p className="text-sm text-slate-500">Open a patient to see their chart, blood-pressure history and every past visit.</p>
+      <div className="mb-6 flex flex-wrap items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight">Patients</h1>
+          <p className="text-sm text-slate-500">Open a patient to see their chart, blood-pressure history and every past visit.</p>
+        </div>
+        <div className="ml-auto">
+          <NewPatientButton />
+        </div>
       </div>
       <Card>
         <form className="border-b border-slate-100 p-3" action="/patients">
